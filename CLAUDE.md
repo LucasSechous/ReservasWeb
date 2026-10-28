@@ -27,7 +27,7 @@ El plan por fases (0 a 8) está en `docs/plan-v1.md`. Al terminar una tarea, tac
 
 ## Forma de trabajar
 
-- Trabajar en ramas, nunca directo en `main`; commits chicos con mensajes claros. No hacer `push` ni merge sin que Lucas lo pida.
+- Flujo de ramas: `main` es producción y `develop` es donde se integra todo. Cada tarea va en una rama nueva que sale de `develop`, con commits chicos y mensajes claros, y se mergea a `develop` y se sube sin pedir permiso. Nunca se hace commit, merge ni `push` a `main`: solo sube cuando Lucas confirma que `develop` funciona perfecto y lo pide.
 - Antes de algo grande o difícil de revertir (migraciones, cambios de esquema, borrar cosas), explicar qué se va a hacer y esperar su OK.
 
 ## Agentes de leads
