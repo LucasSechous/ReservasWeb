@@ -19,7 +19,8 @@ Por dentro, todos los negocios comparten un solo proyecto y una sola base (decis
 - Fechas en `timestamptz`; se muestran en la zona del negocio (`America/Montevideo` por defecto).
 - `precio_final` se copia en cada reserva.
 - Nunca commitear claves: `.env*` está ignorado (menos `.env.example`). La `service_role` jamás en el cliente. El cliente de Supabase de `src/lib/supabase/server.ts` solo corre en el servidor y lee `NEXT_PUBLIC_SUPABASE_*` o, si no están, `NEXT_SUPABASE_*` (los nombres cargados en Vercel).
-- La base de Supabase tiene el esquema de un intento anterior, sin datos desde el 28 de octubre de 2026. Antes de cualquier migración que borre o cambie tablas o columnas, mostrar a Lucas el SQL y esperar su OK; cuando haya datos reales, respaldar primero.
+- El esquema de la base está en `supabase/migrations/` (Fase 2 aplicada el 28 de octubre de 2026), con un test en `supabase/tests/` y datos de prueba en `supabase/seed/`. Antes de cualquier migración que borre o cambie tablas o columnas, mostrar a Lucas el SQL y esperar su OK; cuando haya datos reales, respaldar primero. La herramienta de Supabase rechaza las sentencias destructivas (`drop`, `truncate`): en ese caso Lucas las pega en el SQL Editor.
+- Permisos de tablas: los roles `anon` y `authenticated` reciben todos los permisos por defecto en tablas nuevas. Al crear una tabla en `public`, hacer `revoke all` y dar solo lo necesario; la RLS es la segunda barrera, no la única. Las funciones auxiliares van en el esquema `private`, no en `public`.
 
 ## Plan
 
