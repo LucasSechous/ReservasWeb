@@ -27,7 +27,7 @@ export function AntesDespues() {
         transition={{ staggerChildren: 0.28 }}
       >
         <p className="text-xs font-semibold uppercase tracking-widest text-white/45">
-          Hoy
+          Antes
         </p>
         <h3 className="mt-2 font-display text-2xl font-bold">
           Turnos por mensaje
@@ -62,7 +62,7 @@ export function AntesDespues() {
         transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
         <p className="text-xs font-semibold uppercase tracking-widest text-accent">
-          Con tu web
+          Ahora, con tu web
         </p>
         <h3 className="mt-2 font-display text-2xl font-bold">
           Turnos que se reservan solos
