@@ -23,12 +23,14 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
   const negocio = await getNegocio(slug);
   if (!negocio) notFound();
 
+  const tema = getTema(negocio.slug);
+  // Una landing simple no recibe reservas: esta página no existe para ella.
+  if (tema.reservas === false) notFound();
+
   const [servicios, profesionales] = await Promise.all([
     getServicios(negocio.id),
     getProfesionales(negocio.id),
   ]);
-
-  const tema = getTema(negocio.slug);
 
   return (
     <div

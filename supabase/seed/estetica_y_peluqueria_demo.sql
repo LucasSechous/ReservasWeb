@@ -1,4 +1,4 @@
--- Datos de prueba: «Estética Demo» y «Peluquería Demo», para mostrar a leads de esos rubros.
+-- Datos de prueba: «Estética Demo» y «Peluquería Demo» (esta última se dio de baja: ahora la tercera demo es cafe_demo.sql).
 -- Se corre una sola vez, después de la migración de la Fase 2. No es una migración.
 -- Lunes a viernes de 9 a 13 y de 14 a 19; sábado de 9 a 14. Todos los profesionales hacen todos los servicios.
 with negocios_nuevos as (
