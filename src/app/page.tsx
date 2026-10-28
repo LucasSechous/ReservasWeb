@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AntesDespues } from "@/components/antes-despues";
+import { FondoMovil } from "@/components/fondo-movil";
 import { HeroTitle } from "@/components/hero-title";
 import { Marquee } from "@/components/marquee";
 import { PhoneDemo } from "@/components/phone-demo";
@@ -94,16 +95,19 @@ const demos = [
     rubro: "Barbería",
     clase: "from-violeta/40 to-ink-3",
     href: "/barberia-demo" as string | null,
+    logo: "/negocios/barberia-demo/logo.svg",
   },
   {
     rubro: "Centro de estética",
     clase: "from-accent/25 to-ink-3",
     href: "/estetica-demo" as string | null,
+    logo: "/negocios/estetica-demo/logo.svg",
   },
   {
     rubro: "Peluquería",
     clase: "from-emerald-500/25 to-ink-3",
     href: "/peluqueria-demo" as string | null,
+    logo: "/negocios/peluqueria-demo/logo.svg",
   },
 ];
 
@@ -135,14 +139,7 @@ export default function Home() {
 
       <main className="flex-1 overflow-x-clip">
         <section className="relative">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -left-32 top-10 -z-10 size-[28rem] animate-float-slow rounded-full bg-violeta/25 blur-[110px]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-24 top-64 -z-10 size-[24rem] animate-float rounded-full bg-accent/15 blur-[110px]"
-          />
+          <FondoMovil />
           <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-8 lg:grid-cols-[1.25fr_1fr] lg:pt-16">
             <div>
               <Reveal y={12}>
@@ -312,8 +309,15 @@ export default function Home() {
                   >
                     <div
                       aria-hidden
-                      className="absolute inset-x-8 top-8 h-1/2 rounded-2xl border border-white/10 bg-white/[0.04]"
-                    />
+                      className="absolute inset-x-8 top-8 flex h-1/2 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] transition duration-300 group-hover:bg-white/[0.08]"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={demo.logo}
+                        alt=""
+                        className="size-28 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3"
+                      />
+                    </div>
                     {demo.href && (
                       <span className="absolute right-4 top-4 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent-ink">
                         En vivo

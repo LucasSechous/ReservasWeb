@@ -14,6 +14,10 @@ export type Tema = {
   lema: string;
   /** Párrafo de presentación debajo del título. */
   intro: string;
+  /** Logo del negocio, guardado en public/negocios/<slug>/ (por ejemplo /negocios/mi-slug/logo.svg). */
+  logo?: string;
+  /** Video corto de fondo para la portada, en bucle y sin sonido (por ejemplo /negocios/mi-slug/fondo.mp4). */
+  video?: string;
   /** Foto de portada opcional, guardada en public/negocios/<slug>/ (por ejemplo /negocios/mi-slug/portada.jpg). */
   portada?: string;
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
@@ -37,6 +41,7 @@ const TEMAS: Record<string, Tema> = {
     ...TEMA_BASE,
     lema: "Cortes con turno.",
     intro: "Corte, barba y estilo. Elegí tu barbero, tu horario y listo: tu lugar queda reservado.",
+    logo: "/negocios/barberia-demo/logo.svg",
     demo: true,
   },
   "estetica-demo": {
@@ -48,6 +53,7 @@ const TEMAS: Record<string, Tema> = {
     brillo: "#c084fc",
     lema: "Tu momento, con turno.",
     intro: "Faciales, depilación, masajes y más. Reservá tu momento de cuidado en un par de toques.",
+    logo: "/negocios/estetica-demo/logo.svg",
     demo: true,
   },
   "peluqueria-demo": {
@@ -59,6 +65,7 @@ const TEMAS: Record<string, Tema> = {
     brillo: "#2dd4bf",
     lema: "Tu look, a tu hora.",
     intro: "Corte, color y peinados. Elegí con quién y cuándo, y reservá desde el celular.",
+    logo: "/negocios/peluqueria-demo/logo.svg",
     demo: true,
   },
 };

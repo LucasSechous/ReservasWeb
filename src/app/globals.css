@@ -27,6 +27,40 @@
   --animate-float: float 7s ease-in-out infinite;
   --animate-float-slow: float 11s ease-in-out infinite;
   --animate-ping-soft: ping-soft 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-drift-a: drift-a 18s ease-in-out infinite;
+  --animate-drift-b: drift-b 22s ease-in-out infinite;
+  --animate-drift-c: drift-c 26s ease-in-out infinite;
+  --animate-spin-lento: spin 60s linear infinite;
+
+  @keyframes drift-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(14rem, 6rem, 0) scale(1.25);
+    }
+  }
+
+  @keyframes drift-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-12rem, 8rem, 0) scale(0.85);
+    }
+  }
+
+  @keyframes drift-c {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(10rem, -7rem, 0) scale(1.2);
+    }
+  }
 
   @keyframes marquee {
     from {

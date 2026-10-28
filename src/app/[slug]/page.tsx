@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BannerDemo } from "@/components/banner-demo";
+import { FondoMovil } from "@/components/fondo-movil";
 import { HeroTitle } from "@/components/hero-title";
 import { Marquee } from "@/components/marquee";
 import { Reveal } from "@/components/reveal";
@@ -82,7 +83,13 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
       {tema.demo && <BannerDemo />}
 
       <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
-        <span className="font-display text-xl font-extrabold tracking-tight">{negocio.nombre}</span>
+        <span className="flex items-center gap-3 font-display text-xl font-extrabold tracking-tight">
+          {tema.logo && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={tema.logo} alt="" className="size-10" />
+          )}
+          {negocio.nombre}
+        </span>
         <Link
           href={reservarHref}
           className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
@@ -93,7 +100,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
 
       <main>
         <section
-          className="relative"
+          className="relative overflow-hidden"
           style={
             tema.portada
               ? {
@@ -104,14 +111,13 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
               : undefined
           }
         >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -left-32 top-10 -z-10 size-[28rem] animate-float-slow rounded-full bg-violeta/25 blur-[110px]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-24 top-64 -z-10 size-[24rem] animate-float rounded-full bg-accent/15 blur-[110px]"
-          />
+          <FondoMovil video={tema.video} />
+          {tema.logo && (
+            <Reveal delay={0.5} y={30} className="pointer-events-none absolute right-8 top-16 hidden lg:block xl:right-20">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={tema.logo} alt="" className="size-72 animate-float drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] xl:size-80" />
+            </Reveal>
+          )}
           <div className="mx-auto max-w-6xl px-5 pb-20 pt-8 lg:pt-16">
             <Reveal y={12}>
               <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/75">
