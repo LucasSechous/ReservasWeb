@@ -19,7 +19,7 @@ Por dentro, todos los negocios comparten un solo proyecto y una sola base (decis
 - Fechas en `timestamptz`; se muestran en la zona del negocio (`America/Montevideo` por defecto).
 - `precio_final` se copia en cada reserva.
 - Nunca commitear claves: `.env*` está ignorado (menos `.env.example`). La `service_role` jamás en el cliente. El cliente de Supabase de `src/lib/supabase/server.ts` solo corre en el servidor y lee `NEXT_PUBLIC_SUPABASE_*` o, si no están, `NEXT_SUPABASE_*` (los nombres cargados en Vercel).
-- La base de Supabase ya tiene datos: antes de cualquier migración que borre o cambie columnas, respaldar y mostrar a Lucas qué se toca.
+- La base de Supabase tiene el esquema de un intento anterior, sin datos desde el 28 de octubre de 2026. Antes de cualquier migración que borre o cambie tablas o columnas, mostrar a Lucas el SQL y esperar su OK; cuando haya datos reales, respaldar primero.
 
 ## Plan
 
