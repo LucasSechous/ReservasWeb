@@ -98,12 +98,12 @@ const demos = [
   {
     rubro: "Centro de estética",
     clase: "from-accent/25 to-ink-3",
-    href: null as string | null,
+    href: "/estetica-demo" as string | null,
   },
   {
     rubro: "Peluquería",
     clase: "from-emerald-500/25 to-ink-3",
-    href: null as string | null,
+    href: "/peluqueria-demo" as string | null,
   },
 ];
 
@@ -294,10 +294,10 @@ export default function Home() {
                 Así se ve
               </h2>
               <p className="mt-4 max-w-2xl text-lg text-white/65">
-                Probá la demo de la barbería: elegí un servicio, un día y un
-                horario, y reservá un turno como lo haría tu cliente. Es una
-                demo, las reservas son de prueba. Para estética y peluquería
-                te armo una con los colores y los servicios de tu negocio.
+                Probá las demos: elegí un servicio, un día y un horario, y
+                reservá un turno como lo haría tu cliente. Son demos, las
+                reservas son de prueba. La tuya la armo con los colores y los
+                servicios de tu negocio.
               </p>
             </Reveal>
             <div className="mt-12 grid gap-6 sm:grid-cols-3">
