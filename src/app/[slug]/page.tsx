@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -260,7 +261,14 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
         )}
 
         {profesionales.length > 0 && (
-          <section aria-labelledby="equipo" className="bg-ink-2 py-24">
+          <section aria-labelledby="equipo" className="relative isolate overflow-hidden bg-ink-2 py-24">
+            {tema.fondoEquipo && (
+              <div aria-hidden className="absolute inset-0 -z-10">
+                <Image src={tema.fondoEquipo} alt="" fill sizes="100vw" className="object-cover" />
+                <div className="absolute inset-0 bg-(--n-fondo)/55" />
+                <div className="absolute inset-0 bg-gradient-to-b from-(--n-fondo)/90 via-transparent to-(--n-fondo)/90" />
+              </div>
+            )}
             <div className="mx-auto max-w-6xl px-5">
               <Reveal>
                 <h2
@@ -274,7 +282,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                 {profesionales.map((p, i) => (
                   <li key={p.id}>
                     <Reveal delay={i * 0.08}>
-                      <div className="flex items-center gap-5 rounded-3xl border border-white/10 bg-(--n-fondo) p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/30">
+                      <div className="flex items-center gap-5 rounded-3xl border border-white/10 bg-(--n-fondo)/70 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30">
                         <span
                           aria-hidden
                           className="flex size-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-violeta font-display text-2xl font-extrabold text-accent-ink"
