@@ -29,6 +29,8 @@ export type Tema = {
   portada?: string;
   /** Foto de fondo para la sección del equipo (se muestra oscurecida). */
   fondoEquipo?: string;
+  /** Qué parte de la foto de fondo del equipo queda a la vista (CSS object-position). Por defecto, el centro. */
+  fondoEquipoPosicion?: string;
   /** Fotos de la galería, guardadas en public/negocios/<slug>/. Con `alt` describiendo cada una. */
   galeria?: { src: string; alt: string }[];
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
@@ -78,6 +80,8 @@ const TEMAS: Record<string, Tema> = {
     intro: "Faciales, depilación, masajes y más. Reservá tu momento de cuidado en un par de toques.",
     logo: "/negocios/estetica-demo/logo.svg",
     portada: "/negocios/estetica-demo/portada.jpg",
+    fondoEquipo: "/negocios/estetica-demo/equipo.jpg",
+    fondoEquipoPosicion: "center 72%",
     galeria: [
       { src: "/negocios/estetica-demo/galeria-1.jpg", alt: "Pétalos rosados flotando en un cuenco de agua" },
       { src: "/negocios/estetica-demo/galeria-2.jpg", alt: "Tratamiento facial con guantes rosados" },

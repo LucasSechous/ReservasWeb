@@ -6,6 +6,7 @@ Se bajaron en tamaño 2000 px. Las de la barbería las puso Lucas.
 | Demo | Archivo | Foto en Pexels |
 | --- | --- | --- |
 | Estética | `portada.jpg` | https://www.pexels.com/photo/1926811/ |
+| Estética | `equipo.jpg` | https://www.pexels.com/photo/208504/ |
 | Estética | `galeria-1.jpg` | https://www.pexels.com/photo/8998000/ |
 | Estética | `galeria-2.jpg` | https://www.pexels.com/photo/3985329/ |
 | Estética | `galeria-3.jpg` | https://www.pexels.com/photo/6724414/ |
