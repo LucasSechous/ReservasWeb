@@ -14,8 +14,8 @@ export function Marquee({
       aria-hidden={copia === 1}
       className="flex shrink-0 items-center gap-8 pr-8"
     >
-      {items.map((item) => (
-        <li key={item} className="flex items-center gap-8 whitespace-nowrap">
+      {items.map((item, i) => (
+        <li key={`${item}-${i}`} className="flex items-center gap-8 whitespace-nowrap">
           <span>{item}</span>
           <span className="text-accent">✦</span>
         </li>
