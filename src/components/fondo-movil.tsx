@@ -1,23 +1,43 @@
-// Fondo de las portadas: destellos de color que se mueven despacio y, si hay, un video corto
-// en bucle por debajo. Los colores salen de `accent` y `violeta`, así que toma la paleta de cada negocio.
+import Image from "next/image";
+
+// Fondo de las portadas: una foto o un video corto en bucle, si hay, y por encima destellos de color
+// que se mueven despacio. Los colores salen de `accent` y `violeta`, así que toma la paleta de cada negocio.
 // Quien tiene el movimiento reducido en su sistema no ve el video ni las animaciones.
-export function FondoMovil({ video, poster }: { video?: string; poster?: string }) {
+export function FondoMovil({
+  video,
+  imagen,
+  poster,
+}: {
+  video?: string;
+  imagen?: string;
+  poster?: string;
+}) {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      {imagen && (
+        <Image
+          src={imagen}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-40"
+        />
+      )}
       {video && (
-        <>
-          <video
-            className="absolute inset-0 size-full object-cover opacity-35 motion-reduce:hidden"
-            src={video}
-            poster={poster}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-(--n-fondo)/40 via-transparent to-(--n-fondo)" />
-        </>
+        <video
+          className="absolute inset-0 size-full object-cover opacity-35 motion-reduce:hidden"
+          src={video}
+          poster={poster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+      )}
+      {(video || imagen) && (
+        <div className="absolute inset-0 bg-gradient-to-b from-(--n-fondo)/50 via-(--n-fondo)/20 to-(--n-fondo)" />
       )}
       <div className="absolute -left-32 top-0 size-[30rem] animate-drift-a rounded-full bg-violeta/30 blur-[110px]" />
       <div className="absolute -right-24 top-40 size-[26rem] animate-drift-b rounded-full bg-accent/20 blur-[110px]" />
