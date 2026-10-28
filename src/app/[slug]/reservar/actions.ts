@@ -1,7 +1,10 @@
 "use server";
 
+import { after } from "next/server";
 import { verificarCaptcha } from "@/lib/captcha";
+import { notificarReserva } from "@/lib/notificaciones";
 import { createPublicClient } from "@/lib/supabase/server";
+import { urlBase } from "@/lib/url";
 
 // Las acciones de servidor son endpoints públicos: se valida todo lo que llega.
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -105,6 +108,22 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
 
   const fila = Array.isArray(data) ? data[0] : data;
   if (!fila) return { ok: false, codigo: "ERROR" };
+
+  // Los mails salen después de responderle al cliente; si fallan, la reserva igual queda hecha.
+  const base = await urlBase();
+  after(() =>
+    notificarReserva({
+      negocioId: datos.negocioId,
+      servicioId: datos.servicioId,
+      profesionalId: fila.profesional_id,
+      inicio: fila.inicio,
+      clienteNombre: datos.nombre.trim(),
+      clienteTelefono: datos.telefono.trim(),
+      clienteEmail: datos.email.trim() || null,
+      token: fila.token_cancelacion,
+      base,
+    }),
+  );
 
   return {
     ok: true,

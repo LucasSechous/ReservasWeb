@@ -171,13 +171,15 @@ Hecha el 28 de octubre de 2026 y probada contra la base real (páginas, horarios
 
 ### Fase 5: Mails
 
-- [ ] Cerrar nombre y dominio del sistema (hace falta antes de verificar Resend)
-- [ ] Configurar Resend con un dominio verificado
-- [ ] Mail de confirmación con link de cancelación
-- [ ] Aviso al negocio por cada reserva y cada cancelación
-- [ ] Página `/cancelar/[token]`
+- [ ] Cerrar nombre y dominio del sistema (hace falta antes de verificar Resend) — **te toca a vos**
+- [ ] Configurar Resend con un dominio verificado — **te toca a vos**: crear la cuenta, verificar el dominio y cargar `RESEND_API_KEY` y `MAIL_FROM` (ver `.env.example`)
+- [x] Mail de confirmación con link de cancelación (código listo en `src/lib/mails.ts`; se envía cuando hay mail del cliente)
+- [x] Aviso al negocio por cada reserva y cada cancelación (al `email` del negocio)
+- [x] Página `/cancelar/[token]`
 
 **Terminada cuando:** reservás, te llega el mail, cancelás desde el link y el horario vuelve a estar libre.
+
+Código hecho el 28 de octubre de 2026. Probado contra la base real: la página de cancelar muestra el turno, lo cancela y libera el horario, y avisa si ya estaba cancelado o ya pasó. **El envío real de mails no se pudo probar** porque faltan las claves de Resend: sin `RESEND_API_KEY` la app no manda nada y todo lo demás funciona. En cuanto se carguen, conviene hacer una reserva de prueba con tu mail. Un detalle: el remitente de pruebas de Resend solo entrega al dueño de la cuenta, así que para mandar a clientes hace falta el dominio verificado.
 
 ### Fase 6: Panel del negocio
 
