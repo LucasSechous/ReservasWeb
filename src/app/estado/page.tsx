@@ -28,10 +28,10 @@ async function EstadoSupabase() {
   const { total, error } = await contarNegocios();
 
   if (error) {
-    return <p className="text-red-700">No se pudo leer de Supabase: {error}</p>;
+    return <p className="text-red-400">No se pudo leer de Supabase: {error}</p>;
   }
   return (
-    <p className="text-emerald-700">
+    <p className="text-accent">
       Conectado a Supabase. Negocios activos: {total}
     </p>
   );
