@@ -71,3 +71,53 @@ export function formatoInstanteLargo(instante: string, timezone: string): string
   }).format(f);
   return `${dia}, ${formatoHora(instante, timezone)}`;
 }
+
+/** Minutos que `timezone` está adelantada respecto de UTC en ese instante (Montevideo: -180). */
+function desfaseMinutos(instanteMs: number, timezone: string): number {
+  const partes = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(new Date(instanteMs));
+  const valor = (tipo: string) => Number(partes.find((p) => p.type === tipo)?.value);
+  const comoUtc = Date.UTC(
+    valor("year"),
+    valor("month") - 1,
+    valor("day"),
+    valor("hour"),
+    valor("minute"),
+    valor("second"),
+  );
+  return Math.round((comoUtc - instanteMs) / 60000);
+}
+
+/** El instante (ISO, en UTC) que corresponde a "fecha hora" en la zona del negocio. */
+export function instanteLocal(fecha: string, hora: string, timezone: string): string {
+  const [a, m, d] = fecha.split("-").map(Number);
+  const [h, min] = hora.split(":").map(Number);
+  const supuesto = Date.UTC(a, m - 1, d, h, min);
+  return new Date(supuesto - desfaseMinutos(supuesto, timezone) * 60000).toISOString();
+}
+
+/** La fecha "AAAA-MM-DD" (en la zona del negocio) a la que pertenece un instante. */
+export function fechaLocalDe(instante: string, timezone: string): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(instante));
+}
+
+/** Convierte el rango que devuelve Postgres (`["2026-11-03 13:00:00+00","2026-11-03 13:30:00+00")`) en dos instantes ISO. */
+export function parseRango(rango: string): { inicio: string; fin: string } {
+  const [inicio, fin] = (rango.match(/"([^"]+)"/g) ?? []).map((t) =>
+    new Date(t.replace(/"/g, "").replace(" ", "T").replace(/([+-]\d{2})$/, "$1:00")).toISOString(),
+  );
+  return { inicio, fin };
+}

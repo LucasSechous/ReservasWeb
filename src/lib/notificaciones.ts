@@ -4,6 +4,7 @@ import {
   mailAvisoCancelacion,
   mailAvisoReserva,
   mailCancelacionCliente,
+  mailCanceladoPorNegocio,
   mailConfirmacionCliente,
 } from "@/lib/mails";
 import { createPublicClient } from "@/lib/supabase/server";
@@ -125,6 +126,33 @@ export async function notificarCancelacion(d: {
       );
     }
     await Promise.allSettled(tareas);
+  } catch (error) {
+    registrarError(error);
+  }
+}
+
+/** Avisa al cliente que el negocio canceló su turno (por ejemplo, al bloquear un horario). */
+export async function notificarCanceladoPorNegocio(d: {
+  base: string;
+  negocioSlug: string;
+  negocioNombre: string;
+  timezone: string;
+  servicio: string;
+  clienteEmail: string | null;
+  inicio: string;
+}): Promise<void> {
+  if (!mailsActivos() || !d.clienteEmail) return;
+
+  try {
+    await enviarMail({
+      para: d.clienteEmail,
+      ...mailCanceladoPorNegocio({
+        negocio: d.negocioNombre,
+        servicio: d.servicio,
+        cuando: formatoInstanteLargo(d.inicio, d.timezone),
+        reservarUrl: `${d.base}/${d.negocioSlug}/reservar`,
+      }),
+    });
   } catch (error) {
     registrarError(error);
   }

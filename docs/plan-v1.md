@@ -183,11 +183,17 @@ Código hecho el 28 de octubre de 2026. Probado contra la base real: la página 
 
 ### Fase 6: Panel del negocio
 
-- [ ] Login con link mágico de Supabase Auth
-- [ ] Agenda del día y de la semana, por profesional
-- [ ] Cancelar turnos y bloquear horarios, avisando si el bloqueo pisa turnos confirmados
+- [x] Login con link mágico de Supabase Auth (`/login`, `/auth/callback`, `/auth/salir`; la sesión se renueva en `src/proxy.ts`)
+- [x] Agenda del día y de la semana, por profesional (`/panel`)
+- [x] Cancelar turnos y bloquear horarios, avisando si el bloqueo pisa turnos confirmados (cancelar avisa por mail al cliente si dejó uno)
 
 **Terminada cuando:** un dueño entra desde el celular, ve sus turnos y bloquea una tarde.
+
+Código hecho el 28 de octubre de 2026. Las reglas de acceso se probaron en la base con sesiones simuladas (`supabase/tests/fase6_acceso_panel.sql`, 14 comprobaciones: cada dueño ve y toca solo lo suyo, el operador ve todo, el público no lee reservas). **Falta tu prueba real de punta a punta**, que no pude hacer sin tu casilla de mail. Antes de probar:
+- En Supabase → Authentication → URL Configuration, agregar `http://localhost:3000/**` y la URL de Vercel con `/**` como *Redirect URLs*.
+- El mail del link mágico sale de Supabase, que en el plan gratis manda muy pocos por hora y con remitente genérico. Para producción conviene configurar el envío con Resend (Authentication → SMTP Settings) una vez que haya dominio.
+- La primera vez que entres con `sechouslucasuy@gmail.com` quedás como operador (`completar_perfil()`). A un dueño se lo invita creando su usuario con su mail (Fase 7).
+- Quien pide un link sin estar invitado recibe el mail igual, pero al entrar ve «Tu cuenta no tiene un panel»; no se revela qué mails están dados de alta.
 
 ### Fase 7: Alta de negocios
 

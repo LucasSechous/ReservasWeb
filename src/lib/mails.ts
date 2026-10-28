@@ -133,3 +133,27 @@ export function mailCancelacionCliente(d: {
     texto: texto(titulo, lineas, `Para reservar otro turno: ${d.reservarUrl}`),
   };
 }
+
+export function mailCanceladoPorNegocio(d: {
+  negocio: string;
+  servicio: string;
+  cuando: string;
+  reservarUrl: string;
+}): Mail {
+  const titulo = "Tu turno fue cancelado";
+  const lineas = [
+    { etiqueta: "Dónde", valor: d.negocio },
+    { etiqueta: "Servicio", valor: d.servicio },
+    { etiqueta: "Cuándo", valor: d.cuando },
+  ];
+  return {
+    asunto: `Tu turno en ${d.negocio} fue cancelado`,
+    html: plantilla({
+      titulo,
+      lineas,
+      boton: { texto: "Reservar otro horario", url: d.reservarUrl },
+      pie: "Lamentamos el inconveniente. Podés elegir otro horario cuando quieras.",
+    }),
+    texto: texto(titulo, lineas, `Para reservar otro horario: ${d.reservarUrl}`),
+  };
+}
