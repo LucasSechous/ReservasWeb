@@ -1,25 +1,38 @@
 # ReservasWeb
 
-Plataforma de reservas online multi-negocio para barberías, peluquerías y centros de estética (Uruguay primero; después Argentina y Brasil). Lucas es el único operador: arma la landing de cada negocio a mano y les da de alta; los dueños no tienen panel de personalización.
+Páginas web a medida con reservas online para barberías, peluquerías y centros de estética (Uruguay primero; después Argentina y Brasil). No es un marketplace: la web es de cada negocio, como una landing propia, y no un sitio donde el público elige entre negocios. La cara pública de ReservasWeb es una vitrina en `/` con demos y botones a WhatsApp y mail de Lucas. Lucas es el único operador: arma la landing de cada negocio a mano y les da de alta; los dueños no tienen panel de personalización. Los clientes salen del tracker de leads: Lucas los contacta, les pide permiso para mostrarles una demo y la arma en el momento.
+
+Por dentro, todos los negocios comparten un solo proyecto y una sola base (decisión técnica interna, que el cliente final no ve).
 
 ## Stack (v1)
 
-- Next.js (App Router) + TypeScript + Tailwind, en un solo proyecto desplegado en Vercel.
+- Next.js (App Router) + TypeScript + Tailwind, en un solo proyecto desplegado en Vercel. Es Next 16 con Cache Components: antes de escribir código nuevo, ver `AGENTS.md` y la documentación en `node_modules/next/dist/docs/`.
 - Supabase: Postgres con Row Level Security + Auth (link mágico). Sin backend aparte (no NestJS).
 - Resend para mails transaccionales.
 
 ## Reglas de arquitectura
 
-- Multi-negocio en una sola base: toda tabla lleva `negocio_id` y RLS.
+- Multi-negocio en una sola base, con RLS en todas las tablas. Toda tabla lleva `negocio_id`, salvo las de horarios, que cuelgan de `profesionales` (que sí lo lleva).
+- Varios profesionales por negocio desde la v1; un negocio de una sola persona tiene un solo profesional.
 - Las reglas críticas viven en la base: `reservar()` valida y crea reservas; `horarios_libres()` calcula disponibilidad. El frontend nunca inserta en `reservas` directo.
-- Doble reserva imposible por restricción `EXCLUDE USING gist (negocio_id WITH =, rango WITH &&) WHERE (estado = 'confirmada')` con `btree_gist`.
+- Doble reserva imposible por restricción `EXCLUDE USING gist (profesional_id WITH =, rango WITH &&) WHERE (estado = 'confirmada')` con `btree_gist`. Los bloqueos son reservas con `origen = 'bloqueo'`.
 - Fechas en `timestamptz`; se muestran en la zona del negocio (`America/Montevideo` por defecto).
 - `precio_final` se copia en cada reserva.
-- Nunca commitear claves: `.env*` está ignorado. Variables públicas con `NEXT_PUBLIC_`; la `service_role` jamás en el cliente.
+- Nunca commitear claves: `.env*` está ignorado (menos `.env.example`). La `service_role` jamás en el cliente. El cliente de Supabase de `src/lib/supabase/server.ts` solo corre en el servidor y lee `NEXT_PUBLIC_SUPABASE_*` o, si no están, `NEXT_SUPABASE_*` (los nombres cargados en Vercel).
+- La base de Supabase ya tiene datos: antes de cualquier migración que borre o cambie columnas, respaldar y mostrar a Lucas qué se toca.
 
 ## Plan
 
-El plan por fases (0 a 7) está en `docs/plan-v1.md`. Al terminar una tarea, tachala ahí (`[x]`). Trabajar una fase a la vez; cada fase termina con algo que se puede probar.
+El plan por fases (0 a 8) está en `docs/plan-v1.md`. Al terminar una tarea, tachala ahí (`[x]`). Trabajar una fase a la vez; cada fase termina con algo que se puede probar y Lucas la confirma antes de pasar a la siguiente.
+
+## Forma de trabajar
+
+- Trabajar en ramas, nunca directo en `main`; commits chicos con mensajes claros. No hacer `push` ni merge sin que Lucas lo pida.
+- Antes de algo grande o difícil de revertir (migraciones, cambios de esquema, borrar cosas), explicar qué se va a hacer y esperar su OK.
+
+## Agentes de leads
+
+Los agentes corren como rutinas programadas en la nube y se comunican a través del tracker de leads (un artefacto de Claude con su propia base), no en esta máquina. Ninguno envía mensajes a leads: todo queda como borrador para que Lucas lo mande.
 
 ## Demos para leads
 

@@ -1,20 +1,26 @@
 # Plan reservasWeb v1
 
-Oct 27, 2026 · @Luckyrex
+Oct 27, 2026 · actualizado el 28 de octubre de 2026 · @Luckyrex
 
 ## Objetivo y alcance
 
-La v1 permite que un negocio reciba reservas online desde su propia landing y las gestione en un panel simple. Es lo mínimo para venderle reservas a los primeros clientes que salgan del tracker de leads.
+ReservasWeb vende **páginas web a medida con reservas online** para negocios de salud y estética: barberías, peluquerías, centros de estética. Cada negocio tiene su propia web, con su identidad, donde sus clientes reservan desde el celular a cualquier hora. No es un marketplace donde el público elige entre negocios (como Fresha): la web es del negocio.
+
+La cara pública de ReservasWeb es una **vitrina** en `/`: una landing tuya con demos y botones a tu WhatsApp y tu mail para pedir una web. Los clientes no llegan solos: los agentes encuentran leads, vos los contactás, pedís permiso para mostrarles una demo de su negocio y la armás en el momento.
+
+La v1 es lo mínimo para venderle reservas a los primeros clientes que salgan del tracker de leads. Por dentro, todos los negocios comparten un solo proyecto y una sola base (más barato y simple de mantener); el cliente final nunca ve eso.
 
 **Entra en la v1:**
 
+- La vitrina en `/`, con botones a WhatsApp y mail.
 - Una landing por negocio, en `/[slug]`, armada por vos sobre una plantilla compartida.
-- Reserva en 4 pasos desde el celular: servicio, día, horario y datos del cliente.
+- Reserva en 4 pasos desde el celular: servicio, día, horario y datos del cliente. Si el negocio tiene varios profesionales, el cliente puede elegir uno o dejar que el sistema asigne el primero libre.
+- Varios profesionales por negocio, cada uno con su agenda.
 - Mail de confirmación al cliente, aviso al negocio y un link para cancelar.
 - Panel del negocio: agenda del día y de la semana, cancelar turnos y bloquear horarios.
-- Panel de operador para vos: alta de negocios, servicios y horarios.
+- Panel de operador para vos: alta de negocios, servicios, profesionales y horarios.
 
-**Queda para después:** varios profesionales con agenda propia, estadísticas, dominios propios, pagos online, avisos por WhatsApp y personalización por parte del dueño.
+**Queda para después:** estadísticas, dominios propios, pagos online, avisos por WhatsApp, reseñas y personalización por parte del dueño.
 
 ## Arquitectura y stack
 
@@ -22,11 +28,11 @@ Un solo proyecto Next.js en Vercel, conectado a Supabase para datos y logins y a
 
 ```
 Cliente o dueño ──► Next.js en Vercel ──► Supabase (Postgres + RLS, reservar(), horarios_libres(), Auth)
-                    (landing, reserva,  └─► Resend (confirmación, cancelación, avisos)
-                     paneles)
+                    (vitrina, landings, └─► Resend (confirmación, cancelación, avisos)
+                     reserva, paneles)
 ```
 
-- **Next.js (App Router) con TypeScript y Tailwind:** las landings, el flujo de reserva y los dos paneles, en un solo deploy.
+- **Next.js (App Router) con TypeScript y Tailwind:** la vitrina, las landings, el flujo de reserva y los dos paneles, en un solo deploy.
 - **Supabase:** Postgres con RLS y Auth. Las reglas críticas, como validar y guardar una reserva o calcular horarios libres, son funciones dentro de la base. Así no dependen del frontend y no se pueden saltear.
 - **Resend:** mails transaccionales.
 
@@ -34,52 +40,61 @@ Se deja de lado NestJS: para una persona sola, un segundo servidor duplica deplo
 
 ## Modelo de datos
 
-Seis tablas en una sola base compartida, con `negocio_id` en todas y Row Level Security para que cada negocio vea solo lo suyo.
+La base ya existe en el proyecto de Supabase `reservasweb`, de un intento anterior, y **tiene datos** (2 negocios, 5 servicios, 4 profesionales, 27 horarios y 8 reservas, al 28 de octubre de 2026). No se parte de cero: la Fase 2 la limpia y la ajusta a este diseño, sin perder esos datos.
+
+Ocho tablas en una sola base compartida, con Row Level Security para que cada negocio vea solo lo suyo. Las tablas de horarios no llevan `negocio_id` propio: cuelgan de `profesionales`, que sí lo lleva, y sus políticas RLS pasan por ahí.
 
 | Tabla | Qué guarda | Campos clave |
 | --- | --- | --- |
-| `negocios` | Cada cliente tuyo | `slug`, `nombre`, `email_aviso`, `telefono`, `direccion`, `zona_horaria`, `anticipacion_min`, `ventana_dias`, `activo` |
-| `servicios` | Lo que se puede reservar | `negocio_id`, `nombre`, `duracion_min`, `precio`, `activo` |
-| `horarios` | Horario semanal de atención (puede haber varios tramos por día, para el horario partido) | `negocio_id`, `dia_semana`, `abre`, `cierra` (`time`, hora local del negocio) |
-| `bloqueos` | Feriados, vacaciones, huecos | `negocio_id`, `rango` (tstzrange), `motivo` |
-| `reservas` | Los turnos | `negocio_id`, `servicio_id`, `rango` (tstzrange), `estado`, `cliente_nombre`, `cliente_email`, `cliente_tel`, `precio_final`, `token_cancelacion` |
-| `miembros` | Quién entra al panel | `negocio_id`, `user_id`, `rol` (operador o dueño) |
+| `negocios` | Cada cliente tuyo | `slug`, `nombre`, `email`, `telefono`, `direccion`, `timezone`, `anticipacion_minutos`, `ventana_dias`, `activo` |
+| `servicios` | Lo que se puede reservar | `negocio_id`, `nombre`, `descripcion`, `duracion_minutos`, `precio`, `activo` |
+| `profesionales` | Quiénes atienden (un negocio de una persona tiene uno solo) | `negocio_id`, `nombre`, `foto_url`, `activo` |
+| `profesional_servicios` | Qué servicios hace cada profesional | `profesional_id`, `servicio_id` |
+| `horarios_disponibles` | Horario semanal de cada profesional (puede haber varios tramos por día, para el horario partido) | `profesional_id`, `dia_semana`, `hora_inicio`, `hora_fin` (`time`, hora local del negocio) |
+| `horarios_excepciones` | Feriados, vacaciones o un día con horario especial | `profesional_id`, `fecha`, `disponible`, `hora_inicio`, `hora_fin`, `motivo` |
+| `reservas` | Los turnos y los bloqueos | `negocio_id`, `profesional_id`, `servicio_id`, `rango` (tstzrange), `estado`, `origen`, `cliente_nombre`, `cliente_email`, `cliente_telefono`, `notas`, `precio_final`, `duracion_final_minutos`, `token_cancelacion` |
+| `usuarios` | Quién entra al panel | `negocio_id` (vacío para el operador), `auth_user_id`, `email`, `nombre`, `rol` (`owner`, `staff`, `admin_plataforma`) |
+
+**Bloqueos:** no hay tabla aparte. Bloquear una tarde es crear una reserva con `origen = 'bloqueo'`, y así la misma restricción anti-superposición lo cubre. `origen` puede ser `publico`, `manual` o `bloqueo`; `estado` puede ser `confirmada`, `cancelada`, `completada` o `no_show`.
 
 **Reglas de acceso (RLS):**
 
-- Cualquiera puede leer los negocios activos, sus servicios y horarios: es lo que muestra la landing.
-- Nadie crea reservas directo en la tabla. Se crean solo con la función `reservar()`, que valida todo antes de guardar.
-- Quien cancela desde el link del mail no tiene login: lo hace con la función `cancelar(token)` (`security definer`), que solo toca la reserva de ese token.
+- Cualquiera puede leer los negocios activos, sus servicios, profesionales y horarios: es lo que muestra la landing.
+- Nadie crea reservas públicas directo en la tabla. Se crean solo con la función `reservar()`, que valida todo antes de guardar.
+- Quien cancela desde el link del mail no tiene login: lo hace con la función `cancelar_reserva(token)` (`security definer`), que solo toca la reserva de ese token.
+- Un dueño lee y cancela las reservas de su negocio, y crea reservas manuales y bloqueos.
+- Vos, como operador (`admin_plataforma`), ves y editás todo. Hoy esa política no existe: se agrega en la Fase 2.
 
 **Marca de cada negocio:** colores, fotos y textos de la landing viven en el código (un archivo por negocio), no en la base. Es lo más simple para la v1; se revisa si más adelante el alta tiene que ser sin deploy.
-- Un dueño lee y cancela las reservas de su negocio. Vos, como operador, ves y editás todo.
 
 Dos decisiones que se mantienen del diseño original: `precio_final` se copia en cada reserva para que los números históricos no cambien si sube un precio, y las columnas de dominio propio se pueden agregar después sin romper nada.
 
 ## Motor de reservas
 
-Los horarios libres se calculan al momento y la base de datos es la que impide dos turnos superpuestos, aunque dos personas reserven en el mismo segundo.
+Los horarios libres se calculan al momento y la base de datos es la que impide dos turnos superpuestos para un mismo profesional, aunque dos personas reserven en el mismo segundo.
 
-**Cómo se calculan los horarios libres** (función `horarios_libres(negocio, servicio, día)`):
+**Cómo se calculan los horarios libres** (función `horarios_libres(negocio, servicio, día)`, por profesional):
 
-1. Tomar el horario de atención de ese día de la semana.
-2. Restar los bloqueos y las reservas confirmadas.
+1. Tomar el horario de atención de ese profesional para ese día de la semana, o su excepción si hay una para esa fecha.
+2. Restar las reservas confirmadas y los bloqueos.
 3. Partir lo que queda en turnos de 15 minutos donde entre la duración completa del servicio.
 4. Sacar los que no cumplen la anticipación mínima o caen fuera de la ventana de días del negocio.
 
+Si el cliente no elige profesional, se muestra la unión de los horarios libres de todos los que hacen ese servicio.
+
 **Cómo se evita la doble reserva:**
 
-- Cada reserva guarda su `rango` de tiempo y la tabla tiene una restricción `EXCLUDE USING gist (negocio_id WITH =, rango WITH &&) WHERE (estado = 'confirmada')`, con la extensión `btree_gist`.
+- Cada reserva guarda su `rango` de tiempo y la tabla tiene una restricción `EXCLUDE USING gist (profesional_id WITH =, rango WITH &&) WHERE (estado = 'confirmada')`, con la extensión `btree_gist` (ya instalada).
 - Si dos personas eligen el mismo horario, la segunda recibe un error y la pantalla le muestra los horarios que siguen libres.
-- La función `reservar()` vuelve a validar que el horario esté dentro de la atención y no esté bloqueado, guarda `precio_final` y genera el `token_cancelacion`.
+- La función `reservar()` vuelve a validar que el horario esté dentro de la atención, guarda `precio_final` y genera el `token_cancelacion`. Si no se indica profesional, prueba con cada uno que haga el servicio, en orden, y asigna el primero libre.
 
-**Fechas y horas:** todo se guarda en `timestamptz` y se muestra en la zona del negocio (`America/Montevideo` por defecto), lo que deja listo el salto a Argentina o Brasil.
+**Fechas y horas:** todo se guarda en `timestamptz` y se muestra en la zona del negocio (`America/Montevideo` por defecto), lo que deja listo el salto a Argentina o Brasil. Hoy `reservas` guarda `fecha` más `hora_inicio` y `hora_fin` sin zona horaria: la Fase 2 lo pasa a `rango`.
 
-**Cancelación:** el mail trae un link con el token. `cancelar(token)` cambia el `estado` a `cancelada`, libera el horario y le avisa al negocio. En la v1 no hay límite de tiempo para cancelar; si un negocio lo pide, se agrega como regla.
+**Cancelación:** el mail trae un link con el token. `cancelar_reserva(token)` cambia el `estado` a `cancelada`, libera el horario y le avisa al negocio. Hoy solo permite cancelar turnos futuros; en la v1 no hay otro límite de tiempo, y si un negocio lo pide se agrega como regla.
 
 **Bloqueos sobre turnos ya confirmados:** si el dueño bloquea un rango donde ya hay reservas, el panel avisa «hay N turnos en ese rango» y permite cancelarlos, con mail al cliente. Nunca se superponen en silencio.
 
-**Reservas falsas:** `reservar()` es público, así que sin protección alguien podría llenar la agenda de un negocio. La Fase 3 suma un captcha (Cloudflare Turnstile, gratis) y un límite de reservas activas por mail y teléfono.
+**Reservas falsas:** `reservar()` es público, así que sin protección alguien podría llenar la agenda de un negocio. La Fase 4 suma un captcha (Cloudflare Turnstile, gratis) y un límite de reservas activas por mail y teléfono.
 
 ## Hosting y costos
 
@@ -96,7 +111,7 @@ El salto a pago no es opcional: el plan gratis de Vercel prohíbe el uso comerci
 
 ## Fases paso a paso
 
-Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se puede probar, y no se pasa a la siguiente hasta que eso funciona.
+Nueve fases, una o dos por sesión de trabajo. Cada una termina con algo que se puede probar, y no se pasa a la siguiente hasta que eso funciona.
 
 ### Fase 0: Preparación
 
@@ -108,35 +123,46 @@ Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 
 **Terminada cuando:** la web vacía está online en Vercel y lee un dato de Supabase.
 
-### Fase 1: Base de datos
+### Fase 1: Vitrina
 
-- [ ] Migración con las seis tablas y la extensión `btree_gist`
-- [ ] Restricción anti-superposición en `reservas`
-- [ ] Políticas RLS de lectura pública, dueño y operador
-- [ ] Función `reservar()` con sus validaciones
-- [ ] Función `cancelar(token)` para cancelar sin login
-- [ ] Datos de prueba: un negocio «Barbería Demo» con 3 servicios y horario
+- [x] Landing en `/` con propuesta, cómo trabajamos, los dos tipos de web y llamado a contactar
+- [x] Botones a tu WhatsApp (+598 99 088 224) y a tu mail, con el mensaje ya armado
+- [x] El chequeo de Supabase pasa a `/estado`, sin indexar
+- [ ] Publicada en producción (Vercel, rama `main`)
+- [ ] Sumar demos a la sección «Así se ve» a medida que existan
 
-**Terminada cuando:** dos reservas superpuestas en SQL hacen fallar a la segunda.
+**Terminada cuando:** la vitrina está online y, desde el celular, los botones abren tu WhatsApp y tu mail.
 
-### Fase 2: Disponibilidad
+### Fase 2: Base de datos
 
-- [ ] Función `horarios_libres()`
-- [ ] Pruebas con horario partido, un bloqueo y reservas existentes
+- [ ] Confirmar cuáles datos existentes son reales (Galanes Barbers, las 8 reservas) y respaldarlos antes de tocar nada
+- [ ] Migración: borrar `resenas` y las columnas sin uso (`plan`, `buffer_minutos`, `descripcion`, `logo_url`)
+- [ ] Pasar `reservas` a `rango` (`timestamptz`), convirtiendo las filas existentes, con la restricción anti-superposición por profesional
+- [ ] Reescribir `reservar()` y `cancelar_reserva()` para el nuevo `rango`
+- [ ] Política RLS del operador (`admin_plataforma`) y `usuarios.negocio_id` opcional para vos
+- [ ] Mover `auth_negocio_id()` a un esquema privado
+- [ ] Revisar los datos de «Barbería Demo»: 3 servicios, 2 profesionales y horario
+
+**Terminada cuando:** dos reservas superpuestas del mismo profesional hacen fallar a la segunda, y las reservas que ya existían se conservaron.
+
+### Fase 3: Disponibilidad
+
+- [ ] Función `horarios_libres()` por profesional
+- [ ] Pruebas con horario partido, una excepción, un bloqueo, reservas existentes y dos profesionales
 
 **Terminada cuando:** la función devuelve exactamente los turnos esperados en los casos de prueba.
 
-### Fase 3: Reserva pública
+### Fase 4: Reserva pública
 
 - [ ] Plantilla de landing en `/[slug]`
-- [ ] Flujo de 4 pasos en `/[slug]/reservar`
+- [ ] Flujo de 4 pasos en `/[slug]/reservar`, con elección de profesional solo si el negocio tiene más de uno
 - [ ] Pantalla de confirmación y manejo del error «ese horario se acaba de ocupar»
 - [ ] Captcha (Turnstile) y límite de reservas activas por mail y teléfono
 - [ ] Política de privacidad visible (Ley 18.331)
 
 **Terminada cuando:** reservás un turno de punta a punta desde tu celular.
 
-### Fase 4: Mails
+### Fase 5: Mails
 
 - [ ] Cerrar nombre y dominio del sistema (hace falta antes de verificar Resend)
 - [ ] Configurar Resend con un dominio verificado
@@ -146,24 +172,24 @@ Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 
 **Terminada cuando:** reservás, te llega el mail, cancelás desde el link y el horario vuelve a estar libre.
 
-### Fase 5: Panel del negocio
+### Fase 6: Panel del negocio
 
 - [ ] Login con link mágico de Supabase Auth
-- [ ] Agenda del día y de la semana
+- [ ] Agenda del día y de la semana, por profesional
 - [ ] Cancelar turnos y bloquear horarios, avisando si el bloqueo pisa turnos confirmados
 
 **Terminada cuando:** un dueño entra desde el celular, ve sus turnos y bloquea una tarde.
 
-### Fase 6: Alta de negocios
+### Fase 7: Alta de negocios
 
-- [ ] Panel de operador para crear un negocio con servicios y horarios
+- [ ] Panel de operador para crear un negocio con servicios, profesionales y horarios
 - [ ] Cargar la landing y las fotos de cada negocio
 
 **Terminada cuando:** das de alta un negocio nuevo en menos de 30 minutos.
 
-### Fase 7: Demo y primer cliente
+### Fase 8: Demo y primer cliente
 
-- [ ] «Barbería Demo» pública para las demos de los leads
+- [ ] «Barbería Demo» pública para las demos de los leads, enlazada desde la vitrina
 - [ ] Pasar Vercel y Supabase a los planes pagos
 - [ ] Primer cliente real dado de alta
 
@@ -171,31 +197,40 @@ Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 
 ## Conexión con los agentes
 
-reservasWeb cierra el embudo que ya funciona: lead, demo, cliente, negocio online. Cada paso nuevo se suma cuando su fase está terminada.
+reservasWeb cierra el embudo que ya funciona: lead, demo, cliente, negocio online. Los agentes corren como rutinas programadas en la nube y se comunican a través del tracker de leads. Ninguno envía mensajes a un lead: todo queda como borrador para que lo mandes vos. Cada paso nuevo se suma cuando su fase está terminada.
 
 | Cuándo | Qué cambia | Agente |
 | --- | --- | --- |
-| Después de la Fase 3 | Las demos usan el mismo diseño que la plantilla de landing | Demos para leads |
-| Después de la Fase 7 | El botón «Reservar» de cada demo lleva a la Barbería Demo, donde se puede reservar de verdad | Demos para leads |
-| Después de la Fase 7 | Los mensajes ofrecen el plan con reservas: turnos las 24 horas, sin superposiciones, con confirmación por mail | Leads |
-| Después de la Fase 6 | Al marcar un lead como «Cerrado», se prepara el alta: negocio y servicios desde su ficha de marca, más su landing. Vos revisás, cargás precios y fotos | Alta de clientes (nuevo) |
+| Después de la Fase 1 | Los mensajes a leads pueden incluir el link de la vitrina como muestra de tu trabajo | Leads |
+| Después de la Fase 4 | Las demos usan el mismo diseño que la plantilla de landing | Demos para leads |
+| Después de la Fase 8 | El botón «Reservar» de cada demo lleva a la Barbería Demo, donde se puede reservar de verdad | Demos para leads |
+| Después de la Fase 8 | Los mensajes ofrecen el plan con reservas: turnos las 24 horas, sin superposiciones, con confirmación por mail | Leads |
+| Después de la Fase 7 | Al marcar un lead como «Cerrado», se prepara el alta: negocio y servicios desde su ficha de marca, más su landing. Vos revisás, cargás precios y fotos | Alta de clientes (nuevo) |
+| Cuando haya paquetes y precios | Al pasar un lead a «respondió» o «reunión», se redacta una propuesta con alcance, plazos y precio | Propuestas (nuevo) |
 
 La ficha de marca del tracker es el puente: los servicios, colores y estilo que juntan los agentes son los mismos datos que después se cargan en reservasWeb.
 
+Con varios profesionales en la v1, la rúbrica de calificación de leads ya no tiene por qué penalizar a los negocios con 4 o más profesionales: pasan a encajar.
+
 ## Decisiones pendientes y riesgos
 
-El riesgo más grande es que la v1 tiene una sola agenda por negocio, y varios de los mejores leads tienen varios profesionales.
+**Decididas:**
+
+- [x] Varios profesionales por negocio desde la v1 (28 de octubre de 2026): el esquema ya lo soporta y evita migrar después una tabla con reservas reales.
+- [x] ReservasWeb es una vitrina y webs a medida, no un marketplace (28 de octubre de 2026).
 
 **A decidir:**
 
 - [ ] Precios de cada nivel: landing simple y landing con reservas (armado más mensualidad)
-- [ ] Nombre y dominio del sistema (a más tardar antes de la Fase 4)
-- [ ] Si el cliente elige profesional en la v1 o se espera a la v2
+- [ ] Nombre y dominio del sistema (a más tardar antes de la Fase 5)
+- [ ] Si cada cliente tiene su dominio propio desde el inicio o queda en `tudominio.com/su-negocio`
+- [ ] Si Galanes Barbers y las reservas existentes son datos reales o de prueba (antes de la Fase 2)
 
 **Riesgos:**
 
-- **Varios profesionales.** Barberías como Don Sixto o Azes tienen 4 o 5 barberos. Con una sola agenda, solo se puede reservar un turno a la vez en todo el negocio. Mientras no esté la v2, conviene ofrecer el plan con reservas a negocios de 1 o 2 personas.
+- **Datos existentes en la base.** Pasar `reservas` a `timestamptz` y borrar columnas toca filas que ya existen. Antes de migrar hay que respaldar y confirmar cuáles son reales.
+- **La vitrina promete funciones que todavía no existen.** La tarjeta «Landing con reservas» habla de reserva online, mails y agenda, que llegan en las Fases 4 a 6. Hasta entonces conviene vender solo lo que ya está o bajar el tono del texto.
 - **Vercel Hobby y las demos.** El plan gratis es solo para uso no comercial y las demos para leads son prospección. Riesgo chico, pero si hay reclamo se pasa a Pro antes.
-- **Datos personales.** Vas a guardar nombre, mail y teléfono de los clientes de tus clientes. La Ley 18.331 de Uruguay pide una política de privacidad visible y usar esos datos solo para las reservas. Esto entra en la Fase 3.
-- **Plan gratis en producción.** Sin backups ni uso comercial permitido. El paso a planes pagos está en la Fase 7 y no se saltea.
+- **Datos personales.** Vas a guardar nombre, mail y teléfono de los clientes de tus clientes. La Ley 18.331 de Uruguay pide una política de privacidad visible y usar esos datos solo para las reservas. Esto entra en la Fase 4.
+- **Plan gratis en producción.** Sin backups ni uso comercial permitido. El paso a planes pagos está en la Fase 8 y no se saltea.
 - **Vos sos el único soporte.** Si algo se cae un sábado, te llaman a vos. Conviene activar alertas de errores en Vercel antes del primer cliente.
