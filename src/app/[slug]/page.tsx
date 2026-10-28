@@ -264,7 +264,14 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
           <section aria-labelledby="equipo" className="relative isolate overflow-hidden bg-ink-2 py-24">
             {tema.fondoEquipo && (
               <div aria-hidden className="absolute inset-0 -z-10">
-                <Image src={tema.fondoEquipo} alt="" fill sizes="100vw" className="object-cover" />
+                <Image
+                  src={tema.fondoEquipo}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  style={{ objectPosition: tema.fondoEquipoPosicion }}
+                />
                 <div className="absolute inset-0 bg-(--n-fondo)/55" />
                 <div className="absolute inset-0 bg-gradient-to-b from-(--n-fondo)/90 via-transparent to-(--n-fondo)/90" />
               </div>
