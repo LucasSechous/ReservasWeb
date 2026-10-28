@@ -90,12 +90,25 @@ const planes = [
   },
 ];
 
+const dominios = [
+  {
+    titulo: "Lo comprás vos",
+    texto:
+      "Abrís tu cuenta en el registrador y pagás con tu tarjeta. Yo te guío en cada paso y después lo conecto a tu web. Es lo más simple y queda siempre a tu nombre.",
+  },
+  {
+    titulo: "Lo gestiono yo",
+    texto:
+      "Lo registro por vos y te cobro el costo aparte, con su comprobante. Es tuyo: si algún día querés llevártelo a otro lado, te lo transfiero.",
+  },
+];
+
 const demos = [
   {
     rubro: "Barbería",
     tipo: "Landing con reservas",
     detalle: "Servicios, equipo y turnos online las 24 horas.",
-    clase: "from-violeta/40 to-ink-3",
+    clase: "from-red-500/35 to-ink-3",
     href: "/barberia-demo",
     logo: "/negocios/barberia-demo/logo.svg",
     conReservas: true,
@@ -291,6 +304,35 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+
+          <Reveal delay={0.1}>
+            <div className="mt-6 rounded-3xl border border-white/10 bg-ink-2 p-8 md:p-10">
+              <h3 className="font-display text-3xl font-bold">
+                Tu web, en <span className="text-accent">tu propia dirección</span>
+              </h3>
+              <p className="mt-3 max-w-2xl text-white/70">
+                Cada negocio tiene su dirección propia, algo como
+                {" "}<span className="font-semibold text-white">tunegocio.com.uy</span>,
+                {" "}y no una dirección de ReservasWeb. Si ya tenés una, la
+                conecto. Si no, hay dos formas de conseguirla:
+              </p>
+              <ul className="mt-8 grid gap-4 md:grid-cols-2">
+                {dominios.map((d) => (
+                  <li
+                    key={d.titulo}
+                    className="rounded-2xl border border-white/10 bg-ink-3 p-6"
+                  >
+                    <p className="font-display text-xl font-bold">{d.titulo}</p>
+                    <p className="mt-2 text-white/65">{d.texto}</p>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 text-sm text-white/50">
+                El dominio es un costo aparte del armado de tu web y se renueva
+                una vez por año. Te paso el precio exacto en la propuesta.
+              </p>
+            </div>
+          </Reveal>
         </section>
 
         <section className="bg-ink-2 py-24">
