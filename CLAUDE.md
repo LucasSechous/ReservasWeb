@@ -11,9 +11,12 @@ Plataforma de reservas online multi-negocio para barberías, peluquerías y cent
 ## Reglas de arquitectura
 
 - Multi-negocio en una sola base: toda tabla lleva `negocio_id` y RLS.
-- Las reglas críticas viven en la base: `reservar()` valida y crea reservas; `horarios_libres()` calcula disponibilidad. El frontend nunca inserta en `reservas` directo.
-- Doble reserva imposible por restricción `EXCLUDE USING gist (negocio_id WITH =, rango WITH &&) WHERE (estado = 'confirmada')` con `btree_gist`.
-- Fechas en `timestamptz`; se muestran en la zona del negocio (`America/Montevideo` por defecto).
+- Las reglas críticas viven en la base: `reservar()` valida y crea reservas; `horarios_libres()` calcula disponibilidad (Fase 2). El frontend nunca inserta en `reservas` directo.
+- Doble reserva imposible por restricción `EXCLUDE USING gist (profesional_id WITH =, tsrange(fecha + hora_inicio, fecha + hora_fin) WITH &&) WHERE (estado = 'confirmada')` (`btree_gist` en el schema `extensions`).
+- Varios profesionales por negocio, cada uno con su horario (`horarios_disponibles`, `dia_semana` 0 = domingo) y sus excepciones por fecha.
+- Reservas en hora LOCAL del negocio (`fecha date` + `hora_inicio/hora_fin time`); `negocios.timezone` define la zona (`America/Montevideo` por defecto).
+- El público no lee ni escribe `reservas`: solo llama a `reservar()` y `cancelar_reserva(token)` (RPC, SECURITY DEFINER). Los errores de `reservar()` son códigos en mayúsculas (`HORARIO_NO_DISPONIBLE`, `TELEFONO_INVALIDO`, etc.) que el frontend traduce.
+- Cambios de esquema solo como migraciones en `supabase/migrations/`.
 - `precio_final` se copia en cada reserva.
 - Nunca commitear claves: `.env*` está ignorado. Variables públicas con `NEXT_PUBLIC_`; la `service_role` jamás en el cliente.
 
