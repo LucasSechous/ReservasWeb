@@ -101,11 +101,10 @@ Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 ### Fase 0: Preparación
 
 - [x] Crear el repo nuevo en GitHub, con `.env*` en el `.gitignore` desde el primer commit
-- [ ] Crear el proyecto Next.js (App Router, TypeScript, Tailwind)
-- [x] Crear un proyecto nuevo en Supabase y conectar el conector a ese proyecto
-- [ ] Conectar el repo a Vercel y cargar las variables de entorno
-
-- [ ] Tabla chica de prueba en Supabase (o chequeo de conexión) para tener qué leer; se borra en la Fase 1
+- [x] Crear el proyecto Next.js (App Router, TypeScript, Tailwind)
+- [x] Crear un proyecto nuevo en Supabase y conectar el conector a ese proyecto (se reutilizó el proyecto `reservasweb`, que ya tenía un esquema anterior con datos)
+- [x] Conectar el repo a Vercel y cargar las variables de entorno
+- [x] Chequeo de conexión: la página cuenta los negocios activos (no hizo falta una tabla de prueba)
 
 **Terminada cuando:** la web vacía está online en Vercel y lee un dato de Supabase.
 
