@@ -150,10 +150,12 @@ Terminada el 28 de octubre de 2026: la migración está en `supabase/migrations/
 
 ### Fase 3: Disponibilidad
 
-- [ ] Función `horarios_libres()` por profesional
-- [ ] Pruebas con horario partido, una excepción, un bloqueo, reservas existentes y dos profesionales
+- [x] Función `horarios_libres()` por profesional
+- [x] Pruebas con horario partido, una excepción, un bloqueo, reservas existentes y dos profesionales
 
 **Terminada cuando:** la función devuelve exactamente los turnos esperados en los casos de prueba.
+
+Terminada el 28 de octubre de 2026: migración en `supabase/migrations/20261028010000_fase3_horarios_libres.sql` y test de 13 comprobaciones en `supabase/tests/fase3_horarios_libres.sql` (pasan todas).
 
 ### Fase 4: Reserva pública
 
