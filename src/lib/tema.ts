@@ -45,7 +45,12 @@ const TEMA_BASE: Tema = {
 
 const TEMAS: Record<string, Tema> = {
   "barberia-demo": {
-    ...TEMA_BASE,
+    fondo: "#0e0808",
+    texto: "#fbf1ee",
+    tarjeta: "#1b0f0f",
+    acento: "#ff4d4d",
+    acentoTinta: "#2a0505",
+    brillo: "#b91c1c",
     lema: "Cortes con turno.",
     intro: "Corte, barba y estilo. Elegí tu barbero, tu horario y listo: tu lugar queda reservado.",
     logo: "/negocios/barberia-demo/logo.svg",
