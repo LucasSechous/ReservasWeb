@@ -143,7 +143,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
               <img src={tema.logo} alt="" className="size-72 animate-float drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] xl:size-80" />
             </Reveal>
           )}
-          <div className="mx-auto max-w-6xl px-5 pb-20 pt-8 lg:pt-16">
+          <div className={`mx-auto max-w-6xl px-5 pb-20 pt-8 lg:pt-16 ${tema.logo ? "lg:pr-80" : ""}`}>
             <Reveal y={12}>
               <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/75">
                 <span className="relative flex size-2">

@@ -77,6 +77,12 @@ const TEMAS: Record<string, Tema> = {
     lema: "Tu momento, con turno.",
     intro: "Faciales, depilación, masajes y más. Reservá tu momento de cuidado en un par de toques.",
     logo: "/negocios/estetica-demo/logo.svg",
+    portada: "/negocios/estetica-demo/portada.jpg",
+    galeria: [
+      { src: "/negocios/estetica-demo/galeria-1.jpg", alt: "Pétalos rosados flotando en un cuenco de agua" },
+      { src: "/negocios/estetica-demo/galeria-2.jpg", alt: "Tratamiento facial con guantes rosados" },
+      { src: "/negocios/estetica-demo/galeria-3.jpg", alt: "Bandeja de spa con flores, sales y una vela" },
+    ],
     demo: true,
   },
   "cafe-demo": {
@@ -93,6 +99,12 @@ const TEMAS: Record<string, Tema> = {
     subtituloServicios: "Lo que preparamos todos los días.",
     reservas: false,
     logo: "/negocios/cafe-demo/logo.svg",
+    portada: "/negocios/cafe-demo/portada.jpg",
+    galeria: [
+      { src: "/negocios/cafe-demo/galeria-1.jpg", alt: "Manos sirviendo leche para hacer latte art" },
+      { src: "/negocios/cafe-demo/galeria-2.jpg", alt: "Mesa de brunch con tostadas, jugos y frutos rojos" },
+      { src: "/negocios/cafe-demo/galeria-3.jpg", alt: "Tostada de masa madre con palta y huevos pochados" },
+    ],
     demo: true,
   },
 };
