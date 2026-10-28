@@ -40,7 +40,7 @@ Se deja de lado NestJS: para una persona sola, un segundo servidor duplica deplo
 
 ## Modelo de datos
 
-La base ya existe en el proyecto de Supabase `reservasweb`, de un intento anterior. Tenía solo datos de prueba, que se borraron el 28 de octubre de 2026: las 9 tablas están vacías (quedan 2 usuarios de login de prueba en `auth.users`). No se parte de cero: la Fase 2 limpia el esquema y lo ajusta a este diseño.
+La base vive en el proyecto de Supabase `reservasweb`. Partió de un intento anterior con solo datos de prueba, que se borraron el 28 de octubre de 2026, y ese mismo día la Fase 2 ajustó el esquema a este diseño. Hoy tiene cargada la «Barbería Demo» y quedan 2 usuarios de login de prueba en `auth.users`.
 
 Ocho tablas en una sola base compartida, con Row Level Security para que cada negocio vea solo lo suyo. Las tablas de horarios no llevan `negocio_id` propio: cuelgan de `profesionales`, que sí lo lleva, y sus políticas RLS pasan por ahí.
 
@@ -88,7 +88,7 @@ Si el cliente no elige profesional, se muestra la unión de los horarios libres 
 - Si dos personas eligen el mismo horario, la segunda recibe un error y la pantalla le muestra los horarios que siguen libres.
 - La función `reservar()` vuelve a validar que el horario esté dentro de la atención, guarda `precio_final` y genera el `token_cancelacion`. Si no se indica profesional, prueba con cada uno que haga el servicio, en orden, y asigna el primero libre.
 
-**Fechas y horas:** todo se guarda en `timestamptz` y se muestra en la zona del negocio (`America/Montevideo` por defecto), lo que deja listo el salto a Argentina o Brasil. Hoy `reservas` guarda `fecha` más `hora_inicio` y `hora_fin` sin zona horaria: la Fase 2 lo pasa a `rango`.
+**Fechas y horas:** todo se guarda en `timestamptz` y se muestra en la zona del negocio (`America/Montevideo` por defecto), lo que deja listo el salto a Argentina o Brasil. Las reservas guardan un `rango` (`tstzrange`) y `reservar()` recibe un instante con zona horaria; los horarios de atención son `time` en hora local del negocio.
 
 **Cancelación:** el mail trae un link con el token. `cancelar_reserva(token)` cambia el `estado` a `cancelada`, libera el horario y le avisa al negocio. Hoy solo permite cancelar turnos futuros; en la v1 no hay otro límite de tiempo, y si un negocio lo pide se agrega como regla.
 
@@ -136,14 +136,17 @@ Nueve fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 ### Fase 2: Base de datos
 
 - [x] Borrar los datos de prueba que había (28 de octubre de 2026); las tablas quedaron vacías
-- [ ] Migración: borrar `resenas` y las columnas sin uso (`plan`, `buffer_minutos`, `descripcion`, `logo_url`)
-- [ ] Pasar `reservas` a `rango` (`timestamptz`), con la restricción anti-superposición por profesional
-- [ ] Reescribir `reservar()` y `cancelar_reserva()` para el nuevo `rango`
-- [ ] Política RLS del operador (`admin_plataforma`) y `usuarios.negocio_id` opcional para vos
-- [ ] Mover `auth_negocio_id()` a un esquema privado
-- [ ] Datos de prueba: «Barbería Demo» con 3 servicios, 2 profesionales y horario partido
+- [x] Migración: borrar `resenas` y las columnas sin uso (`plan`, `buffer_minutos`, `descripcion`, `logo_url`)
+- [x] Pasar `reservas` a `rango` (`timestamptz`), con la restricción anti-superposición por profesional
+- [x] Reescribir `reservar()` y `cancelar_reserva()` para el nuevo `rango`
+- [x] Política RLS del operador (`admin_plataforma`) y `usuarios.negocio_id` opcional para vos
+- [x] Mover `auth_negocio_id()` a un esquema privado
+- [x] Permisos mínimos sobre las tablas: el público solo lee lo de la landing (antes `anon` y `authenticated` tenían todos los permisos)
+- [x] Datos de prueba: «Barbería Demo» con 3 servicios, 2 profesionales y horario partido
 
 **Terminada cuando:** dos reservas superpuestas del mismo profesional hacen fallar a la segunda.
+
+Terminada el 28 de octubre de 2026: la migración está en `supabase/migrations/`, los datos de prueba en `supabase/seed/` y el test de 10 casos en `supabase/tests/fase2_reservas.sql` (pasan los 10).
 
 ### Fase 3: Disponibilidad
 
