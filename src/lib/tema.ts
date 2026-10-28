@@ -27,6 +27,8 @@ export type Tema = {
   video?: string;
   /** Foto de portada opcional, guardada en public/negocios/<slug>/ (por ejemplo /negocios/mi-slug/portada.jpg). */
   portada?: string;
+  /** Foto de fondo para la sección del equipo (se muestra oscurecida). */
+  fondoEquipo?: string;
   /** Fotos de la galería, guardadas en public/negocios/<slug>/. Con `alt` describiendo cada una. */
   galeria?: { src: string; alt: string }[];
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
@@ -57,6 +59,7 @@ const TEMAS: Record<string, Tema> = {
     intro: "Corte, barba y estilo. Elegí tu barbero, tu horario y listo: tu lugar queda reservado.",
     logo: "/negocios/barberia-demo/logo.svg",
     portada: "/negocios/barberia-demo/corte.jpg",
+    fondoEquipo: "/negocios/barberia-demo/barberia2.jpg",
     galeria: [
       { src: "/negocios/barberia-demo/tijeras.jpg", alt: "Tijeras y navaja sobre una mesa de madera" },
       { src: "/negocios/barberia-demo/barberia.jpg", alt: "Interior de la barbería, con espejos y sillones" },
