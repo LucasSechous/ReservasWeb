@@ -40,7 +40,7 @@ Se deja de lado NestJS: para una persona sola, un segundo servidor duplica deplo
 
 ## Modelo de datos
 
-La base ya existe en el proyecto de Supabase `reservasweb`, de un intento anterior, y **tiene datos** (2 negocios, 5 servicios, 4 profesionales, 27 horarios y 8 reservas, al 28 de octubre de 2026). No se parte de cero: la Fase 2 la limpia y la ajusta a este diseño, sin perder esos datos.
+La base ya existe en el proyecto de Supabase `reservasweb`, de un intento anterior. Tenía solo datos de prueba, que se borraron el 28 de octubre de 2026: las 9 tablas están vacías (quedan 2 usuarios de login de prueba en `auth.users`). No se parte de cero: la Fase 2 limpia el esquema y lo ajusta a este diseño.
 
 Ocho tablas en una sola base compartida, con Row Level Security para que cada negocio vea solo lo suyo. Las tablas de horarios no llevan `negocio_id` propio: cuelgan de `profesionales`, que sí lo lleva, y sus políticas RLS pasan por ahí.
 
@@ -135,15 +135,15 @@ Nueve fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 
 ### Fase 2: Base de datos
 
-- [ ] Confirmar cuáles datos existentes son reales (Galanes Barbers, las 8 reservas) y respaldarlos antes de tocar nada
+- [x] Borrar los datos de prueba que había (28 de octubre de 2026); las tablas quedaron vacías
 - [ ] Migración: borrar `resenas` y las columnas sin uso (`plan`, `buffer_minutos`, `descripcion`, `logo_url`)
-- [ ] Pasar `reservas` a `rango` (`timestamptz`), convirtiendo las filas existentes, con la restricción anti-superposición por profesional
+- [ ] Pasar `reservas` a `rango` (`timestamptz`), con la restricción anti-superposición por profesional
 - [ ] Reescribir `reservar()` y `cancelar_reserva()` para el nuevo `rango`
 - [ ] Política RLS del operador (`admin_plataforma`) y `usuarios.negocio_id` opcional para vos
 - [ ] Mover `auth_negocio_id()` a un esquema privado
-- [ ] Revisar los datos de «Barbería Demo»: 3 servicios, 2 profesionales y horario
+- [ ] Datos de prueba: «Barbería Demo» con 3 servicios, 2 profesionales y horario partido
 
-**Terminada cuando:** dos reservas superpuestas del mismo profesional hacen fallar a la segunda, y las reservas que ya existían se conservaron.
+**Terminada cuando:** dos reservas superpuestas del mismo profesional hacen fallar a la segunda.
 
 ### Fase 3: Disponibilidad
 
@@ -224,11 +224,9 @@ Con varios profesionales en la v1, la rúbrica de calificación de leads ya no t
 - [ ] Precios de cada nivel: landing simple y landing con reservas (armado más mensualidad)
 - [ ] Nombre y dominio del sistema (a más tardar antes de la Fase 5)
 - [ ] Si cada cliente tiene su dominio propio desde el inicio o queda en `tudominio.com/su-negocio`
-- [ ] Si Galanes Barbers y las reservas existentes son datos reales o de prueba (antes de la Fase 2)
 
 **Riesgos:**
 
-- **Datos existentes en la base.** Pasar `reservas` a `timestamptz` y borrar columnas toca filas que ya existen. Antes de migrar hay que respaldar y confirmar cuáles son reales.
 - **La vitrina promete funciones que todavía no existen.** La tarjeta «Landing con reservas» habla de reserva online, mails y agenda, que llegan en las Fases 4 a 6. Hasta entonces conviene vender solo lo que ya está o bajar el tono del texto.
 - **Vercel Hobby y las demos.** El plan gratis es solo para uso no comercial y las demos para leads son prospección. Riesgo chico, pero si hay reclamo se pasa a Pro antes.
 - **Datos personales.** Vas a guardar nombre, mail y teléfono de los clientes de tus clientes. La Ley 18.331 de Uruguay pide una política de privacidad visible y usar esos datos solo para las reservas. Esto entra en la Fase 4.
