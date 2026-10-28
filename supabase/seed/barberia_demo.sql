@@ -2,7 +2,7 @@
 -- Se corre una sola vez, después de la migración de la Fase 2. No es una migración.
 with negocio as (
   insert into public.negocios (slug, nombre, email, telefono, direccion)
-  values ('barberia-demo', 'Barbería Demo', 'demo@reservasweb.uy', null, 'Maldonado, Uruguay')
+  values ('barberia-demo', 'Barbería Demo', null, null, 'Maldonado, Uruguay')
   returning id
 ),
 servicios as (

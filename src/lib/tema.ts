@@ -10,6 +10,8 @@ export type Tema = {
   acentoTinta: string;
   /** Foto de portada opcional, guardada en public/negocios/<slug>/ (por ejemplo /negocios/mi-slug/portada.jpg). */
   portada?: string;
+  /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
+  demo?: boolean;
 };
 
 const TEMA_BASE: Tema = {
@@ -21,7 +23,7 @@ const TEMA_BASE: Tema = {
 };
 
 const TEMAS: Record<string, Tema> = {
-  "barberia-demo": TEMA_BASE,
+  "barberia-demo": { ...TEMA_BASE, demo: true },
 };
 
 export function getTema(slug: string): Tema {

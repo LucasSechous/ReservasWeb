@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AntesDespues } from "@/components/antes-despues";
 import { HeroTitle } from "@/components/hero-title";
 import { Marquee } from "@/components/marquee";
@@ -89,9 +90,21 @@ const planes = [
 ];
 
 const demos = [
-  { rubro: "Barbería", clase: "from-violeta/40 to-ink-3" },
-  { rubro: "Centro de estética", clase: "from-accent/25 to-ink-3" },
-  { rubro: "Peluquería", clase: "from-emerald-500/25 to-ink-3" },
+  {
+    rubro: "Barbería",
+    clase: "from-violeta/40 to-ink-3",
+    href: "/barberia-demo" as string | null,
+  },
+  {
+    rubro: "Centro de estética",
+    clase: "from-accent/25 to-ink-3",
+    href: null as string | null,
+  },
+  {
+    rubro: "Peluquería",
+    clase: "from-emerald-500/25 to-ink-3",
+    href: null as string | null,
+  },
 ];
 
 const rubros = [
@@ -281,30 +294,57 @@ export default function Home() {
                 Así se ve
               </h2>
               <p className="mt-4 max-w-2xl text-lg text-white/65">
-                Estoy preparando demos de barberías, peluquerías y centros de
-                estética para mostrarlas acá. Mientras tanto, te armo una con
-                los colores y los servicios de tu negocio.
+                Probá la demo de la barbería: elegí un servicio, un día y un
+                horario, y reservá un turno como lo haría tu cliente. Es una
+                demo, las reservas son de prueba. Para estética y peluquería
+                te armo una con los colores y los servicios de tu negocio.
               </p>
             </Reveal>
             <div className="mt-12 grid gap-6 sm:grid-cols-3">
-              {demos.map((demo, i) => (
-                <Reveal key={demo.rubro} delay={i * 0.12}>
+              {demos.map((demo, i) => {
+                const tarjeta = (
                   <div
-                    className={`relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b ${demo.clase} p-6`}
+                    className={`relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-3xl border bg-gradient-to-b ${demo.clase} p-6 transition duration-300 ${
+                      demo.href
+                        ? "border-accent/60 group-hover:-translate-y-1.5 group-hover:shadow-[0_20px_60px_-20px_rgba(200,255,58,0.35)]"
+                        : "border-white/10"
+                    }`}
                   >
                     <div
                       aria-hidden
                       className="absolute inset-x-8 top-8 h-1/2 rounded-2xl border border-white/10 bg-white/[0.04]"
                     />
+                    {demo.href && (
+                      <span className="absolute right-4 top-4 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent-ink">
+                        En vivo
+                      </span>
+                    )}
                     <p className="font-display text-2xl font-bold">
                       {demo.rubro}
                     </p>
                     <p className="mt-1 text-sm text-white/55">
-                      Demo en preparación
+                      {demo.href ? (
+                        <>
+                          Probar la demo <span aria-hidden>→</span>
+                        </>
+                      ) : (
+                        "Demo en preparación"
+                      )}
                     </p>
                   </div>
-                </Reveal>
-              ))}
+                );
+                return (
+                  <Reveal key={demo.rubro} delay={i * 0.12}>
+                    {demo.href ? (
+                      <Link href={demo.href} className="group block">
+                        {tarjeta}
+                      </Link>
+                    ) : (
+                      tarjeta
+                    )}
+                  </Reveal>
+                );
+              })}
             </div>
           </div>
         </section>
