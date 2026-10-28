@@ -38,9 +38,9 @@ Seis tablas en una sola base compartida, con `negocio_id` en todas y Row Level S
 
 | Tabla | Qué guarda | Campos clave |
 | --- | --- | --- |
-| `negocios` | Cada cliente tuyo | `slug`, `nombre`, `zona_horaria`, `anticipacion_min`, `ventana_dias`, `activo` |
+| `negocios` | Cada cliente tuyo | `slug`, `nombre`, `email_aviso`, `telefono`, `direccion`, `zona_horaria`, `anticipacion_min`, `ventana_dias`, `activo` |
 | `servicios` | Lo que se puede reservar | `negocio_id`, `nombre`, `duracion_min`, `precio`, `activo` |
-| `horarios` | Horario semanal de atención | `negocio_id`, `dia_semana`, `abre`, `cierra` |
+| `horarios` | Horario semanal de atención (puede haber varios tramos por día, para el horario partido) | `negocio_id`, `dia_semana`, `abre`, `cierra` (`time`, hora local del negocio) |
 | `bloqueos` | Feriados, vacaciones, huecos | `negocio_id`, `rango` (tstzrange), `motivo` |
 | `reservas` | Los turnos | `negocio_id`, `servicio_id`, `rango` (tstzrange), `estado`, `cliente_nombre`, `cliente_email`, `cliente_tel`, `precio_final`, `token_cancelacion` |
 | `miembros` | Quién entra al panel | `negocio_id`, `user_id`, `rol` (operador o dueño) |
@@ -49,6 +49,9 @@ Seis tablas en una sola base compartida, con `negocio_id` en todas y Row Level S
 
 - Cualquiera puede leer los negocios activos, sus servicios y horarios: es lo que muestra la landing.
 - Nadie crea reservas directo en la tabla. Se crean solo con la función `reservar()`, que valida todo antes de guardar.
+- Quien cancela desde el link del mail no tiene login: lo hace con la función `cancelar(token)` (`security definer`), que solo toca la reserva de ese token.
+
+**Marca de cada negocio:** colores, fotos y textos de la landing viven en el código (un archivo por negocio), no en la base. Es lo más simple para la v1; se revisa si más adelante el alta tiene que ser sin deploy.
 - Un dueño lee y cancela las reservas de su negocio. Vos, como operador, ves y editás todo.
 
 Dos decisiones que se mantienen del diseño original: `precio_final` se copia en cada reserva para que los números históricos no cambien si sube un precio, y las columnas de dominio propio se pueden agregar después sin romper nada.
@@ -72,7 +75,11 @@ Los horarios libres se calculan al momento y la base de datos es la que impide d
 
 **Fechas y horas:** todo se guarda en `timestamptz` y se muestra en la zona del negocio (`America/Montevideo` por defecto), lo que deja listo el salto a Argentina o Brasil.
 
-**Cancelación:** el mail trae un link con el token. Cancelar cambia el `estado` a `cancelada`, libera el horario y le avisa al negocio. En la v1 no hay límite de tiempo para cancelar; si un negocio lo pide, se agrega como regla.
+**Cancelación:** el mail trae un link con el token. `cancelar(token)` cambia el `estado` a `cancelada`, libera el horario y le avisa al negocio. En la v1 no hay límite de tiempo para cancelar; si un negocio lo pide, se agrega como regla.
+
+**Bloqueos sobre turnos ya confirmados:** si el dueño bloquea un rango donde ya hay reservas, el panel avisa «hay N turnos en ese rango» y permite cancelarlos, con mail al cliente. Nunca se superponen en silencio.
+
+**Reservas falsas:** `reservar()` es público, así que sin protección alguien podría llenar la agenda de un negocio. La Fase 3 suma un captcha (Cloudflare Turnstile, gratis) y un límite de reservas activas por mail y teléfono.
 
 ## Hosting y costos
 
@@ -98,6 +105,8 @@ Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 - [x] Crear un proyecto nuevo en Supabase y conectar el conector a ese proyecto
 - [ ] Conectar el repo a Vercel y cargar las variables de entorno
 
+- [ ] Tabla chica de prueba en Supabase (o chequeo de conexión) para tener qué leer; se borra en la Fase 1
+
 **Terminada cuando:** la web vacía está online en Vercel y lee un dato de Supabase.
 
 ### Fase 1: Base de datos
@@ -106,6 +115,7 @@ Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 - [ ] Restricción anti-superposición en `reservas`
 - [ ] Políticas RLS de lectura pública, dueño y operador
 - [ ] Función `reservar()` con sus validaciones
+- [ ] Función `cancelar(token)` para cancelar sin login
 - [ ] Datos de prueba: un negocio «Barbería Demo» con 3 servicios y horario
 
 **Terminada cuando:** dos reservas superpuestas en SQL hacen fallar a la segunda.
@@ -122,11 +132,14 @@ Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 - [ ] Plantilla de landing en `/[slug]`
 - [ ] Flujo de 4 pasos en `/[slug]/reservar`
 - [ ] Pantalla de confirmación y manejo del error «ese horario se acaba de ocupar»
+- [ ] Captcha (Turnstile) y límite de reservas activas por mail y teléfono
+- [ ] Política de privacidad visible (Ley 18.331)
 
 **Terminada cuando:** reservás un turno de punta a punta desde tu celular.
 
 ### Fase 4: Mails
 
+- [ ] Cerrar nombre y dominio del sistema (hace falta antes de verificar Resend)
 - [ ] Configurar Resend con un dominio verificado
 - [ ] Mail de confirmación con link de cancelación
 - [ ] Aviso al negocio por cada reserva y cada cancelación
@@ -138,7 +151,7 @@ Siete fases, una o dos por sesión de trabajo. Cada una termina con algo que se 
 
 - [ ] Login con link mágico de Supabase Auth
 - [ ] Agenda del día y de la semana
-- [ ] Cancelar turnos y bloquear horarios
+- [ ] Cancelar turnos y bloquear horarios, avisando si el bloqueo pisa turnos confirmados
 
 **Terminada cuando:** un dueño entra desde el celular, ve sus turnos y bloquea una tarde.
 
@@ -177,12 +190,13 @@ El riesgo más grande es que la v1 tiene una sola agenda por negocio, y varios d
 **A decidir:**
 
 - [ ] Precios de cada nivel: landing simple y landing con reservas (armado más mensualidad)
-- [ ] Nombre y dominio del sistema
+- [ ] Nombre y dominio del sistema (a más tardar antes de la Fase 4)
 - [ ] Si el cliente elige profesional en la v1 o se espera a la v2
 
 **Riesgos:**
 
 - **Varios profesionales.** Barberías como Don Sixto o Azes tienen 4 o 5 barberos. Con una sola agenda, solo se puede reservar un turno a la vez en todo el negocio. Mientras no esté la v2, conviene ofrecer el plan con reservas a negocios de 1 o 2 personas.
+- **Vercel Hobby y las demos.** El plan gratis es solo para uso no comercial y las demos para leads son prospección. Riesgo chico, pero si hay reclamo se pasa a Pro antes.
 - **Datos personales.** Vas a guardar nombre, mail y teléfono de los clientes de tus clientes. La Ley 18.331 de Uruguay pide una política de privacidad visible y usar esos datos solo para las reservas. Esto entra en la Fase 3.
 - **Plan gratis en producción.** Sin backups ni uso comercial permitido. El paso a planes pagos está en la Fase 7 y no se saltea.
 - **Vos sos el único soporte.** Si algo se cae un sábado, te llaman a vos. Conviene activar alertas de errores en Vercel antes del primer cliente.
