@@ -197,10 +197,12 @@ Código hecho el 28 de octubre de 2026. Las reglas de acceso se probaron en la b
 
 ### Fase 7: Alta de negocios
 
-- [ ] Panel de operador para crear un negocio con servicios, profesionales y horarios
-- [ ] Cargar la landing y las fotos de cada negocio
+- [x] Panel de operador para crear un negocio con servicios, profesionales y horarios (`/operador` y `/operador/nuevo`; invita al dueño por mail y permite activar o desactivar negocios)
+- [x] Cargar la landing y las fotos de cada negocio (la landing sale sola de la plantilla; los colores van en `src/lib/tema.ts` y la foto de portada opcional en `public/negocios/<slug>/`)
 
 **Terminada cuando:** das de alta un negocio nuevo en menos de 30 minutos.
+
+Código hecho el 28 de octubre de 2026. `crear_negocio()` se probó en la base con sesiones simuladas (`supabase/tests/fase7_crear_negocio.sql`, 13 comprobaciones): solo el operador puede usarla, crea todo en una sola transacción sin dejar nada a medias, rechaza slugs reservados o repetidos, y el negocio nuevo ya ofrece turnos para reservar. **Falta tu prueba real** (entrar con tu mail como operador y dar de alta uno). Límites a propósito de esta primera versión: todos los profesionales de un negocio nuevo hacen todos los servicios y comparten el mismo horario; para cambiar eso, o editar un servicio o un horario, por ahora se usa el panel de Supabase.
 
 ### Fase 8: Demo y primer cliente
 
