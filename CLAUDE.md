@@ -19,7 +19,7 @@ Plataforma de reservas online multi-negocio para barberías, peluquerías y cent
 
 ## Plan
 
-El plan por fases (0 a 7) está en el doc "Plan reservasWeb v1". Trabajar una fase a la vez; cada fase termina con algo que se puede probar.
+El plan por fases (0 a 7) está en `docs/plan-v1.md`. Al terminar una tarea, tachala ahí (`[x]`). Trabajar una fase a la vez; cada fase termina con algo que se puede probar.
 
 ## Demos para leads
 
