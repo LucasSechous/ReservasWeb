@@ -159,13 +159,15 @@ Terminada el 28 de octubre de 2026: migración en `supabase/migrations/202610280
 
 ### Fase 4: Reserva pública
 
-- [ ] Plantilla de landing en `/[slug]`
-- [ ] Flujo de 4 pasos en `/[slug]/reservar`, con elección de profesional solo si el negocio tiene más de uno
-- [ ] Pantalla de confirmación y manejo del error «ese horario se acaba de ocupar»
-- [ ] Captcha (Turnstile) y límite de reservas activas por mail y teléfono
-- [ ] Política de privacidad visible (Ley 18.331)
+- [x] Plantilla de landing en `/[slug]`
+- [x] Flujo de 4 pasos en `/[slug]/reservar`, con elección de profesional solo si el negocio tiene más de uno
+- [x] Pantalla de confirmación y manejo del error «ese horario se acaba de ocupar»
+- [x] Captcha (Turnstile) y límite de reservas activas por mail y teléfono (el captcha se enciende al cargar `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y `TURNSTILE_SECRET_KEY`; el límite ya funciona en la base, 3 activas por teléfono o mail)
+- [x] Política de privacidad visible (Ley 18.331), como borrador a revisar antes del primer cliente
 
 **Terminada cuando:** reservás un turno de punta a punta desde tu celular.
+
+Hecha el 28 de octubre de 2026 y probada contra la base real (páginas, horarios, errores y permisos). **Falta tu prueba de punta a punta desde el celular**, que no pude hacer desde acá. Pendientes menores: `/[slug]` con un negocio que no existe responde 200 en vez de 404 (la página llega en streaming), y el tema visual de cada negocio nuevo se agrega a mano en `src/lib/tema.ts`.
 
 ### Fase 5: Mails
 
