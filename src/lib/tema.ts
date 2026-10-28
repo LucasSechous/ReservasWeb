@@ -14,6 +14,13 @@ export type Tema = {
   lema: string;
   /** Párrafo de presentación debajo del título. */
   intro: string;
+  /** false = landing simple, sin reservas: no hay botón de reservar ni flujo de turnos. Por defecto, con reservas. */
+  reservas?: boolean;
+  /** Texto de la etiqueta sobre el título. Por defecto «Reservas online». */
+  etiqueta?: string;
+  /** Título y bajada de la sección de servicios (en una landing simple, por ejemplo «La carta»). */
+  tituloServicios?: string;
+  subtituloServicios?: string;
   /** Logo del negocio, guardado en public/negocios/<slug>/ (por ejemplo /negocios/mi-slug/logo.svg). */
   logo?: string;
   /** Video corto de fondo para la portada, en bucle y sin sonido (por ejemplo /negocios/mi-slug/fondo.mp4). */
@@ -56,16 +63,20 @@ const TEMAS: Record<string, Tema> = {
     logo: "/negocios/estetica-demo/logo.svg",
     demo: true,
   },
-  "peluqueria-demo": {
-    fondo: "#07110e",
-    texto: "#f3f8f5",
-    tarjeta: "#0e1d18",
-    acento: "#ff7a59",
-    acentoTinta: "#240800",
-    brillo: "#2dd4bf",
-    lema: "Tu look, a tu hora.",
-    intro: "Corte, color y peinados. Elegí con quién y cuándo, y reservá desde el celular.",
-    logo: "/negocios/peluqueria-demo/logo.svg",
+  "cafe-demo": {
+    fondo: "#140d08",
+    texto: "#fdf3e3",
+    tarjeta: "#20150e",
+    acento: "#f5b84b",
+    acentoTinta: "#2a1600",
+    brillo: "#c2410c",
+    lema: "De barrio, con cariño.",
+    intro: "Café de especialidad, tostadas y algo dulce para acompañar. Pasá, te esperamos todos los días.",
+    etiqueta: "Café de especialidad",
+    tituloServicios: "La carta",
+    subtituloServicios: "Lo que preparamos todos los días.",
+    reservas: false,
+    logo: "/negocios/cafe-demo/logo.svg",
     demo: true,
   },
 };

@@ -93,21 +93,30 @@ const planes = [
 const demos = [
   {
     rubro: "Barbería",
+    tipo: "Landing con reservas",
+    detalle: "Servicios, equipo y turnos online las 24 horas.",
     clase: "from-violeta/40 to-ink-3",
-    href: "/barberia-demo" as string | null,
+    href: "/barberia-demo",
     logo: "/negocios/barberia-demo/logo.svg",
+    conReservas: true,
   },
   {
     rubro: "Centro de estética",
-    clase: "from-accent/25 to-ink-3",
-    href: "/estetica-demo" as string | null,
+    tipo: "Landing con reservas",
+    detalle: "Lo mismo, con los colores y los servicios de tu centro.",
+    clase: "from-pink-400/30 to-ink-3",
+    href: "/estetica-demo",
     logo: "/negocios/estetica-demo/logo.svg",
+    conReservas: true,
   },
   {
-    rubro: "Peluquería",
-    clase: "from-emerald-500/25 to-ink-3",
-    href: "/peluqueria-demo" as string | null,
-    logo: "/negocios/peluqueria-demo/logo.svg",
+    rubro: "Cafetería",
+    tipo: "Landing simple",
+    detalle: "Tu carta, tus horarios y WhatsApp. Sin reservas.",
+    clase: "from-amber-500/30 to-ink-3",
+    href: "/cafe-demo",
+    logo: "/negocios/cafe-demo/logo.svg",
+    conReservas: false,
   },
 ];
 
@@ -291,10 +300,10 @@ export default function Home() {
                 Así se ve
               </h2>
               <p className="mt-4 max-w-2xl text-lg text-white/65">
-                Probá las demos: elegí un servicio, un día y un horario, y
-                reservá un turno como lo haría tu cliente. Son demos, las
-                reservas son de prueba. La tuya la armo con los colores y los
-                servicios de tu negocio.
+                Dos demos con reservas, para probar un turno como lo haría tu
+                cliente, y una landing simple, para negocios que no necesitan
+                turnos. Son demos, las reservas son de prueba. La tuya la armo
+                con tus colores y tus servicios.
               </p>
             </Reveal>
             <div className="mt-12 grid gap-6 sm:grid-cols-3">
@@ -318,22 +327,19 @@ export default function Home() {
                         className="size-28 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3"
                       />
                     </div>
-                    {demo.href && (
-                      <span className="absolute right-4 top-4 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent-ink">
-                        En vivo
-                      </span>
-                    )}
-                    <p className="font-display text-2xl font-bold">
-                      {demo.rubro}
-                    </p>
-                    <p className="mt-1 text-sm text-white/55">
-                      {demo.href ? (
-                        <>
-                          Probar la demo <span aria-hidden>→</span>
-                        </>
-                      ) : (
-                        "Demo en preparación"
-                      )}
+                    <span
+                      className={`mb-3 w-fit rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${
+                        demo.conReservas
+                          ? "bg-accent text-accent-ink"
+                          : "border border-white/30 bg-black/30 text-white"
+                      }`}
+                    >
+                      {demo.tipo}
+                    </span>
+                    <p className="font-display text-2xl font-bold">{demo.rubro}</p>
+                    <p className="mt-1 text-sm text-white/65">{demo.detalle}</p>
+                    <p className="mt-3 text-sm font-semibold text-accent">
+                      Probar la demo <span aria-hidden>→</span>
                     </p>
                   </div>
                 );

@@ -48,6 +48,32 @@ function whatsappDe(telefono: string): string | null {
   return `https://wa.me/${conPais}`;
 }
 
+type Cta = { href: string; texto: string; externo: boolean };
+
+// Botón de llamado a la acción: reserva en el sitio, o WhatsApp en una landing sin reservas.
+function BotonCta({ cta, className, children }: { cta: Cta; className: string; children?: React.ReactNode }) {
+  return cta.externo ? (
+    <a href={cta.href} target="_blank" rel="noopener noreferrer" className={className}>
+      {children ?? cta.texto}
+    </a>
+  ) : (
+    <Link href={cta.href} className={className}>
+      {children ?? cta.texto}
+    </Link>
+  );
+}
+
+// Tarjeta de servicio: enlace a la reserva, o caja común si el negocio no recibe reservas.
+function Tarjeta({ href, className, children }: { href: string | null; className: string; children: React.ReactNode }) {
+  return href ? (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  ) : (
+    <div className={className}>{children}</div>
+  );
+}
+
 function Flecha() {
   return (
     <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
@@ -71,6 +97,12 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(negocio.direccion)}`
     : null;
   const reservarHref = `/${negocio.slug}/reservar`;
+  const conReservas = tema.reservas !== false;
+  const cta: Cta | null = conReservas
+    ? { href: reservarHref, texto: "Reservar turno", externo: false }
+    : whatsapp
+      ? { href: whatsapp, texto: "Escribinos por WhatsApp", externo: true }
+      : null;
   const cinta = servicios.map((s) => s.nombre.toUpperCase());
   const hayContacto = negocio.direccion || negocio.telefono || negocio.email;
 
@@ -79,7 +111,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
       style={temaStyle(tema)}
       className="min-h-screen overflow-x-clip bg-(--n-fondo) pb-28 text-(--n-texto) selection:bg-(--n-acento) selection:text-(--n-acento-tinta) sm:pb-0"
     >
-      <title>{`${negocio.nombre} · Reservá tu turno`}</title>
+      <title>{conReservas ? `${negocio.nombre} · Reservá tu turno` : negocio.nombre}</title>
       {tema.demo && <BannerDemo />}
 
       <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
@@ -90,12 +122,14 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
           )}
           {negocio.nombre}
         </span>
-        <Link
-          href={reservarHref}
-          className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
-        >
-          Reservar
-        </Link>
+        {cta && (
+          <BotonCta
+            cta={cta}
+            className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
+          >
+            {conReservas ? "Reservar" : "Escribinos"}
+          </BotonCta>
+        )}
       </header>
 
       <main>
@@ -125,7 +159,8 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                   <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent" />
                   <span className="relative inline-flex size-2 rounded-full bg-accent" />
                 </span>
-                Reservas online{negocio.direccion ? ` · ${negocio.direccion}` : ""}
+                {tema.etiqueta ?? "Reservas online"}
+                {negocio.direccion ? ` · ${negocio.direccion}` : ""}
               </p>
             </Reveal>
             <HeroTitle lineas={[{ texto: negocio.nombre }, { texto: tema.lema, acento: true }]} />
@@ -134,21 +169,25 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
             </Reveal>
             <Reveal delay={1.05} className="mt-9">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <Link href={reservarHref} className={boton}>
-                  Reservar turno <Flecha />
-                </Link>
+                {cta && (
+                  <BotonCta cta={cta} className={boton}>
+                    {cta.texto} <Flecha />
+                  </BotonCta>
+                )}
                 <ul className="flex flex-wrap gap-2 text-sm text-white/70">
-                  {servicios.length > 0 && (
+                  {conReservas && servicios.length > 0 && (
                     <li className="rounded-full border border-white/15 px-4 py-2">
                       {servicios.length} servicios
                     </li>
                   )}
-                  {profesionales.length > 0 && (
+                  {conReservas && profesionales.length > 0 && (
                     <li className="rounded-full border border-white/15 px-4 py-2">
                       {profesionales.length === 1 ? "1 profesional" : `${profesionales.length} profesionales`}
                     </li>
                   )}
-                  <li className="rounded-full border border-white/15 px-4 py-2">Confirmación al instante</li>
+                  {conReservas && (
+                    <li className="rounded-full border border-white/15 px-4 py-2">Confirmación al instante</li>
+                  )}
                 </ul>
               </div>
             </Reveal>
@@ -171,18 +210,18 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                 id="servicios"
                 className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl"
               >
-                Servicios
+                {tema.tituloServicios ?? "Servicios"}
               </h2>
               <p className="mt-4 max-w-xl text-lg text-white/65">
-                Tocá el que quieras y elegí tu horario.
+                {tema.subtituloServicios ?? "Tocá el que quieras y elegí tu horario."}
               </p>
             </Reveal>
             <ul className="mt-12 grid gap-5 sm:grid-cols-2">
               {servicios.map((s, i) => (
                 <li key={s.id}>
                   <Reveal delay={(i % 2) * 0.1}>
-                    <Link
-                      href={reservarHref}
+                    <Tarjeta
+                      href={conReservas ? reservarHref : null}
                       className="group flex h-full flex-col rounded-3xl border border-white/10 bg-ink-2 p-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/50 hover:shadow-[0_20px_60px_-24px_var(--color-accent)]"
                     >
                       <div className="flex items-start justify-between gap-4">
@@ -198,13 +237,15 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                       </div>
                       <h3 className="mt-6 font-display text-2xl font-bold">{s.nombre}</h3>
                       {s.descripcion && <p className="mt-2 text-white/65">{s.descripcion}</p>}
-                      <p className="mt-auto flex items-center justify-between pt-6 text-sm font-semibold uppercase tracking-wider text-white/50">
-                        <span>{formatoDuracion(s.duracion_minutos)}</span>
-                        <span className="text-accent">
-                          Reservar <Flecha />
-                        </span>
-                      </p>
-                    </Link>
+                      {conReservas && (
+                        <p className="mt-auto flex items-center justify-between pt-6 text-sm font-semibold uppercase tracking-wider text-white/50">
+                          <span>{formatoDuracion(s.duracion_minutos)}</span>
+                          <span className="text-accent">
+                            Reservar <Flecha />
+                          </span>
+                        </p>
+                      )}
+                    </Tarjeta>
                   </Reveal>
                 </li>
               ))}
@@ -247,6 +288,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
           </section>
         )}
 
+        {conReservas && (
         <section aria-labelledby="como" className="mx-auto max-w-6xl px-5 py-24">
           <Reveal>
             <h2 id="como" className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl">
@@ -270,6 +312,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
             ))}
           </ol>
         </section>
+        )}
 
         {hayContacto && (
           <section aria-labelledby="contacto" className="bg-ink-2 py-24">
@@ -355,16 +398,26 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
           <div className="mx-auto max-w-6xl px-5 text-center">
             <Reveal>
               <h2 className="mx-auto max-w-4xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-7xl">
-                ¿Te reservamos <span className="text-accent">un turno?</span>
+                {conReservas ? (
+                  <>
+                    ¿Te reservamos <span className="text-accent">un turno?</span>
+                  </>
+                ) : (
+                  <>
+                    ¿Te <span className="text-accent">esperamos?</span>
+                  </>
+                )}
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-lg text-white/65">
-                Elegí tu horario en menos de un minuto.
+                {conReservas ? "Elegí tu horario en menos de un minuto." : "Escribinos por cualquier consulta o pasá a visitarnos."}
               </p>
-              <div className="mt-10 flex justify-center">
-                <Link href={reservarHref} className={boton}>
-                  Reservar turno <Flecha />
-                </Link>
-              </div>
+              {cta && (
+                <div className="mt-10 flex justify-center">
+                  <BotonCta cta={cta} className={boton}>
+                    {cta.texto} <Flecha />
+                  </BotonCta>
+                </div>
+              )}
             </Reveal>
           </div>
         </section>
@@ -372,7 +425,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
 
       <footer className="mx-auto w-full max-w-6xl px-5 pb-12 pt-4 text-sm text-white/40">
         <p>
-          Reservas con{" "}
+          {conReservas ? "Reservas con" : "Web hecha con"}{" "}
           <Link href="/" className="underline hover:text-white">
             ReservasWeb
           </Link>{" "}
@@ -383,14 +436,14 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
         </p>
       </footer>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-(--n-fondo)/90 px-5 py-3 backdrop-blur sm:hidden">
-        <Link
-          href={reservarHref}
-          className="flex min-h-12 w-full items-center justify-center rounded-full bg-(--n-acento) font-bold text-(--n-acento-tinta)"
-        >
-          Reservar turno
-        </Link>
-      </div>
+      {cta && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-(--n-fondo)/90 px-5 py-3 backdrop-blur sm:hidden">
+          <BotonCta
+            cta={cta}
+            className="flex min-h-12 w-full items-center justify-center rounded-full bg-(--n-acento) font-bold text-(--n-acento-tinta)"
+          />
+        </div>
+      )}
     </div>
   );
 }
