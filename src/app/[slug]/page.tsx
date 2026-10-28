@@ -58,6 +58,17 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
     >
       <title>{`${negocio.nombre} · Reservá tu turno`}</title>
 
+      <div
+        style={
+          tema.portada
+            ? {
+                backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.55), var(--n-fondo)), url(${tema.portada})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : undefined
+        }
+      >
       <header className="mx-auto max-w-3xl px-5 pb-10 pt-16 sm:pt-24">
         <Reveal y={14}>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-(--n-acento)">
@@ -83,6 +94,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
           </Link>
         </Reveal>
       </header>
+      </div>
 
       <main className="mx-auto max-w-3xl space-y-16 px-5">
         {servicios.length > 0 && (

@@ -8,6 +8,8 @@ export type Tema = {
   tarjeta: string;
   acento: string;
   acentoTinta: string;
+  /** Foto de portada opcional, guardada en public/negocios/<slug>/ (por ejemplo /negocios/mi-slug/portada.jpg). */
+  portada?: string;
 };
 
 const TEMA_BASE: Tema = {
