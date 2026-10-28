@@ -5,8 +5,9 @@ import { leerConfigSupabase } from "@/lib/supabase/server";
 // Cliente de Supabase que actúa como la persona logueada (lee su sesión de las cookies).
 // Todo lo que haga pasa por las políticas RLS de esa persona. Solo para código de servidor.
 export async function crearClienteSesion() {
-  const { url, key } = leerConfigSupabase();
+  // Primero las cookies: así en el build la página queda como dinámica y no evalúa las variables.
   const almacen = await cookies();
+  const { url, key } = leerConfigSupabase();
 
   return createServerClient(url, key, {
     cookies: {
