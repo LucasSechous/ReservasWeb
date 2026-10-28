@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 //
 // Acepta los nombres NEXT_PUBLIC_* (estándar de Supabase) y los NEXT_SUPABASE_*
 // (los que quedaron cargados en Vercel). Este archivo corre solo en el servidor.
-function leerConfig() {
+export function leerConfigSupabase() {
   const url =
     process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.NEXT_SUPABASE_URL;
   const key =
@@ -22,6 +22,6 @@ function leerConfig() {
 }
 
 export function createPublicClient() {
-  const { url, key } = leerConfig();
+  const { url, key } = leerConfigSupabase();
   return createClient(url, key, { auth: { persistSession: false } });
 }
