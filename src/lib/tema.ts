@@ -27,6 +27,8 @@ export type Tema = {
   video?: string;
   /** Foto de portada opcional, guardada en public/negocios/<slug>/ (por ejemplo /negocios/mi-slug/portada.jpg). */
   portada?: string;
+  /** Fotos de la galería, guardadas en public/negocios/<slug>/. Con `alt` describiendo cada una. */
+  galeria?: { src: string; alt: string }[];
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
   demo?: boolean;
 };
@@ -54,6 +56,12 @@ const TEMAS: Record<string, Tema> = {
     lema: "Cortes con turno.",
     intro: "Corte, barba y estilo. Elegí tu barbero, tu horario y listo: tu lugar queda reservado.",
     logo: "/negocios/barberia-demo/logo.svg",
+    portada: "/negocios/barberia-demo/corte.jpg",
+    galeria: [
+      { src: "/negocios/barberia-demo/tijeras.jpg", alt: "Tijeras y navaja sobre una mesa de madera" },
+      { src: "/negocios/barberia-demo/barberia.jpg", alt: "Interior de la barbería, con espejos y sillones" },
+      { src: "/negocios/barberia-demo/corte.jpg", alt: "Un barbero cortando el pelo con peine y tijera" },
+    ],
     demo: true,
   },
   "estetica-demo": {

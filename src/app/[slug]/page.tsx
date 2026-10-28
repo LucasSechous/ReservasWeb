@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BannerDemo } from "@/components/banner-demo";
 import { FondoMovil } from "@/components/fondo-movil";
+import { Galeria } from "@/components/galeria";
 import { HeroTitle } from "@/components/hero-title";
 import { Marquee } from "@/components/marquee";
 import { Reveal } from "@/components/reveal";
@@ -133,19 +134,8 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
       </header>
 
       <main>
-        <section
-          className="relative overflow-hidden"
-          style={
-            tema.portada
-              ? {
-                  backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.6), var(--n-fondo)), url(${tema.portada})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }
-              : undefined
-          }
-        >
-          <FondoMovil video={tema.video} />
+        <section className="relative isolate overflow-hidden">
+          <FondoMovil video={tema.video} imagen={tema.portada} />
           {tema.logo && (
             <Reveal delay={0.5} y={30} className="pointer-events-none absolute right-8 top-16 hidden lg:block xl:right-20">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -250,6 +240,22 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                 </li>
               ))}
             </ul>
+          </section>
+        )}
+
+        {tema.galeria && tema.galeria.length > 0 && (
+          <section aria-labelledby="galeria" className="mx-auto max-w-6xl px-5 pb-24">
+            <Reveal>
+              <h2
+                id="galeria"
+                className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl"
+              >
+                Galería
+              </h2>
+            </Reveal>
+            <div className="mt-12">
+              <Galeria fotos={tema.galeria} />
+            </div>
           </section>
         )}
 
@@ -390,7 +396,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
           </section>
         )}
 
-        <section className="relative overflow-hidden py-28">
+        <section className="relative isolate overflow-hidden py-28">
           <div
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-1/2 -z-10 size-[40rem] -translate-x-1/2 -translate-y-1/2 animate-float-slow rounded-full bg-accent/15 blur-[130px]"
