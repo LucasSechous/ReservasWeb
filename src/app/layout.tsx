@@ -13,8 +13,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ReservasWeb",
-  description: "Reservas online para barberías, peluquerías y centros de estética.",
+  title: {
+    default: "ReservasWeb · Tu web con reservas online",
+    template: "%s · ReservasWeb",
+  },
+  description:
+    "Páginas web con reservas online para barberías, peluquerías y centros de estética en Uruguay. Tus clientes reservan solos desde el celular.",
+  openGraph: {
+    title: "ReservasWeb · Tu web con reservas online",
+    description:
+      "Tu negocio con su propia web, y turnos que se reservan solos.",
+    locale: "es_UY",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
