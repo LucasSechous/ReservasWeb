@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { BannerDemo } from "@/components/banner-demo";
 import { Reveal } from "@/components/reveal";
 import {
   formatoDuracion,
@@ -57,6 +58,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
       className="min-h-screen bg-(--n-fondo) pb-28 text-(--n-texto) selection:bg-(--n-acento) selection:text-(--n-acento-tinta)"
     >
       <title>{`${negocio.nombre} · Reservá tu turno`}</title>
+      {tema.demo && <BannerDemo />}
 
       <div
         style={

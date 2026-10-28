@@ -206,11 +206,13 @@ Código hecho el 28 de octubre de 2026. `crear_negocio()` se probó en la base c
 
 ### Fase 8: Demo y primer cliente
 
-- [ ] «Barbería Demo» pública para las demos de los leads, enlazada desde la vitrina
-- [ ] Pasar Vercel y Supabase a los planes pagos
-- [ ] Primer cliente real dado de alta
+- [x] «Barbería Demo» pública para las demos de los leads, enlazada desde la vitrina (tarjeta «En vivo» en `/`, y un cartel fijo de «esto es una demo» en `/barberia-demo`; sin mail del negocio para que no salgan avisos)
+- [ ] Pasar Vercel y Supabase a los planes pagos — **te toca a vos**, no lo puedo hacer yo
+- [ ] Primer cliente real dado de alta — **te toca a vos**, desde `/operador/nuevo`
 
 **Terminada cuando:** un cliente real recibe reservas de sus clientes.
+
+Hecho el 28 de octubre de 2026 lo que depende del código. Cuando la demo esté publicada en producción, el botón «Reservar» de las demos de los agentes puede apuntar a `/barberia-demo/reservar` (hay que actualizar el prompt del agente de demos con la dirección pública). La demo recibe reservas de prueba de quien la use: conviene limpiarlas de vez en cuando desde el panel de Supabase.
 
 ## Conexión con los agentes
 

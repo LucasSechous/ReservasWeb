@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { BannerDemo } from "@/components/banner-demo";
 import { getNegocio, getProfesionales, getServicios } from "@/lib/negocios";
 import { getTema, temaStyle } from "@/lib/tema";
 import { ReservaFlow } from "./reserva-flow";
@@ -27,12 +28,15 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
     getProfesionales(negocio.id),
   ]);
 
+  const tema = getTema(negocio.slug);
+
   return (
     <div
-      style={temaStyle(getTema(negocio.slug))}
+      style={temaStyle(tema)}
       className="min-h-screen bg-(--n-fondo) text-(--n-texto) selection:bg-(--n-acento) selection:text-(--n-acento-tinta)"
     >
       <title>{`Reservar · ${negocio.nombre}`}</title>
+      {tema.demo && <BannerDemo />}
       <div className="mx-auto max-w-2xl px-5 py-8 sm:py-12">
         <Link
           href={`/${negocio.slug}`}
