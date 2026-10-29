@@ -33,7 +33,7 @@ begin
     then 'T1 OK   horario partido: 34 turnos' else 'T1 FALLO esperaba 34 y dio ' || v_n end);
 
   -- T2: una reserva 10:00-10:30 saca 09:45, 10:00 y 10:15 (el 10:30 queda libre). Quedan 31.
-  perform public.reservar(v_neg, v_srv, null, (v_dia + time '10:00') at time zone 'America/Montevideo', 'Ana Test', '099123456');
+  perform public.reservar(v_neg, v_srv, null, (v_dia + time '10:00') at time zone 'America/Montevideo', 'Ana Test', '099123456', null, null, md5(random()::text) || md5(random()::text));
   select count(*) into v_n from public.horarios_libres(v_neg, v_srv, v_dia);
   v_out := array_append(v_out, case when v_n = 31
     then 'T2 OK   reserva existente: 31 turnos' else 'T2 FALLO esperaba 31 y dio ' || v_n end);
@@ -97,7 +97,7 @@ begin
 
   -- T10: es coherente con reservar(): el primer turno que ofrece se puede reservar y deja de aparecer
   select min(inicio) into v_primero from public.horarios_libres(v_neg, v_srv, v_dia, v_p1);
-  perform public.reservar(v_neg, v_srv, v_p1, v_primero, 'Beto Test', '099123457');
+  perform public.reservar(v_neg, v_srv, v_p1, v_primero, 'Beto Test', '099123457', null, null, md5(random()::text) || md5(random()::text));
   select count(*) into v_n from public.horarios_libres(v_neg, v_srv, v_dia, v_p1) where inicio = v_primero;
   v_out := array_append(v_out, case when v_n = 0
     then 'T10 OK  el turno ofrecido se reserva y desaparece' else 'T10 FALLO el turno reservado sigue apareciendo' end);

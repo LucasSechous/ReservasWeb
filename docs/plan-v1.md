@@ -52,7 +52,7 @@ Ocho tablas en una sola base compartida, con Row Level Security para que cada ne
 | `profesional_servicios` | Qué servicios hace cada profesional | `profesional_id`, `servicio_id` |
 | `horarios_disponibles` | Horario semanal de cada profesional (puede haber varios tramos por día, para el horario partido) | `profesional_id`, `dia_semana`, `hora_inicio`, `hora_fin` (`time`, hora local del negocio) |
 | `horarios_excepciones` | Feriados, vacaciones o un día con horario especial | `profesional_id`, `fecha`, `disponible`, `hora_inicio`, `hora_fin`, `motivo` |
-| `reservas` | Los turnos y los bloqueos | `negocio_id`, `profesional_id`, `servicio_id`, `rango` (tstzrange), `estado`, `origen`, `cliente_nombre`, `cliente_email`, `cliente_telefono`, `notas`, `precio_final`, `duracion_final_minutos`, `token_cancelacion` |
+| `reservas` | Los turnos y los bloqueos | `negocio_id`, `profesional_id`, `servicio_id`, `rango` (tstzrange), `estado`, `origen`, `cliente_nombre`, `cliente_email`, `cliente_telefono`, `notas`, `precio_final`, `duracion_final_minutos`, `token_gestion_hash`, `cancelada_at`, `cancelada_por`, `reprogramaciones` |
 | `usuarios` | Quién entra al panel | `negocio_id` (vacío para el operador), `auth_user_id`, `email`, `nombre`, `rol` (`owner`, `staff`, `admin_plataforma`) |
 
 **Bloqueos:** no hay tabla aparte. Bloquear una tarde es crear una reserva con `origen = 'bloqueo'`, y así la misma restricción anti-superposición lo cubre. `origen` puede ser `publico`, `manual` o `bloqueo`; `estado` puede ser `confirmada`, `cancelada`, `completada` o `no_show`.
@@ -61,7 +61,7 @@ Ocho tablas en una sola base compartida, con Row Level Security para que cada ne
 
 - Cualquiera puede leer los negocios activos, sus servicios, profesionales y horarios: es lo que muestra la landing.
 - Nadie crea reservas públicas directo en la tabla. Se crean solo con la función `reservar()`, que valida todo antes de guardar.
-- Quien cancela desde el link del mail no tiene login: lo hace con la función `cancelar_reserva(token)` (`security definer`), que solo toca la reserva de ese token.
+- Quien cancela o reprograma desde el link del mail no tiene login: Next calcula el sha256 del token y llama a `gestion_obtener_reserva`, `gestion_cancelar_reserva` o `gestion_reprogramar_reserva` (`security definer`, ejecutables solo por `service_role`), que solo tocan la reserva de ese hash.
 - Un dueño lee y cancela las reservas de su negocio, y crea reservas manuales y bloqueos.
 - Vos, como operador (`admin_plataforma`), ves y editás todo. Hoy esa política no existe: se agrega en la Fase 2.
 
@@ -86,11 +86,11 @@ Si el cliente no elige profesional, se muestra la unión de los horarios libres 
 
 - Cada reserva guarda su `rango` de tiempo y la tabla tiene una restricción `EXCLUDE USING gist (profesional_id WITH =, rango WITH &&) WHERE (estado = 'confirmada')`, con la extensión `btree_gist` (ya instalada).
 - Si dos personas eligen el mismo horario, la segunda recibe un error y la pantalla le muestra los horarios que siguen libres.
-- La función `reservar()` vuelve a validar que el horario esté dentro de la atención, guarda `precio_final` y genera el `token_cancelacion`. Si no se indica profesional, prueba con cada uno que haga el servicio, en orden, y asigna el primero libre.
+- La función `reservar()` vuelve a validar que el horario esté dentro de la atención, guarda `precio_final` y el hash del token de gestión que genera Next. Si no se indica profesional, prueba con cada uno que haga el servicio, en orden, y asigna el primero libre.
 
 **Fechas y horas:** todo se guarda en `timestamptz` y se muestra en la zona del negocio (`America/Montevideo` por defecto), lo que deja listo el salto a Argentina o Brasil. Las reservas guardan un `rango` (`tstzrange`) y `reservar()` recibe un instante con zona horaria; los horarios de atención son `time` en hora local del negocio.
 
-**Cancelación:** el mail trae un link con el token. `cancelar_reserva(token)` cambia el `estado` a `cancelada`, libera el horario y le avisa al negocio. Hoy solo permite cancelar turnos futuros; en la v1 no hay otro límite de tiempo, y si un negocio lo pide se agrega como regla.
+**Gestión por link (cancelar y reprogramar):** al reservar, Next genera un token de 32 bytes aleatorios (base64url) y a la base solo le llega su sha256 (`reservas.token_gestion_hash`, único); el token en claro solo va en el link `/reserva/[token]` y no se guarda ni se loguea. Cancelar deja `estado = 'cancelada'`, `cancelada_at` y `cancelada_por` (`cliente` o `negocio`), libera el horario y avisa al negocio; cancelar dos veces no da error. Reprogramar mueve la misma reserva (mismo servicio y `precio_final`) a un horario que valida `horarios_libres()`, hasta 2 veces (`MAX_REPROGRAMACIONES` en `src/lib/gestion.ts`). Los cambios se cierran `negocios.horas_min_cambio` horas antes del turno (2 por defecto); pasada esa ventana la página muestra los datos y el contacto del negocio. El `EXCLUDE` solo cuenta las reservas `confirmada`, así que una cancelada nunca bloquea el horario. Migración: `20261029000000_gestion_reserva_por_link.sql`; test: `supabase/tests/gestion_reserva.sql`. Queda fuera: avisar al negocio cuando el cliente reprograma, y señas o penalidades.
 
 **Bloqueos sobre turnos ya confirmados:** si el dueño bloquea un rango donde ya hay reservas, el panel avisa «hay N turnos en ese rango» y permite cancelarlos, con mail al cliente. Nunca se superponen en silencio.
 
@@ -175,7 +175,7 @@ Hecha el 28 de octubre de 2026 y probada contra la base real (páginas, horarios
 - [ ] Configurar Resend con un dominio verificado — **te toca a vos**: crear la cuenta, verificar el dominio y cargar `RESEND_API_KEY` y `MAIL_FROM` (ver `.env.example`)
 - [x] Mail de confirmación con link de cancelación (código listo en `src/lib/mails.ts`; se envía cuando hay mail del cliente)
 - [x] Aviso al negocio por cada reserva y cada cancelación (al `email` del negocio)
-- [x] Página `/cancelar/[token]`
+- [x] Página `/cancelar/[token]` (reemplazada por `/reserva/[token]`, que además reprograma)
 
 **Terminada cuando:** reservás, te llega el mail, cancelás desde el link y el horario vuelve a estar libre.
 
