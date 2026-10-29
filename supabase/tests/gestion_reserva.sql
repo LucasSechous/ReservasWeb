@@ -169,9 +169,9 @@ begin
   end;
 
   -- T11: fuera de la ventana de cambios (la reserva es dentro de 1 hora y el negocio exige 2)
-  insert into public.reservas (negocio_id, profesional_id, servicio_id, cliente_nombre, rango, estado, origen,
+  insert into public.reservas (negocio_id, profesional_id, servicio_id, cliente_nombre, cliente_telefono, rango, estado, origen,
                                precio_final, duracion_final_minutos, token_gestion_hash)
-    values (v_neg, v_p1, v_srv, 'Cami Test', tstzrange(v_ahora + interval '1 hour', v_ahora + interval '90 minutes', '[)'),
+    values (v_neg, v_p1, v_srv, 'Cami Test', '099111111', tstzrange(v_ahora + interval '1 hour', v_ahora + interval '90 minutes', '[)'),
             'confirmada', 'publico', 500, 30, encode(sha256(convert_to('token-cerca', 'utf8')), 'hex'));
   select * into r from public.gestion_obtener_reserva(encode(sha256(convert_to('token-cerca', 'utf8')), 'hex'), 2);
   v_out := array_append(v_out, case when not r.puede_cancelar and not r.puede_reprogramar and r.motivo = 'FUERA_DE_VENTANA'
@@ -199,9 +199,9 @@ begin
     else 'T11d FALLO no respetó horas_min_cambio = 0' end);
 
   -- T12: el turno ya ocurrió
-  insert into public.reservas (negocio_id, profesional_id, servicio_id, cliente_nombre, rango, estado, origen,
+  insert into public.reservas (negocio_id, profesional_id, servicio_id, cliente_nombre, cliente_telefono, rango, estado, origen,
                                precio_final, duracion_final_minutos, token_gestion_hash)
-    values (v_neg, v_p1, v_srv, 'Pablo Test', tstzrange(v_ahora - interval '3 hours', v_ahora - interval '2 hours 30 minutes', '[)'),
+    values (v_neg, v_p1, v_srv, 'Pablo Test', '099111112', tstzrange(v_ahora - interval '3 hours', v_ahora - interval '2 hours 30 minutes', '[)'),
             'confirmada', 'publico', 500, 30, encode(sha256(convert_to('token-pasado', 'utf8')), 'hex'));
   select * into r from public.gestion_obtener_reserva(encode(sha256(convert_to('token-pasado', 'utf8')), 'hex'), 2);
   v_out := array_append(v_out, case when not r.puede_cancelar and r.motivo = 'YA_PASO'
