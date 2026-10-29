@@ -33,8 +33,12 @@ export type Tema = {
   fondoEquipoPosicion?: string;
   /** Fotos de la galería, guardadas en public/negocios/<slug>/. Con `alt` describiendo cada una. */
   galeria?: { src: string; alt: string }[];
-  /** Estilo de la landing. Sin valor: la landing oscura con destellos. "retro": papel crema y letras de cartel (components/landing-retro.tsx). */
-  estilo?: "retro";
+  /**
+   * Estilo de la landing. Sin valor: la landing oscura con destellos (app/[slug]/page.tsx).
+   * "retro": papel crema y letras de cartel (components/landing-retro.tsx).
+   * "editorial": fondo claro, serif fina y mucho aire (components/landing-editorial.tsx).
+   */
+  estilo?: "retro" | "editorial";
   /** Tercer color de la paleta (el estilo retro lo usa para franjas y fondos de sección). Por defecto, el brillo. */
   detalle?: string;
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
@@ -74,12 +78,14 @@ const TEMAS: Record<string, Tema> = {
     demo: true,
   },
   "estetica-demo": {
-    fondo: "#120b10",
-    texto: "#fbf3f6",
-    tarjeta: "#1d1219",
-    acento: "#ff9ec4",
-    acentoTinta: "#2b0a18",
-    brillo: "#c084fc",
+    estilo: "editorial",
+    fondo: "#f6f1ea",
+    texto: "#2b2420",
+    tarjeta: "#fffdf9",
+    acento: "#a4506a",
+    acentoTinta: "#fffaf6",
+    brillo: "#ead3d6",
+    detalle: "#8b7a6b",
     lema: "Tu momento, con turno.",
     intro: "Faciales, depilación, masajes y más. Reservá tu momento de cuidado en un par de toques.",
     logo: "/negocios/estetica-demo/logo.svg",
@@ -119,6 +125,13 @@ const TEMAS: Record<string, Tema> = {
   },
 };
 
+/** true si el color de fondo (#rrggbb) es claro. Define si los avisos usan rojo oscuro o claro. */
+function esClaro(hex: string): boolean {
+  const n = Number.parseInt(hex.replace("#", ""), 16);
+  const luminancia = 0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255);
+  return luminancia > 140;
+}
+
 export function getTema(slug: string): Tema {
   return TEMAS[slug] ?? TEMA_BASE;
 }
@@ -136,6 +149,7 @@ export function temaStyle(tema: Tema): CSSProperties {
     "--n-acento": tema.acento,
     "--n-acento-tinta": tema.acentoTinta,
     "--n-detalle": tema.detalle ?? tema.brillo,
+    "--n-error": esClaro(tema.fondo) ? "#b42318" : "#fecaca",
     "--color-accent": tema.acento,
     "--color-accent-ink": tema.acentoTinta,
     "--color-violeta": tema.brillo,

@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" role="img" aria-label="Estética Demo">
-  <circle cx="48" cy="48" r="44" stroke="#ff9ec4" stroke-width="3"/>
-  <!-- flor de tres pétalos -->
-  <path d="M48 22c12 14 12 32 0 46C36 54 36 36 48 22z" fill="#ff9ec4"/>
-  <path d="M48 68C30 64 22 50 24 36c16 2 26 14 24 32z" fill="#c084fc" opacity=".9"/>
-  <path d="M48 68c18-4 26-18 24-32-16 2-26 14-24 32z" fill="#c084fc" opacity=".9"/>
-  <path d="M30 76h36" stroke="#fbf3f6" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="48" cy="48" r="44" stroke="#a4506a" stroke-width="1.6"/>
+  <!-- flor de loto en línea fina -->
+  <path d="M48 24c9 10 9 24 0 36-9-12-9-26 0-36z" stroke="#a4506a" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M48 60C34 58 26 48 27 36c13 1 21 9 21 24z" stroke="#a4506a" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M48 60c14-2 22-12 21-24-13 1-21 9-21 24z" stroke="#a4506a" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M33 68h30" stroke="#a4506a" stroke-width="2" stroke-linecap="round"/>
 </svg>

@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import {
   Alegreya_Sans,
   Bricolage_Grotesque,
+  Cormorant_Garamond,
   Courier_Prime,
   Geist,
   Geist_Mono,
+  Jost,
   Shrikhand,
 } from "next/font/google";
 import { MotionProvider } from "@/components/motion-provider";
@@ -49,6 +51,22 @@ const alegreyaSans = Alegreya_Sans({
   preload: false,
 });
 
+// Tipografías del estilo editorial (components/landing-editorial.tsx), también sin precarga.
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
+  preload: false,
+});
+
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: {
     default: "ReservasWeb · Tu web con reservas online",
@@ -69,7 +87,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${shrikhand.variable} ${courierPrime.variable} ${alegreyaSans.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${shrikhand.variable} ${courierPrime.variable} ${alegreyaSans.variable} ${cormorant.variable} ${jost.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <MotionProvider>{children}</MotionProvider>

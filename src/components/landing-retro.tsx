@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BannerDemo } from "@/components/banner-demo";
+import { BotonCta, type Cta } from "@/components/boton-cta";
 import { Marquee } from "@/components/marquee";
 import { Reveal } from "@/components/reveal";
 import { type Negocio, type Profesional, type Servicio, formatoPrecio } from "@/lib/negocios";
@@ -10,8 +11,6 @@ import { type Tema, temaStyle } from "@/lib/tema";
 // Es una alternativa completa a la landing oscura de page.tsx; se elige con `estilo: "retro"` en el tema.
 // Pensada para landings simples (cafeterías, bares, panaderías). La reserva online sigue usando
 // el flujo oscuro de /[slug]/reservar, que no está adaptado a este estilo claro.
-
-type Cta = { href: string; texto: string; externo: boolean };
 
 type Props = {
   negocio: Negocio;
@@ -43,26 +42,6 @@ const boton =
   "inline-flex min-h-13 items-center justify-center gap-2 rounded-sm border-2 border-(--n-texto) bg-(--n-acento) px-8 retro-mono text-base font-bold uppercase tracking-wider text-(--n-acento-tinta) shadow-[5px_5px_0_var(--n-texto)] transition hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--n-texto)] active:translate-x-1 active:translate-y-1 active:shadow-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--n-texto)";
 const botonClaro =
   "inline-flex min-h-13 items-center justify-center gap-2 rounded-sm border-2 border-(--n-texto) bg-(--n-fondo) px-8 retro-mono text-base font-bold uppercase tracking-wider text-(--n-texto) shadow-[5px_5px_0_var(--n-texto)] transition hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--n-texto)] active:translate-x-1 active:translate-y-1 active:shadow-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--n-texto)";
-
-function BotonCta({
-  cta,
-  className,
-  children,
-}: {
-  cta: Cta;
-  className: string;
-  children?: React.ReactNode;
-}) {
-  return cta.externo ? (
-    <a href={cta.href} target="_blank" rel="noopener noreferrer" className={className}>
-      {children ?? cta.texto}
-    </a>
-  ) : (
-    <Link href={cta.href} className={className}>
-      {children ?? cta.texto}
-    </Link>
-  );
-}
 
 function Titulo({
   id,

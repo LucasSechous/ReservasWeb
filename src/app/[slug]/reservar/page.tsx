@@ -10,7 +10,7 @@ export default function Reservar({ params }: PageProps<"/[slug]/reservar">) {
   return (
     <Suspense
       fallback={
-        <div className="grid min-h-screen place-items-center text-white/50">Cargando…</div>
+        <div className="grid min-h-screen place-items-center text-(--n-texto)/50">Cargando…</div>
       }
     >
       <Contenido params={params} />
@@ -42,13 +42,13 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
       <div className="mx-auto max-w-2xl px-5 py-8 sm:py-12">
         <Link
           href={`/${negocio.slug}`}
-          className="text-sm font-semibold text-white/60 hover:text-white"
+          className="text-sm font-semibold text-(--n-texto)/60 hover:text-(--n-texto)"
         >
           ← {negocio.nombre}
         </Link>
         <div className="mt-6">
           {servicios.length === 0 ? (
-            <p className="rounded-2xl border border-white/10 bg-(--n-tarjeta) p-6">
+            <p className="rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-6">
               Este negocio todavía no tiene servicios para reservar.
             </p>
           ) : (

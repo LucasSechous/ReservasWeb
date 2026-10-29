@@ -23,7 +23,7 @@ const ERROR_GENERAL = "No pudimos hacer el cambio. Probá de nuevo en unos minut
 const boton =
   "inline-flex min-h-12 items-center justify-center rounded-full px-6 font-bold transition disabled:cursor-not-allowed disabled:opacity-40";
 const botonPrimario = `${boton} bg-(--n-acento) text-(--n-acento-tinta) hover:brightness-110`;
-const botonSecundario = `${boton} border border-white/20 hover:bg-white/5`;
+const botonSecundario = `${boton} border border-(--n-texto)/20 hover:bg-(--n-texto)/5`;
 
 function digitosWhatsapp(telefono: string): string {
   const d = telefono.replace(/\D/g, "");
@@ -117,7 +117,7 @@ export function GestionReserva({
           : null;
 
   const contacto = (
-    <div className="rounded-2xl border border-white/10 bg-(--n-tarjeta) p-5 text-sm">
+    <div className="rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-5 text-sm">
       <p className="font-semibold">Si necesitás hacer un cambio, escribile al negocio:</p>
       <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
         {reserva.negocio_telefono && (
@@ -135,7 +135,7 @@ export function GestionReserva({
         )}
         {reserva.negocio_email && <span>{reserva.negocio_email}</span>}
         {!reserva.negocio_telefono && !reserva.negocio_email && (
-          <span className="text-white/60">{reserva.negocio_nombre}</span>
+          <span className="text-(--n-texto)/60">{reserva.negocio_nombre}</span>
         )}
       </p>
     </div>
@@ -145,7 +145,7 @@ export function GestionReserva({
     <div>
       <Link
         href={`/${reserva.negocio_slug}`}
-        className="text-sm font-semibold text-white/60 hover:text-white"
+        className="text-sm font-semibold text-(--n-texto)/60 hover:text-(--n-texto)"
       >
         ← {reserva.negocio_nombre}
       </Link>
@@ -160,7 +160,7 @@ export function GestionReserva({
           className="mt-4 rounded-2xl border border-(--n-acento)/50 bg-(--n-acento)/10 p-4"
         >
           <span className="block font-bold">Listo, cancelamos tu turno.</span>
-          <span className="text-sm text-white/70">El horario volvió a quedar libre.</span>
+          <span className="text-sm text-(--n-texto)/70">El horario volvió a quedar libre.</span>
         </p>
       )}
       {exito === "reprogramado" && (
@@ -169,13 +169,13 @@ export function GestionReserva({
           className="mt-4 rounded-2xl border border-(--n-acento)/50 bg-(--n-acento)/10 p-4"
         >
           <span className="block font-bold">Listo, cambiamos tu turno.</span>
-          <span className="text-sm capitalize text-white/70">Ahora es {cuando}.</span>
+          <span className="text-sm capitalize text-(--n-texto)/70">Ahora es {cuando}.</span>
         </p>
       )}
       {aviso && (
         <p
           role="alert"
-          className="mt-4 rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+          className="mt-4 rounded-2xl border border-(--n-error)/40 bg-(--n-error)/10 px-4 py-3 text-sm text-(--n-error)"
         >
           {aviso}
         </p>
@@ -183,38 +183,38 @@ export function GestionReserva({
 
       {vista === "detalle" && (
         <>
-          <dl className="mt-6 space-y-2 rounded-2xl border border-white/10 bg-(--n-tarjeta) p-5 text-sm">
+          <dl className="mt-6 space-y-2 rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-5 text-sm">
             <div className="flex justify-between gap-4">
-              <dt className="text-white/55">Estado</dt>
+              <dt className="text-(--n-texto)/55">Estado</dt>
               <dd className="font-semibold">{cancelada ? "Cancelado" : "Confirmado"}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-white/55">Negocio</dt>
+              <dt className="text-(--n-texto)/55">Negocio</dt>
               <dd className="text-right font-semibold">{reserva.negocio_nombre}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-white/55">Servicio</dt>
+              <dt className="text-(--n-texto)/55">Servicio</dt>
               <dd className="text-right font-semibold">
                 {reserva.servicio_nombre ?? "Turno"}
                 {reserva.precio_final != null ? ` · ${formatoPrecio(reserva.precio_final)}` : ""}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-white/55">Cuándo</dt>
+              <dt className="text-(--n-texto)/55">Cuándo</dt>
               <dd className="text-right font-semibold capitalize">{cuando}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-white/55">Con</dt>
+              <dt className="text-(--n-texto)/55">Con</dt>
               <dd className="font-semibold">{reserva.profesional_nombre}</dd>
             </div>
             {reserva.negocio_direccion && (
               <div className="flex justify-between gap-4">
-                <dt className="text-white/55">Dirección</dt>
+                <dt className="text-(--n-texto)/55">Dirección</dt>
                 <dd className="text-right font-semibold">{reserva.negocio_direccion}</dd>
               </div>
             )}
             <div className="flex justify-between gap-4">
-              <dt className="text-white/55">A nombre de</dt>
+              <dt className="text-(--n-texto)/55">A nombre de</dt>
               <dd className="font-semibold">{reserva.cliente_nombre}</dd>
             </div>
           </dl>
@@ -253,14 +253,14 @@ export function GestionReserva({
             {reserva.puede_cancelar &&
               !reserva.puede_reprogramar &&
               reserva.motivo === "LIMITE_REPROGRAMACIONES" && (
-                <p className="text-sm text-white/65">
+                <p className="text-sm text-(--n-texto)/65">
                   Ya cambiaste este turno {maxReprogramaciones} veces, que es el máximo. Todavía lo
                   podés cancelar.
                 </p>
               )}
 
             {!hayAcciones && motivoSinAcciones && (
-              <p className="rounded-2xl border border-white/10 bg-(--n-tarjeta) p-5">
+              <p className="rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-5">
                 {motivoSinAcciones}
               </p>
             )}
@@ -280,7 +280,7 @@ export function GestionReserva({
 
       {vista === "reprogramar" && (
         <section className="mt-2">
-          <p className="text-white/65">
+          <p className="text-(--n-texto)/65">
             Ahora: <span className="font-semibold capitalize">{cuando}</span>. Elegí el día y la
             hora nuevos.
           </p>
@@ -380,12 +380,12 @@ function DialogoCancelar({
         aria-modal="true"
         aria-labelledby="titulo-cancelar"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-3xl border border-white/10 bg-(--n-tarjeta) p-6"
+        className="w-full max-w-sm rounded-3xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-6"
       >
         <h2 id="titulo-cancelar" className="text-xl font-extrabold">
           ¿Cancelar tu turno?
         </h2>
-        <p className="mt-2 text-sm text-white/70">
+        <p className="mt-2 text-sm text-(--n-texto)/70">
           Tu turno del <span className="font-semibold capitalize">{cuando}</span> se cancela y el
           horario queda libre para otra persona.
         </p>

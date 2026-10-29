@@ -49,7 +49,7 @@ const MENSAJES_ERROR: Record<string, string> = {
 const boton =
   "inline-flex min-h-12 items-center justify-center rounded-full px-6 font-bold transition disabled:cursor-not-allowed disabled:opacity-40";
 const botonPrimario = `${boton} bg-(--n-acento) text-(--n-acento-tinta) hover:brightness-110`;
-const botonSecundario = `${boton} border border-white/20 hover:bg-white/5`;
+const botonSecundario = `${boton} border border-(--n-texto)/20 hover:bg-(--n-texto)/5`;
 
 export function ReservaFlow({
   negocio,
@@ -168,38 +168,38 @@ export function ReservaFlow({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-3xl border border-white/10 bg-(--n-tarjeta) p-8 text-center"
+        className="rounded-3xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-8 text-center"
       >
         <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-(--n-acento) text-3xl font-bold text-(--n-acento-tinta)">
           ✓
         </span>
         <h1 className="mt-5 text-3xl font-extrabold">¡Reserva confirmada!</h1>
-        <p className="mt-2 text-white/70">
+        <p className="mt-2 text-(--n-texto)/70">
           Te esperamos en {negocio.nombre}.
         </p>
-        <dl className="mx-auto mt-6 max-w-sm space-y-2 rounded-2xl bg-white/5 p-5 text-left text-sm">
+        <dl className="mx-auto mt-6 max-w-sm space-y-2 rounded-2xl bg-(--n-texto)/5 p-5 text-left text-sm">
           <div className="flex justify-between gap-4">
-            <dt className="text-white/55">Servicio</dt>
+            <dt className="text-(--n-texto)/55">Servicio</dt>
             <dd className="font-semibold">{servicio.nombre}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-white/55">Cuándo</dt>
+            <dt className="text-(--n-texto)/55">Cuándo</dt>
             <dd className="text-right font-semibold capitalize">
               {formatoInstanteLargo(inicioIso, negocio.timezone)}
             </dd>
           </div>
           {profesional && (
             <div className="flex justify-between gap-4">
-              <dt className="text-white/55">Con</dt>
+              <dt className="text-(--n-texto)/55">Con</dt>
               <dd className="font-semibold">{profesional.nombre}</dd>
             </div>
           )}
           <div className="flex justify-between gap-4">
-            <dt className="text-white/55">A nombre de</dt>
+            <dt className="text-(--n-texto)/55">A nombre de</dt>
             <dd className="font-semibold">{nombre.trim()}</dd>
           </div>
         </dl>
-        <p className="mx-auto mt-6 max-w-sm text-sm text-white/60">
+        <p className="mx-auto mt-6 max-w-sm text-sm text-(--n-texto)/60">
           Guardá este link: es la única forma de cancelar o cambiar tu turno.
         </p>
         <a
@@ -224,12 +224,12 @@ export function ReservaFlow({
           <li key={nombrePaso} className="flex-1">
             <span
               className={`block h-1 rounded-full transition-colors ${
-                i + 1 <= paso ? "bg-(--n-acento)" : "bg-white/15"
+                i + 1 <= paso ? "bg-(--n-acento)" : "bg-(--n-texto)/15"
               }`}
             />
             <span
               className={`mt-2 block text-xs ${
-                i + 1 === paso ? "font-semibold" : "text-white/45"
+                i + 1 === paso ? "font-semibold" : "text-(--n-texto)/45"
               }`}
               aria-current={i + 1 === paso ? "step" : undefined}
             >
@@ -242,7 +242,7 @@ export function ReservaFlow({
       {aviso && (
         <p
           role="alert"
-          className="mb-6 rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+          className="mb-6 rounded-2xl border border-(--n-error)/40 bg-(--n-error)/10 px-4 py-3 text-sm text-(--n-error)"
         >
           {aviso}
         </p>
@@ -269,12 +269,12 @@ export function ReservaFlow({
                     className={`flex w-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition ${
                       servicioId === s.id
                         ? "border-(--n-acento) bg-(--n-acento)/10"
-                        : "border-white/10 bg-(--n-tarjeta) hover:border-white/30"
+                        : "border-(--n-texto)/10 bg-(--n-tarjeta) hover:border-(--n-texto)/30"
                     }`}
                   >
                     <span>
                       <span className="block font-bold">{s.nombre}</span>
-                      <span className="text-sm text-white/55">
+                      <span className="text-sm text-(--n-texto)/55">
                         {formatoDuracion(s.duracion_minutos)}
                         {s.descripcion ? ` · ${s.descripcion}` : ""}
                       </span>
@@ -295,7 +295,7 @@ export function ReservaFlow({
                       className={`rounded-full border px-4 py-2 text-sm font-semibold ${
                         profesionalId === null
                           ? "border-(--n-acento) bg-(--n-acento) text-(--n-acento-tinta)"
-                          : "border-white/20"
+                          : "border-(--n-texto)/20"
                       }`}
                     >
                       Con quien esté libre
@@ -309,7 +309,7 @@ export function ReservaFlow({
                         className={`rounded-full border px-4 py-2 text-sm font-semibold ${
                           profesionalId === p.id
                             ? "border-(--n-acento) bg-(--n-acento) text-(--n-acento-tinta)"
-                            : "border-white/20"
+                            : "border-(--n-texto)/20"
                         }`}
                       >
                         {p.nombre}
@@ -354,7 +354,7 @@ export function ReservaFlow({
           {paso === 3 && fecha && (
             <section>
               <h1 className="text-2xl font-extrabold sm:text-3xl">¿A qué hora?</h1>
-              <p className="mt-1 capitalize text-white/60">{formatoFechaLarga(fecha)}</p>
+              <p className="mt-1 capitalize text-(--n-texto)/60">{formatoFechaLarga(fecha)}</p>
 
               <SelectorHora
                 turnos={turnos}
@@ -379,7 +379,7 @@ export function ReservaFlow({
           {paso === 4 && servicio && inicio && (
             <section>
               <h1 className="text-2xl font-extrabold sm:text-3xl">Tus datos</h1>
-              <p className="mt-2 rounded-2xl bg-white/5 px-4 py-3 text-sm">
+              <p className="mt-2 rounded-2xl bg-(--n-texto)/5 px-4 py-3 text-sm">
                 <span className="font-bold">{servicio.nombre}</span> ·{" "}
                 <span className="capitalize">
                   {formatoInstanteLargo(inicio, negocio.timezone)}
@@ -402,7 +402,7 @@ export function ReservaFlow({
                     autoComplete="name"
                     required
                     maxLength={100}
-                    className="mt-1 w-full rounded-xl border border-white/15 bg-(--n-tarjeta) px-4 py-3 outline-none focus:border-(--n-acento)"
+                    className="mt-1 w-full rounded-xl border border-(--n-texto)/15 bg-(--n-tarjeta) px-4 py-3 outline-none focus:border-(--n-acento)"
                   />
                 </label>
                 <label className="block">
@@ -415,12 +415,12 @@ export function ReservaFlow({
                     autoComplete="tel"
                     required
                     placeholder="099 123 456"
-                    className="mt-1 w-full rounded-xl border border-white/15 bg-(--n-tarjeta) px-4 py-3 outline-none focus:border-(--n-acento)"
+                    className="mt-1 w-full rounded-xl border border-(--n-texto)/15 bg-(--n-tarjeta) px-4 py-3 outline-none focus:border-(--n-acento)"
                   />
                 </label>
                 <label className="block">
                   <span className="text-sm font-semibold">
-                    Mail <span className="font-normal text-white/50">(para recibir la confirmación)</span>
+                    Mail <span className="font-normal text-(--n-texto)/50">(para recibir la confirmación)</span>
                   </span>
                   <input
                     value={email}
@@ -429,7 +429,7 @@ export function ReservaFlow({
                     inputMode="email"
                     autoComplete="email"
                     placeholder="tu@mail.com"
-                    className="mt-1 w-full rounded-xl border border-white/15 bg-(--n-tarjeta) px-4 py-3 outline-none focus:border-(--n-acento)"
+                    className="mt-1 w-full rounded-xl border border-(--n-texto)/15 bg-(--n-tarjeta) px-4 py-3 outline-none focus:border-(--n-acento)"
                   />
                 </label>
 
