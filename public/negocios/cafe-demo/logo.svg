@@ -1,9 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" role="img" aria-label="Café Demo">
-  <circle cx="48" cy="48" r="44" stroke="#f5b84b" stroke-width="3"/>
+  <circle cx="48" cy="48" r="45" fill="#c4412a" stroke="#3a2213" stroke-width="3"/>
+  <circle cx="48" cy="48" r="38" stroke="#fff4da" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round"/>
   <!-- vapor -->
-  <path d="M38 30c-4-5 4-8 0-13M50 30c-4-5 4-8 0-13M62 30c-4-5 4-8 0-13" stroke="#fdf3e3" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M38 33c-4-5 4-8 0-13M48 33c-4-5 4-8 0-13M58 33c-4-5 4-8 0-13" stroke="#fff4da" stroke-width="3.5" stroke-linecap="round"/>
   <!-- taza -->
-  <path d="M26 40h42v14c0 11-8 19-21 19S26 65 26 54V40z" fill="#f5b84b"/>
-  <path d="M68 45h4a7 7 0 010 14h-5" stroke="#f5b84b" stroke-width="4" stroke-linecap="round"/>
-  <path d="M30 78h34" stroke="#fdf3e3" stroke-width="3" stroke-linecap="round"/>
+  <path d="M27 42h38v13c0 10-7 17-19 17S27 65 27 55V42z" fill="#fff4da" stroke="#3a2213" stroke-width="2.5"/>
+  <path d="M65 47h3.5a6.5 6.5 0 010 13H64" stroke="#fff4da" stroke-width="4" stroke-linecap="round"/>
+  <!-- plato -->
+  <path d="M26 77h40" stroke="#e8a73a" stroke-width="4" stroke-linecap="round"/>
 </svg>

@@ -33,6 +33,10 @@ export type Tema = {
   fondoEquipoPosicion?: string;
   /** Fotos de la galería, guardadas en public/negocios/<slug>/. Con `alt` describiendo cada una. */
   galeria?: { src: string; alt: string }[];
+  /** Estilo de la landing. Sin valor: la landing oscura con destellos. "retro": papel crema y letras de cartel (components/landing-retro.tsx). */
+  estilo?: "retro";
+  /** Tercer color de la paleta (el estilo retro lo usa para franjas y fondos de sección). Por defecto, el brillo. */
+  detalle?: string;
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
   demo?: boolean;
 };
@@ -90,12 +94,14 @@ const TEMAS: Record<string, Tema> = {
     demo: true,
   },
   "cafe-demo": {
-    fondo: "#140d08",
-    texto: "#fdf3e3",
-    tarjeta: "#20150e",
-    acento: "#f5b84b",
-    acentoTinta: "#2a1600",
-    brillo: "#c2410c",
+    estilo: "retro",
+    fondo: "#f1e3c0",
+    texto: "#3a2213",
+    tarjeta: "#fff6de",
+    acento: "#c4412a",
+    acentoTinta: "#fff4da",
+    brillo: "#e8a73a",
+    detalle: "#2f6e61",
     lema: "De barrio, con cariño.",
     intro: "Café de especialidad, tostadas y algo dulce para acompañar. Pasá, te esperamos todos los días.",
     etiqueta: "Café de especialidad",
@@ -129,6 +135,7 @@ export function temaStyle(tema: Tema): CSSProperties {
     "--n-tarjeta": tema.tarjeta,
     "--n-acento": tema.acento,
     "--n-acento-tinta": tema.acentoTinta,
+    "--n-detalle": tema.detalle ?? tema.brillo,
     "--color-accent": tema.acento,
     "--color-accent-ink": tema.acentoTinta,
     "--color-violeta": tema.brillo,

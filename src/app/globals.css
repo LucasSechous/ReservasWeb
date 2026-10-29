@@ -94,6 +94,18 @@
   }
 }
 
+/* Tipografías del estilo retro (components/landing-retro.tsx). */
+.retro-titulo {
+  font-family: var(--font-shrikhand), Georgia, serif;
+  font-weight: 400;
+}
+.retro-mono {
+  font-family: var(--font-courier), "Courier New", monospace;
+}
+.retro-texto {
+  font-family: var(--font-alegreya), Georgia, serif;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
