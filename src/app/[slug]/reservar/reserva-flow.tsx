@@ -4,13 +4,8 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Turnstile } from "@/components/turnstile";
-import {
-  type DiaOpcion,
-  formatoFechaLarga,
-  formatoHora,
-  formatoInstanteLargo,
-  listarDias,
-} from "@/lib/fechas";
+import { SelectorDia, SelectorHora } from "@/components/selector-horario";
+import { formatoFechaLarga, formatoInstanteLargo } from "@/lib/fechas";
 import {
   type Profesional,
   type Servicio,
@@ -74,7 +69,6 @@ export function ReservaFlow({
   const [turnos, setTurnos] = useState<Turno[]>([]);
   const [cargandoTurnos, setCargandoTurnos] = useState(false);
   const [inicio, setInicio] = useState<string | null>(null);
-  const [verMasDias, setVerMasDias] = useState(false);
 
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -95,38 +89,6 @@ export function ReservaFlow({
     [profesionales, servicioId],
   );
   const profesional = profesionales.find((p) => p.id === profesionalId) ?? null;
-
-  const dias: DiaOpcion[] = useMemo(
-    () =>
-      listarDias(
-        negocio.timezone,
-        verMasDias ? negocio.ventana_dias + 1 : Math.min(14, negocio.ventana_dias + 1),
-      ),
-    [negocio.timezone, negocio.ventana_dias, verMasDias],
-  );
-
-  // Sin elegir profesional, cada hora aparece una sola vez aunque varios estén libres.
-  const turnosVisibles = useMemo(() => {
-    const vistos = new Set<string>();
-    return turnos.filter((t) => {
-      if (vistos.has(t.inicio)) return false;
-      vistos.add(t.inicio);
-      return true;
-    });
-  }, [turnos]);
-
-  const franjas = useMemo(() => {
-    const manana: Turno[] = [];
-    const tarde: Turno[] = [];
-    for (const t of turnosVisibles) {
-      const hora = Number(formatoHora(t.inicio, negocio.timezone).slice(0, 2));
-      (hora < 13 ? manana : tarde).push(t);
-    }
-    return [
-      { nombre: "Mañana", turnos: manana },
-      { nombre: "Tarde", turnos: tarde },
-    ].filter((f) => f.turnos.length > 0);
-  }, [turnosVisibles, negocio.timezone]);
 
   async function cargarTurnos(dia: string, servicio: string, prof: string | null) {
     setCargandoTurnos(true);
@@ -238,14 +200,14 @@ export function ReservaFlow({
           </div>
         </dl>
         <p className="mx-auto mt-6 max-w-sm text-sm text-white/60">
-          Guardá este link: es la única forma de cancelar o liberar tu turno.
+          Guardá este link: es la única forma de cancelar o cambiar tu turno.
         </p>
-        <Link
-          href={`/cancelar/${confirmada.token}`}
-          className="mt-2 inline-block break-all text-sm font-semibold text-(--n-acento) underline"
+        <a
+          href={confirmada.gestionUrl}
+          className="mt-2 inline-block text-sm font-semibold text-(--n-acento) underline"
         >
-          Cancelar este turno
-        </Link>
+          Cancelar o cambiar mi turno
+        </a>
         <div className="mt-8">
           <Link href={`/${negocio.slug}`} className={botonSecundario}>
             Volver a {negocio.nombre}
@@ -373,34 +335,14 @@ export function ReservaFlow({
           {paso === 2 && (
             <section>
               <h1 className="text-2xl font-extrabold sm:text-3xl">¿Qué día te queda bien?</h1>
-              <div className="mt-6 grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-7">
-                {dias.map((d) => (
-                  <button
-                    key={d.fecha}
-                    type="button"
-                    onClick={() => elegirDia(d.fecha)}
-                    aria-pressed={fecha === d.fecha}
-                    className={`flex flex-col items-center rounded-2xl border py-3 transition ${
-                      fecha === d.fecha
-                        ? "border-(--n-acento) bg-(--n-acento) text-(--n-acento-tinta)"
-                        : "border-white/10 bg-(--n-tarjeta) hover:border-white/30"
-                    }`}
-                  >
-                    <span className="text-[11px] uppercase opacity-70">{d.diaSemana}</span>
-                    <span className="text-lg font-extrabold">{d.numero}</span>
-                    <span className="text-[11px] uppercase opacity-70">{d.mes}</span>
-                  </button>
-                ))}
+              <div className="mt-6">
+                <SelectorDia
+                  timezone={negocio.timezone}
+                  ventanaDias={negocio.ventana_dias}
+                  fecha={fecha}
+                  onElegir={elegirDia}
+                />
               </div>
-              {!verMasDias && negocio.ventana_dias + 1 > 14 && (
-                <button
-                  type="button"
-                  onClick={() => setVerMasDias(true)}
-                  className="mt-4 text-sm font-semibold text-(--n-acento) underline"
-                >
-                  Ver más fechas
-                </button>
-              )}
               <div className="mt-8">
                 <button type="button" onClick={() => setPaso(1)} className={botonSecundario}>
                   Atrás
@@ -414,45 +356,17 @@ export function ReservaFlow({
               <h1 className="text-2xl font-extrabold sm:text-3xl">¿A qué hora?</h1>
               <p className="mt-1 capitalize text-white/60">{formatoFechaLarga(fecha)}</p>
 
-              {cargandoTurnos ? (
-                <p className="mt-8 text-white/60">Buscando horarios libres…</p>
-              ) : franjas.length === 0 ? (
-                <div className="mt-8 rounded-2xl border border-white/10 bg-(--n-tarjeta) p-6">
-                  <p className="font-semibold">No quedan horarios libres ese día.</p>
-                  <p className="mt-1 text-sm text-white/60">Probá con otra fecha.</p>
-                </div>
-              ) : (
-                <div className="mt-6 space-y-6">
-                  {franjas.map((f) => (
-                    <div key={f.nombre}>
-                      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-white/50">
-                        {f.nombre}
-                      </h2>
-                      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
-                        {f.turnos.map((t) => (
-                          <button
-                            key={t.inicio}
-                            type="button"
-                            aria-pressed={inicio === t.inicio}
-                            onClick={() => {
-                              setInicio(t.inicio);
-                              setAviso(null);
-                              setPaso(4);
-                            }}
-                            className={`rounded-xl border py-3 font-bold transition ${
-                              inicio === t.inicio
-                                ? "border-(--n-acento) bg-(--n-acento) text-(--n-acento-tinta)"
-                                : "border-white/10 bg-(--n-tarjeta) hover:border-white/30"
-                            }`}
-                          >
-                            {formatoHora(t.inicio, negocio.timezone)}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <SelectorHora
+                turnos={turnos}
+                timezone={negocio.timezone}
+                inicio={inicio}
+                cargando={cargandoTurnos}
+                onElegir={(t) => {
+                  setInicio(t);
+                  setAviso(null);
+                  setPaso(4);
+                }}
+              />
 
               <div className="mt-8">
                 <button type="button" onClick={() => setPaso(2)} className={botonSecundario}>
