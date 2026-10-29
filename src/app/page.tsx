@@ -106,27 +106,33 @@ const dominios = [
 const demos = [
   {
     rubro: "Barbería",
+    estilo: "Estilo moderno y oscuro",
     tipo: "Landing con reservas",
     detalle: "Servicios, equipo y turnos online las 24 horas.",
     clase: "from-red-500/35 to-ink-3",
+    panel: "border-white/10 bg-white/[0.04] group-hover:bg-white/[0.08]",
     href: "/barberia-demo",
     logo: "/negocios/barberia-demo/logo.svg",
     conReservas: true,
   },
   {
     rubro: "Centro de estética",
+    estilo: "Estilo minimalista y elegante",
     tipo: "Landing con reservas",
     detalle: "Lo mismo, con los colores y los servicios de tu centro.",
-    clase: "from-pink-400/30 to-ink-3",
+    clase: "from-[#ead3d6]/35 to-ink-3",
+    panel: "border-[#8b7a6b]/30 bg-[#f6f1ea]",
     href: "/estetica-demo",
     logo: "/negocios/estetica-demo/logo.svg",
     conReservas: true,
   },
   {
     rubro: "Cafetería",
+    estilo: "Estilo retro, de cartel antiguo",
     tipo: "Landing simple",
     detalle: "Tu carta, tus horarios y WhatsApp. Sin reservas.",
     clase: "from-amber-500/30 to-ink-3",
+    panel: "border-[#3a2213]/40 bg-[#f1e3c0]",
     href: "/cafe-demo",
     logo: "/negocios/cafe-demo/logo.svg",
     conReservas: false,
@@ -341,11 +347,16 @@ export default function Home() {
               <h2 className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl">
                 Así se ve
               </h2>
+              <p className="mt-4 max-w-2xl font-display text-2xl font-bold text-white sm:text-3xl">
+                Hacemos tu web a tu gusto: <span className="text-accent">se adapta a tu estilo</span>,
+                no al revés.
+              </p>
               <p className="mt-4 max-w-2xl text-lg text-white/65">
-                Dos demos con reservas, para probar un turno como lo haría tu
-                cliente, y una landing simple, para negocios que no necesitan
-                turnos. Son demos, las reservas son de prueba. La tuya la armo
-                con tus colores y tus servicios.
+                Tres demos, cada una con un estilo distinto: moderno y oscuro,
+                minimalista y elegante, retro. Dos con reservas, para probar un
+                turno como lo haría tu cliente, y una landing simple, para
+                negocios que no necesitan turnos. Son demos, las reservas son de
+                prueba.
               </p>
             </Reveal>
             <div className="mt-12 grid gap-6 sm:grid-cols-3">
@@ -360,7 +371,7 @@ export default function Home() {
                   >
                     <div
                       aria-hidden
-                      className="absolute inset-x-8 top-8 flex h-1/2 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] transition duration-300 group-hover:bg-white/[0.08]"
+                      className={`absolute inset-x-8 top-8 flex h-1/2 items-center justify-center rounded-2xl border transition duration-300 ${demo.panel}`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -379,6 +390,7 @@ export default function Home() {
                       {demo.tipo}
                     </span>
                     <p className="font-display text-2xl font-bold">{demo.rubro}</p>
+                    <p className="mt-1 text-sm font-semibold text-white/90">{demo.estilo}</p>
                     <p className="mt-1 text-sm text-white/65">{demo.detalle}</p>
                     <p className="mt-3 text-sm font-semibold text-accent">
                       Probar la demo <span aria-hidden>→</span>
