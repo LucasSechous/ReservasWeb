@@ -62,8 +62,8 @@ function SinAcceso({ email }: { email: string }) {
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-12">
       <h1 className="font-display text-3xl font-extrabold">Tu cuenta no tiene un panel</h1>
       <p className="mt-3 text-white/70">
-        Entraste como {email}, pero ese mail no está asociado a ningún negocio. Si sos dueño o
-        parte del equipo de un negocio, pedile a quien armó tu web que te dé de alta con este mail.
+        Entraste como {email}, pero ese mail no está asociado a ningún negocio. Si sos dueño o parte
+        del equipo de un negocio, pedile a quien armó tu web que te dé de alta con este mail.
       </p>
       <div className="mt-6">
         <SalirBoton />
@@ -114,9 +114,10 @@ async function Contenido({ searchParams }: { searchParams: Promise<Params> }) {
     supabase
       .from("reservas")
       .select(
-        "id, rango, origen, cliente_nombre, cliente_telefono, cliente_email, notas, servicios(nombre), profesionales(nombre)",
+        "id, rango, origen, estado, cancelada_por, cliente_nombre, cliente_telefono, cliente_email, notas, servicios(nombre), profesionales(nombre)",
       )
-      .eq("estado", "confirmada")
+      // Las canceladas se siguen viendo, marcadas como tales; sus horarios ya no ocupan la agenda.
+      .in("estado", ["confirmada", "cancelada"])
       .eq("negocio_id", negocio.id)
       .overlaps(
         "rango",
@@ -136,6 +137,8 @@ async function Contenido({ searchParams }: { searchParams: Promise<Params> }) {
     const { inicio, fin } = parseRango(f.rango);
     const dia = fechaLocalDe(inicio, tz);
     const esBloqueo = f.origen === "bloqueo";
+    // Un bloqueo quitado no aporta nada: solo se muestran las reservas canceladas.
+    if (esBloqueo && f.estado === "cancelada") continue;
     const lista = porDia.get(dia) ?? [];
     lista.push({
       id: f.id,
@@ -149,6 +152,8 @@ async function Contenido({ searchParams }: { searchParams: Promise<Params> }) {
       email: f.cliente_email,
       notas: f.notas,
       origen: f.origen,
+      cancelada: f.estado === "cancelada",
+      canceladaPor: f.cancelada_por,
     });
     porDia.set(dia, lista);
   }
@@ -156,7 +161,10 @@ async function Contenido({ searchParams }: { searchParams: Promise<Params> }) {
   const dias: string[] = [];
   for (let d = desde; d <= hasta; d = sumarDias(d, 1)) dias.push(d);
   const visibles = vista === "semana" ? dias.filter((d) => porDia.has(d)) : dias;
-  const total = [...porDia.values()].reduce((n, l) => n + l.filter((i) => !i.esBloqueo).length, 0);
+  const total = [...porDia.values()].reduce(
+    (n, l) => n + l.filter((i) => !i.esBloqueo && !i.cancelada).length,
+    0,
+  );
 
   const pestana = (activa: boolean) =>
     `rounded-full px-4 py-2 text-sm font-semibold ${

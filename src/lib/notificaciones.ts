@@ -22,8 +22,7 @@ export async function notificarReserva(d: {
   clienteNombre: string;
   clienteTelefono: string;
   clienteEmail: string | null;
-  token: string;
-  base: string;
+  gestionUrl: string;
 }): Promise<void> {
   if (!mailsActivos()) return;
 
@@ -53,7 +52,7 @@ export async function notificarReserva(d: {
             profesional: profesional.data.nombre,
             cuando,
             direccion: negocio.data.direccion,
-            cancelarUrl: `${d.base}/cancelar/${d.token}`,
+            gestionUrl: d.gestionUrl,
           }),
         }),
       );

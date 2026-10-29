@@ -5,7 +5,7 @@ declare
   v_srv   uuid;
   v_p1    uuid;
   v_dia   date;
-  v_token uuid;
+  v_res_id uuid;
   r       record;
   v_out   text[] := '{}';
 begin
@@ -19,15 +19,15 @@ begin
   v_dia := date_trunc('week', now() at time zone 'America/Montevideo')::date + 9;
 
   -- T1: tres reservas con el mismo teléfono escrito de formas distintas están permitidas
-  select * into r from public.reservar(v_neg, v_srv, null, (v_dia + time '09:00') at time zone 'America/Montevideo', 'Ana Test', '099123456');
-  v_token := r.token_cancelacion;
-  perform public.reservar(v_neg, v_srv, null, (v_dia + time '09:15') at time zone 'America/Montevideo', 'Ana Test', '099 123 456');
-  perform public.reservar(v_neg, v_srv, null, (v_dia + time '09:30') at time zone 'America/Montevideo', 'Ana Test', '099-123-456');
+  select * into r from public.reservar(v_neg, v_srv, null, (v_dia + time '09:00') at time zone 'America/Montevideo', 'Ana Test', '099123456', null, null, md5(random()::text) || md5(random()::text));
+  v_res_id := r.reserva_id;
+  perform public.reservar(v_neg, v_srv, null, (v_dia + time '09:15') at time zone 'America/Montevideo', 'Ana Test', '099 123 456', null, null, md5(random()::text) || md5(random()::text));
+  perform public.reservar(v_neg, v_srv, null, (v_dia + time '09:30') at time zone 'America/Montevideo', 'Ana Test', '099-123-456', null, null, md5(random()::text) || md5(random()::text));
   v_out := array_append(v_out, 'T1 OK   tres reservas del mismo teléfono permitidas');
 
   -- T2: la cuarta, con el mismo número escrito distinto, se rechaza
   begin
-    perform public.reservar(v_neg, v_srv, null, (v_dia + time '09:45') at time zone 'America/Montevideo', 'Ana Test', '(099)123456');
+    perform public.reservar(v_neg, v_srv, null, (v_dia + time '09:45') at time zone 'America/Montevideo', 'Ana Test', '(099)123456', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T2 FALLO dejó pasar la cuarta reserva');
   exception when others then
     v_out := array_append(v_out, case when sqlerrm = 'DEMASIADAS_RESERVAS'
@@ -36,27 +36,27 @@ begin
 
   -- T3: otro teléfono sigue pudiendo reservar
   begin
-    perform public.reservar(v_neg, v_srv, null, (v_dia + time '09:45') at time zone 'America/Montevideo', 'Beto Test', '098111222');
+    perform public.reservar(v_neg, v_srv, null, (v_dia + time '09:45') at time zone 'America/Montevideo', 'Beto Test', '098111222', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T3 OK   otro teléfono puede reservar');
   exception when others then
     v_out := array_append(v_out, 'T3 FALLO otro teléfono rechazado: ' || sqlerrm);
   end;
 
   -- T4: cancelar una libera lugar y la cuarta pasa
-  perform public.cancelar_reserva(v_token);
+  update public.reservas set estado = 'cancelada' where id = v_res_id;
   begin
-    perform public.reservar(v_neg, v_srv, null, (v_dia + time '10:00') at time zone 'America/Montevideo', 'Ana Test', '099123456');
+    perform public.reservar(v_neg, v_srv, null, (v_dia + time '10:00') at time zone 'America/Montevideo', 'Ana Test', '099123456', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T4 OK   tras cancelar una, puede reservar otra');
   exception when others then
     v_out := array_append(v_out, 'T4 FALLO no pudo reservar tras cancelar: ' || sqlerrm);
   end;
 
   -- T5: el límite también aplica por mail, con teléfonos distintos y el mail en mayúsculas
-  perform public.reservar(v_neg, v_srv, null, (v_dia + time '11:00') at time zone 'America/Montevideo', 'Carla Test', '091000001', 'carla@ejemplo.com');
-  perform public.reservar(v_neg, v_srv, null, (v_dia + time '11:15') at time zone 'America/Montevideo', 'Carla Test', '091000002', 'carla@ejemplo.com');
-  perform public.reservar(v_neg, v_srv, null, (v_dia + time '11:30') at time zone 'America/Montevideo', 'Carla Test', '091000003', 'carla@ejemplo.com');
+  perform public.reservar(v_neg, v_srv, null, (v_dia + time '11:00') at time zone 'America/Montevideo', 'Carla Test', '091000001', 'carla@ejemplo.com', null, md5(random()::text) || md5(random()::text));
+  perform public.reservar(v_neg, v_srv, null, (v_dia + time '11:15') at time zone 'America/Montevideo', 'Carla Test', '091000002', 'carla@ejemplo.com', null, md5(random()::text) || md5(random()::text));
+  perform public.reservar(v_neg, v_srv, null, (v_dia + time '11:30') at time zone 'America/Montevideo', 'Carla Test', '091000003', 'carla@ejemplo.com', null, md5(random()::text) || md5(random()::text));
   begin
-    perform public.reservar(v_neg, v_srv, null, (v_dia + time '11:45') at time zone 'America/Montevideo', 'Carla Test', '091000004', 'CARLA@Ejemplo.com');
+    perform public.reservar(v_neg, v_srv, null, (v_dia + time '11:45') at time zone 'America/Montevideo', 'Carla Test', '091000004', 'CARLA@Ejemplo.com', null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T5 FALLO dejó pasar la cuarta reserva del mismo mail');
   exception when others then
     v_out := array_append(v_out, case when sqlerrm = 'DEMASIADAS_RESERVAS'

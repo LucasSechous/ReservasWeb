@@ -2,6 +2,7 @@
 
 import { after } from "next/server";
 import { verificarCaptcha } from "@/lib/captcha";
+import { buildGestionUrl, generarToken, hashToken } from "@/lib/gestion";
 import { notificarReserva } from "@/lib/notificaciones";
 import { createPublicClient } from "@/lib/supabase/server";
 import { urlBase } from "@/lib/url";
@@ -62,7 +63,8 @@ export type DatosReserva = {
 export type ResultadoReserva =
   | {
       ok: true;
-      token: string;
+      /** Link para cancelar o reprogramar. Es la única vez que existe el token en claro. */
+      gestionUrl: string;
       profesionalId: string;
       inicio: string;
       fin: string;
@@ -87,6 +89,8 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
     return { ok: false, codigo: "CAPTCHA" };
   }
 
+  // El token se genera acá; la base recibe solo su hash.
+  const token = generarToken();
   const { data, error } = await createPublicClient().rpc("reservar", {
     p_negocio_id: datos.negocioId,
     p_servicio_id: datos.servicioId,
@@ -96,6 +100,7 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
     p_cliente_nombre: datos.nombre,
     p_cliente_telefono: datos.telefono,
     p_cliente_email: datos.email || undefined,
+    p_token_gestion_hash: hashToken(token),
   });
 
   if (error) {
@@ -110,7 +115,7 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
   if (!fila) return { ok: false, codigo: "ERROR" };
 
   // Los mails salen después de responderle al cliente; si fallan, la reserva igual queda hecha.
-  const base = await urlBase();
+  const gestionUrl = buildGestionUrl(token, await urlBase());
   after(() =>
     notificarReserva({
       negocioId: datos.negocioId,
@@ -120,14 +125,13 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
       clienteNombre: datos.nombre.trim(),
       clienteTelefono: datos.telefono.trim(),
       clienteEmail: datos.email.trim() || null,
-      token: fila.token_cancelacion,
-      base,
+      gestionUrl,
     }),
   );
 
   return {
     ok: true,
-    token: fila.token_cancelacion,
+    gestionUrl,
     profesionalId: fila.profesional_id,
     inicio: fila.inicio,
     fin: fila.fin,

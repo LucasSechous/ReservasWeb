@@ -43,7 +43,7 @@ export function mailConfirmacionCliente(d: {
   profesional: string;
   cuando: string;
   direccion: string | null;
-  cancelarUrl: string;
+  gestionUrl: string;
 }): Mail {
   const titulo = "¡Reserva confirmada!";
   const lineas = [
@@ -58,10 +58,10 @@ export function mailConfirmacionCliente(d: {
     html: plantilla({
       titulo,
       lineas,
-      boton: { texto: "Cancelar este turno", url: d.cancelarUrl },
-      pie: "Si no podés venir, cancelá tu turno con el botón para que otra persona pueda usar el horario.",
+      boton: { texto: "Cancelar o cambiar mi turno", url: d.gestionUrl },
+      pie: "Si no podés venir, cancelá o cambiá tu turno con el botón para que otra persona pueda usar el horario.",
     }),
-    texto: texto(titulo, lineas, `Para cancelar tu turno: ${d.cancelarUrl}`),
+    texto: texto(titulo, lineas, `Para cancelar o cambiar tu turno: ${d.gestionUrl}`),
   };
 }
 

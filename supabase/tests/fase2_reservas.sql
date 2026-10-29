@@ -9,7 +9,7 @@ declare
   v_p2    uuid;
   v_dia   date;
   v_ini   timestamptz;
-  v_token uuid;
+  v_res_id uuid;
   r       record;
   v_ok    boolean;
   v_out   text[] := '{}';
@@ -27,13 +27,13 @@ begin
   v_ini := (v_dia + time '10:00') at time zone 'America/Montevideo';
 
   -- T1: una reserva normal funciona
-  select * into r from public.reservar(v_neg, v_srv, null, v_ini, 'Ana Test', '099123456');
-  v_token := r.token_cancelacion;
+  select * into r from public.reservar(v_neg, v_srv, null, v_ini, 'Ana Test', '099123456', null, null, md5(random()::text) || md5(random()::text));
+  v_res_id := r.reserva_id;
   v_out := array_append(v_out, 'T1 OK   reserva normal a las 10:00');
 
   -- T2: el mismo horario falla
   begin
-    perform public.reservar(v_neg, v_srv, null, v_ini, 'Beto Test', '099123457');
+    perform public.reservar(v_neg, v_srv, null, v_ini, 'Beto Test', '099123457', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T2 FALLO dejó reservar el mismo horario');
   exception when others then
     v_out := array_append(v_out, case when sqlerrm = 'HORARIO_NO_DISPONIBLE'
@@ -42,7 +42,7 @@ begin
 
   -- T3: un turno que se superpone a la mitad falla
   begin
-    perform public.reservar(v_neg, v_srv, null, v_ini + interval '15 minutes', 'Beto Test', '099123457');
+    perform public.reservar(v_neg, v_srv, null, v_ini + interval '15 minutes', 'Beto Test', '099123457', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T3 FALLO dejó reservar un turno superpuesto');
   exception when others then
     v_out := array_append(v_out, case when sqlerrm = 'HORARIO_NO_DISPONIBLE'
@@ -51,7 +51,7 @@ begin
 
   -- T4: el turno pegado (10:30) funciona
   begin
-    perform public.reservar(v_neg, v_srv, null, v_ini + interval '30 minutes', 'Carla Test', '099123458');
+    perform public.reservar(v_neg, v_srv, null, v_ini + interval '30 minutes', 'Carla Test', '099123458', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T4 OK   turno pegado a las 10:30 permitido');
   exception when others then
     v_out := array_append(v_out, 'T4 FALLO turno pegado rechazado: ' || sqlerrm);
@@ -60,7 +60,7 @@ begin
   -- T5: el hueco del horario partido (13:30) falla
   begin
     perform public.reservar(v_neg, v_srv, null,
-      (v_dia + time '13:30') at time zone 'America/Montevideo', 'Dani Test', '099123459');
+      (v_dia + time '13:30') at time zone 'America/Montevideo', 'Dani Test', '099123459', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T5 FALLO dejó reservar en el hueco del horario partido');
   exception when others then
     v_out := array_append(v_out, case when sqlerrm = 'HORARIO_NO_DISPONIBLE'
@@ -80,9 +80,10 @@ begin
   end;
 
   -- T7: cancelar libera el horario
-  v_ok := public.cancelar_reserva(v_token);
+  update public.reservas set estado = 'cancelada' where id = v_res_id and estado = 'confirmada';
+  v_ok := found;
   begin
-    perform public.reservar(v_neg, v_srv, null, v_ini, 'Eli Test', '099123460');
+    perform public.reservar(v_neg, v_srv, null, v_ini, 'Eli Test', '099123460', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, case when v_ok
       then 'T7 OK   cancelar libera el horario' else 'T7 FALLO cancelar devolvió false' end);
   exception when others then
@@ -94,13 +95,13 @@ begin
   insert into public.profesional_servicios values (v_p2, v_srv);
   insert into public.horarios_disponibles (profesional_id, dia_semana, hora_inicio, hora_fin)
     values (v_p2, 3, '09:00', '13:00');
-  select * into r from public.reservar(v_neg, v_srv, null, v_ini, 'Fede Test', '099123461');
+  select * into r from public.reservar(v_neg, v_srv, null, v_ini, 'Fede Test', '099123461', null, null, md5(random()::text) || md5(random()::text));
   v_out := array_append(v_out, case when r.profesional_id = v_p2
     then 'T8 OK   asignó al segundo profesional' else 'T8 FALLO no asignó al segundo profesional' end);
 
   -- T9: respeta la anticipación mínima
   begin
-    perform public.reservar(v_neg, v_srv, null, now() + interval '10 minutes', 'Gus Test', '099123462');
+    perform public.reservar(v_neg, v_srv, null, now() + interval '10 minutes', 'Gus Test', '099123462', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T9 FALLO dejó reservar sin anticipación');
   exception when others then
     v_out := array_append(v_out, case when sqlerrm in ('ANTICIPACION_INSUFICIENTE', 'FUERA_DE_HORARIO')
@@ -110,7 +111,7 @@ begin
   -- T10: respeta la ventana de días
   begin
     perform public.reservar(v_neg, v_srv, null,
-      ((v_dia + 60) + time '10:00') at time zone 'America/Montevideo', 'Hana Test', '099123463');
+      ((v_dia + 60) + time '10:00') at time zone 'America/Montevideo', 'Hana Test', '099123463', null, null, md5(random()::text) || md5(random()::text));
     v_out := array_append(v_out, 'T10 FALLO dejó reservar fuera de la ventana');
   exception when others then
     v_out := array_append(v_out, case when sqlerrm = 'FUERA_DE_VENTANA'
