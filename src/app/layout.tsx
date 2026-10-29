@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import {
+  Alegreya_Sans,
+  Bricolage_Grotesque,
+  Courier_Prime,
+  Geist,
+  Geist_Mono,
+  Shrikhand,
+} from "next/font/google";
 import { MotionProvider } from "@/components/motion-provider";
 import "./globals.css";
 
@@ -16,6 +23,30 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Tipografías del estilo retro (components/landing-retro.tsx). Sin precarga: solo se descargan en las
+// páginas que las usan, así la vitrina y las demás landings no pagan por ellas.
+const shrikhand = Shrikhand({
+  variable: "--font-shrikhand",
+  subsets: ["latin"],
+  weight: "400",
+  preload: false,
+});
+
+const courierPrime = Courier_Prime({
+  variable: "--font-courier",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  preload: false,
+});
+
+const alegreyaSans = Alegreya_Sans({
+  variable: "--font-alegreya",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  style: ["normal", "italic"],
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -38,7 +69,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${shrikhand.variable} ${courierPrime.variable} ${alegreyaSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <MotionProvider>{children}</MotionProvider>

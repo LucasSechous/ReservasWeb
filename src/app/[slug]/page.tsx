@@ -6,6 +6,7 @@ import { BannerDemo } from "@/components/banner-demo";
 import { FondoMovil } from "@/components/fondo-movil";
 import { Galeria } from "@/components/galeria";
 import { HeroTitle } from "@/components/hero-title";
+import { LandingRetro } from "@/components/landing-retro";
 import { Marquee } from "@/components/marquee";
 import { Reveal } from "@/components/reveal";
 import {
@@ -105,6 +106,20 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
     : whatsapp
       ? { href: whatsapp, texto: "Escribinos por WhatsApp", externo: true }
       : null;
+  if (tema.estilo === "retro") {
+    return (
+      <LandingRetro
+        negocio={negocio}
+        servicios={servicios}
+        profesionales={profesionales}
+        tema={tema}
+        cta={cta}
+        whatsapp={whatsapp}
+        mapa={mapa}
+        reservarHref={reservarHref}
+      />
+    );
+  }
   const cinta = servicios.map((s) => s.nombre.toUpperCase());
   const hayContacto = negocio.direccion || negocio.telefono || negocio.email;
 
