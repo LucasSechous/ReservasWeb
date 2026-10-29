@@ -109,8 +109,20 @@ const demos = [
     estilo: "Estilo moderno y oscuro",
     tipo: "Landing con reservas",
     detalle: "Servicios, equipo y turnos online las 24 horas.",
-    clase: "from-red-500/35 to-ink-3",
-    panel: "border-white/10 bg-white/[0.04] group-hover:bg-white/[0.08]",
+    // Barbería: oscura, con filo rojo y una franja de poste de barbero.
+    card: "rounded-3xl border border-red-500/40 bg-gradient-to-b from-red-500/25 to-ink-3 group-hover:-translate-y-1.5 group-hover:border-red-400/70 group-hover:shadow-[0_20px_60px_-20px_rgba(239,68,68,0.45)]",
+    panel: "rounded-2xl border border-white/10 bg-white/[0.04] group-hover:bg-white/[0.08]",
+    etiqueta: "rounded-full bg-red-500 text-white",
+    titulo: "font-display text-2xl font-bold",
+    estiloTxt: "text-sm font-semibold text-white/90",
+    detalleTxt: "text-sm text-white/65",
+    cta: "text-sm font-semibold text-red-400",
+    adorno: (
+      <span
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-1.5 bg-[repeating-linear-gradient(135deg,#ef4444_0_10px,#f5f5f5_10px_20px,#3b82f6_20px_30px)] opacity-70"
+      />
+    ),
     href: "/barberia-demo",
     logo: "/negocios/barberia-demo/logo.svg",
     conReservas: true,
@@ -120,8 +132,15 @@ const demos = [
     estilo: "Estilo minimalista y elegante",
     tipo: "Landing con reservas",
     detalle: "Lo mismo, con los colores y los servicios de tu centro.",
-    clase: "from-[#ead3d6]/35 to-ink-3",
-    panel: "border-[#8b7a6b]/30 bg-[#f6f1ea]",
+    // Estética: piedra clara, serif fina, logo en arco y líneas delgadas.
+    card: "rounded-[1.75rem] border border-[#8b7a6b]/40 bg-[#f6f1ea] group-hover:-translate-y-1.5 group-hover:border-[#a4506a]/60 group-hover:shadow-[0_20px_50px_-25px_rgba(164,80,106,0.5)]",
+    panel: "rounded-t-full rounded-b-xl border border-[#8b7a6b]/30 bg-[#ead3d6]/50",
+    etiqueta: "rounded-full border border-[#a4506a]/60 text-[#a4506a]",
+    titulo: "editorial-titulo text-3xl font-medium text-[#2b2420]",
+    estiloTxt: "editorial-texto text-sm italic text-[#a4506a]",
+    detalleTxt: "editorial-texto text-sm text-[#2b2420]/70",
+    cta: "editorial-texto text-sm font-medium text-[#a4506a]",
+    adorno: null,
     href: "/estetica-demo",
     logo: "/negocios/estetica-demo/logo.svg",
     conReservas: true,
@@ -131,8 +150,15 @@ const demos = [
     estilo: "Estilo retro, de cartel antiguo",
     tipo: "Landing simple",
     detalle: "Tu carta, tus horarios y WhatsApp. Sin reservas.",
-    clase: "from-amber-500/30 to-ink-3",
-    panel: "border-[#3a2213]/40 bg-[#f1e3c0]",
+    // Cafetería: papel crema, marco con sombra dura y letras de cartel.
+    card: "rounded-lg border-2 border-[#3a2213] bg-[#f1e3c0] shadow-[5px_5px_0_#3a2213] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[8px_8px_0_#3a2213]",
+    panel: "rounded-md border-2 border-dashed border-[#3a2213]/60 bg-[#fff6de]",
+    etiqueta: "rounded-sm border-2 border-[#3a2213] bg-[#c4412a] text-[#fff4da]",
+    titulo: "retro-titulo text-3xl text-[#c4412a]",
+    estiloTxt: "retro-mono text-sm font-bold text-[#3a2213]",
+    detalleTxt: "retro-mono text-sm text-[#3a2213]/75",
+    cta: "retro-mono text-sm font-bold text-[#2f6e61]",
+    adorno: null,
     href: "/cafe-demo",
     logo: "/negocios/cafe-demo/logo.svg",
     conReservas: false,
@@ -363,15 +389,12 @@ export default function Home() {
               {demos.map((demo, i) => {
                 const tarjeta = (
                   <div
-                    className={`relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-3xl border bg-gradient-to-b ${demo.clase} p-6 transition duration-300 ${
-                      demo.href
-                        ? "border-accent/60 group-hover:-translate-y-1.5 group-hover:shadow-[0_20px_60px_-20px_rgba(200,255,58,0.35)]"
-                        : "border-white/10"
-                    }`}
+                    className={`relative flex aspect-[3/4] flex-col justify-end overflow-hidden p-6 transition duration-300 ${demo.card}`}
                   >
+                    {demo.adorno}
                     <div
                       aria-hidden
-                      className={`absolute inset-x-8 top-8 flex h-1/2 items-center justify-center rounded-2xl border transition duration-300 ${demo.panel}`}
+                      className={`absolute inset-x-8 top-8 flex h-[42%] items-center justify-center transition duration-300 ${demo.panel}`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -381,18 +404,14 @@ export default function Home() {
                       />
                     </div>
                     <span
-                      className={`mb-3 w-fit rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${
-                        demo.conReservas
-                          ? "bg-accent text-accent-ink"
-                          : "border border-white/30 bg-black/30 text-white"
-                      }`}
+                      className={`mb-3 w-fit px-3 py-1 text-xs font-bold uppercase tracking-wider ${demo.etiqueta}`}
                     >
                       {demo.tipo}
                     </span>
-                    <p className="font-display text-2xl font-bold">{demo.rubro}</p>
-                    <p className="mt-1 text-sm font-semibold text-white/90">{demo.estilo}</p>
-                    <p className="mt-1 text-sm text-white/65">{demo.detalle}</p>
-                    <p className="mt-3 text-sm font-semibold text-accent">
+                    <p className={demo.titulo}>{demo.rubro}</p>
+                    <p className={`mt-1 ${demo.estiloTxt}`}>{demo.estilo}</p>
+                    <p className={`mt-1 ${demo.detalleTxt}`}>{demo.detalle}</p>
+                    <p className={`mt-3 ${demo.cta}`}>
                       Probar la demo <span aria-hidden>→</span>
                     </p>
                   </div>
