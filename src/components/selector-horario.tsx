@@ -41,7 +41,7 @@ export function SelectorDia({
             className={`flex flex-col items-center rounded-2xl border py-3 transition ${
               fecha === d.fecha
                 ? "border-(--n-acento) bg-(--n-acento) text-(--n-acento-tinta)"
-                : "border-white/10 bg-(--n-tarjeta) hover:border-white/30"
+                : "border-(--n-texto)/10 bg-(--n-tarjeta) hover:border-(--n-texto)/30"
             }`}
           >
             <span className="text-[11px] uppercase opacity-70">{d.diaSemana}</span>
@@ -93,13 +93,13 @@ export function SelectorHora({
     ].filter((f) => f.turnos.length > 0);
   }, [turnos, timezone]);
 
-  if (cargando) return <p className="mt-8 text-white/60">Buscando horarios libres…</p>;
+  if (cargando) return <p className="mt-8 text-(--n-texto)/60">Buscando horarios libres…</p>;
 
   if (franjas.length === 0) {
     return (
-      <div className="mt-8 rounded-2xl border border-white/10 bg-(--n-tarjeta) p-6">
+      <div className="mt-8 rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-6">
         <p className="font-semibold">No quedan horarios libres ese día.</p>
-        <p className="mt-1 text-sm text-white/60">Probá con otra fecha.</p>
+        <p className="mt-1 text-sm text-(--n-texto)/60">Probá con otra fecha.</p>
       </div>
     );
   }
@@ -108,7 +108,7 @@ export function SelectorHora({
     <div className="mt-6 space-y-6">
       {franjas.map((f) => (
         <div key={f.nombre}>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-white/50">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-(--n-texto)/50">
             {f.nombre}
           </h2>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
@@ -121,7 +121,7 @@ export function SelectorHora({
                 className={`rounded-xl border py-3 font-bold transition ${
                   inicio === t.inicio
                     ? "border-(--n-acento) bg-(--n-acento) text-(--n-acento-tinta)"
-                    : "border-white/10 bg-(--n-tarjeta) hover:border-white/30"
+                    : "border-(--n-texto)/10 bg-(--n-tarjeta) hover:border-(--n-texto)/30"
                 }`}
               >
                 {formatoHora(t.inicio, timezone)}

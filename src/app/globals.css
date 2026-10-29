@@ -106,6 +106,15 @@
   font-family: var(--font-alegreya), Georgia, serif;
 }
 
+/* Tipografías del estilo editorial (components/landing-editorial.tsx). */
+.editorial-titulo {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+.editorial-texto {
+  font-family: var(--font-jost), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 300;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
