@@ -37,10 +37,10 @@ function BotonesContacto() {
         rel="noopener noreferrer"
         className={botonPrimario}
       >
-        Escribime por WhatsApp <Flecha />
+        Escribinos por WhatsApp <Flecha />
       </a>
       <a href={mailUrl} className={botonSecundario}>
-        Mandame un mail
+        Mandanos un mail
       </a>
     </div>
   );
@@ -48,14 +48,14 @@ function BotonesContacto() {
 
 const pasos = [
   {
-    titulo: "Me contás de tu negocio",
+    titulo: "Nos contás de tu negocio",
     texto:
-      "Por WhatsApp o por mail. Con tu nombre, tus servicios y tu Instagram me alcanza para empezar.",
+      "Por WhatsApp o por mail. Con tu nombre, tus servicios y tu Instagram nos alcanza para empezar.",
   },
   {
-    titulo: "Te muestro cómo quedaría",
+    titulo: "Te mostramos cómo quedaría",
     texto:
-      "Armo una demo con tus colores, tu estilo y tus servicios, para que la veas en tu celular antes de decidir.",
+      "Armamos una demo con tus colores, tu estilo y tus servicios, para que la veas en tu celular antes de decidir.",
   },
   {
     titulo: "La ajustamos y sale al aire",
@@ -94,12 +94,12 @@ const dominios = [
   {
     titulo: "Lo comprás vos",
     texto:
-      "Abrís tu cuenta en el registrador y pagás con tu tarjeta. Yo te guío en cada paso y después lo conecto a tu web. Es lo más simple y queda siempre a tu nombre.",
+      "Abrís tu cuenta en el registrador y pagás con tu tarjeta. Te guiamos en cada paso y después lo conectamos a tu web. Es lo más simple y queda siempre a tu nombre.",
   },
   {
-    titulo: "Lo gestiono yo",
+    titulo: "Lo gestionamos nosotros",
     texto:
-      "Lo registro por vos y te cobro el costo aparte, con su comprobante. Es tuyo: si algún día querés llevártelo a otro lado, te lo transfiero.",
+      "Lo registramos por vos y te cobramos el costo aparte, con su comprobante. Es tuyo: si algún día querés llevártelo a otro lado, te lo transferimos.",
   },
 ];
 
@@ -196,7 +196,7 @@ export default function Home() {
           rel="noopener noreferrer"
           className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
         >
-          Escribime
+          Escribinos
         </a>
       </header>
 
@@ -223,8 +223,9 @@ export default function Home() {
               />
               <Reveal delay={0.9} className="mt-8 max-w-xl">
                 <p className="text-lg text-white/70">
-                  Hago la página de tu barbería, peluquería, centro de estética,
-                  clínica o consultorio con tu estilo y tus colores. Tus clientes
+                  Hacemos la página de tu barbería, peluquería, centro de estética,
+                  clínica o consultorio, y la ajustamos a tus gustos, a tus
+                  colores, a tus necesidades y a tu presupuesto. Tus clientes
                   reservan desde el celular a cualquier hora, y vos dejás de
                   coordinar turnos por mensaje.
                 </p>
@@ -337,7 +338,7 @@ export default function Home() {
               Dos formas de tener tu web
             </h2>
             <p className="mt-4 max-w-2xl text-lg text-white/65">
-              Los precios dependen de tu negocio. Escribime y te paso una
+              Los precios dependen de tu negocio. Escribinos y te pasamos una
               propuesta a medida.
             </p>
           </Reveal>
@@ -387,7 +388,7 @@ export default function Home() {
                 Cada negocio tiene su dirección propia, algo como
                 {" "}<span className="font-semibold text-white">tunegocio.com.uy</span>,
                 {" "}y no una dirección de Tu Turno. Si ya tenés una, la
-                conecto. Si no, hay dos formas de conseguirla:
+                conectamos. Si no, hay dos formas de conseguirla:
               </p>
               <ul className="mt-8 grid gap-4 md:grid-cols-2">
                 {dominios.map((d) => (
@@ -402,7 +403,7 @@ export default function Home() {
               </ul>
               <p className="mt-6 text-sm text-white/50">
                 El dominio es un costo aparte del armado de tu web y se renueva
-                una vez por año. Te paso el precio exacto en la propuesta.
+                una vez por año. Te pasamos el precio exacto en la propuesta.
               </p>
             </div>
           </Reveal>
@@ -484,7 +485,7 @@ export default function Home() {
                 ¿Probamos con <span className="text-accent">tu negocio?</span>
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-lg text-white/65">
-                Contame qué hacés y te muestro cómo quedaría tu web.
+                Contanos qué hacés y te mostramos cómo quedaría tu web.
               </p>
               <div className="mt-10 flex justify-center">
                 <BotonesContacto />
@@ -507,7 +508,7 @@ export default function Home() {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Escribime por WhatsApp"
+        aria-label="Escribinos por WhatsApp"
         className="fixed bottom-5 right-4 z-50 flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-ink shadow-[0_10px_40px_-8px_rgba(61,220,151,0.6)] transition-transform hover:scale-105"
       >
         <span className="relative flex size-2.5">
