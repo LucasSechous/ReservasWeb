@@ -51,7 +51,7 @@ function SalirBoton() {
         type="submit"
         className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold hover:border-white/50"
       >
-        Salir
+        Cerrar sesión
       </button>
     </form>
   );
@@ -180,7 +180,18 @@ async function Contenido({ searchParams }: { searchParams: Promise<Params> }) {
           <h1 className="font-display text-3xl font-extrabold">{negocio.nombre}</h1>
           <p className="text-sm text-white/50">{sesion.email}</p>
         </div>
-        <SalirBoton />
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {/* El operador mira la agenda de un cliente: volver lo lleva a su lista, sin cerrar su sesión. */}
+          {esOperador && (
+            <Link
+              href="/operador"
+              className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-ink hover:brightness-110"
+            >
+              ← Volver a mis negocios
+            </Link>
+          )}
+          <SalirBoton />
+        </div>
       </header>
 
       <nav className="mt-6 flex flex-wrap items-center gap-2" aria-label="Vista de la agenda">
