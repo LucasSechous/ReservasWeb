@@ -14,7 +14,7 @@ import {
 
 const boton =
   "group inline-flex min-h-13 items-center justify-center gap-2 rounded-full px-7 text-base font-bold transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent";
-const botonPrimario = `${boton} bg-accent text-accent-ink hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-8px_rgba(200,255,58,0.6)]`;
+const botonPrimario = `${boton} bg-accent text-accent-ink hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-8px_rgba(61,220,151,0.6)]`;
 const botonSecundario = `${boton} border border-white/25 text-white hover:border-white/60 hover:bg-white/5`;
 
 function Flecha() {
@@ -220,7 +220,29 @@ export default function Home() {
                   mensaje.
                 </p>
               </Reveal>
-              <Reveal delay={1.05} className="mt-9">
+              <Reveal delay={1} className="mt-6">
+                <ul className="flex flex-wrap gap-2" aria-label="Rubros">
+                  {[
+                    ["Barbería", "#ffd166"],
+                    ["Peluquería", "#ef8fb0"],
+                    ["Estética", "#7aa7ff"],
+                    ["Spa", "#b9a6e6"],
+                  ].map(([rubro, color]) => (
+                    <li
+                      key={rubro}
+                      style={{
+                        color,
+                        borderColor: `color-mix(in srgb, ${color} 45%, transparent)`,
+                        backgroundColor: `color-mix(in srgb, ${color} 14%, transparent)`,
+                      }}
+                      className="rounded-full border px-3 py-1 text-xs font-bold"
+                    >
+                      {rubro}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+              <Reveal delay={1.05} className="mt-7">
                 <BotonesContacto />
               </Reveal>
             </div>
@@ -306,7 +328,7 @@ export default function Home() {
                 <article
                   className={`flex h-full flex-col rounded-3xl border p-8 transition-all duration-300 hover:-translate-y-1.5 ${
                     plan.destacado
-                      ? "border-accent/60 bg-gradient-to-br from-accent/12 via-ink-2 to-ink-2 hover:shadow-[0_20px_60px_-20px_rgba(200,255,58,0.35)]"
+                      ? "border-accent/60 bg-gradient-to-br from-accent/12 via-ink-2 to-ink-2 hover:shadow-[0_20px_60px_-20px_rgba(61,220,151,0.35)]"
                       : "border-white/10 bg-ink-2 hover:border-white/30"
                   }`}
                 >
@@ -467,7 +489,7 @@ export default function Home() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Escribime por WhatsApp"
-        className="fixed bottom-5 right-4 z-50 flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-ink shadow-[0_10px_40px_-8px_rgba(200,255,58,0.6)] transition-transform hover:scale-105"
+        className="fixed bottom-5 right-4 z-50 flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-ink shadow-[0_10px_40px_-8px_rgba(61,220,151,0.6)] transition-transform hover:scale-105"
       >
         <span className="relative flex size-2.5">
           <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent-ink/60" />

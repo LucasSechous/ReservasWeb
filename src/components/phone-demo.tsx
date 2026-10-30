@@ -118,7 +118,7 @@ function Contenido({ paso }: { paso: number }) {
           cy="26"
           r="24"
           fill="none"
-          stroke="#c8ff3a"
+          stroke="#3ddc97"
           strokeWidth="2.5"
           variants={{
             hidden: { pathLength: 0, opacity: 0 },
@@ -129,7 +129,7 @@ function Contenido({ paso }: { paso: number }) {
         <motion.path
           d="M15 27 L23 35 L38 18"
           fill="none"
-          stroke="#c8ff3a"
+          stroke="#3ddc97"
           strokeWidth="3.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -168,7 +168,7 @@ export function PhoneDemo() {
         aria-hidden
         className="absolute -inset-8 -z-10 rounded-full bg-violeta/30 blur-3xl"
       />
-      <div className="rounded-[2.6rem] border border-white/15 bg-ink-2 p-3 shadow-[0_30px_80px_-20px_rgba(139,92,246,0.45)]">
+      <div className="rounded-[2.6rem] border border-white/15 bg-ink-2 p-3 shadow-[0_30px_80px_-20px_rgba(70,120,230,0.45)]">
         <div className="relative flex h-[500px] flex-col overflow-hidden rounded-[2rem] bg-ink-3">
           <div className="mx-auto mt-2 h-1.5 w-16 rounded-full bg-white/15" />
           <div className="px-5 pb-3 pt-4">
