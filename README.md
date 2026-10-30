@@ -1,4 +1,4 @@
-# ReservasWeb
+# Tu Turno
 
 Páginas web a medida con reservas online para negocios de salud y estética: barberías, peluquerías, centros de estética, cosmetología, depilación y spas. Cada negocio tiene su propia web con su identidad y una agenda donde sus clientes reservan desde el celular, a cualquier hora. No es un marketplace: la web es del negocio.
 
@@ -6,7 +6,7 @@ Páginas web a medida con reservas online para negocios de salud y estética: ba
 
 ## El problema
 
-La mayoría de estos negocios no tiene web propia: viven en Instagram y WhatsApp, los turnos se piden por mensaje y se pierden o se superponen. Los que usan plataformas genéricas no muestran su marca. ReservasWeb les da una web propia, pensada para el celular, con reservas online que se gestionan solas.
+La mayoría de estos negocios no tiene web propia: viven en Instagram y WhatsApp, los turnos se piden por mensaje y se pierden o se superponen. Los que usan plataformas genéricas no muestran su marca. Tu Turno les da una web propia, pensada para el celular, con reservas online que se gestionan solas.
 
 ## Cómo funciona
 

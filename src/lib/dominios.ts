@@ -7,7 +7,7 @@ export const DOMINIOS: Record<string, string> = {
   // "barberiaelfaro.com.uy": "barberia-el-faro",
 };
 
-/** El slug del negocio dueño de ese dominio, o null si es el dominio de ReservasWeb (u otro desconocido). */
+/** El slug del negocio dueño de ese dominio, o null si es el dominio de Tu Turno (u otro desconocido). */
 export function slugPorDominio(
   host: string | null | undefined,
   mapa: Record<string, string> = DOMINIOS,

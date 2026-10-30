@@ -8,7 +8,7 @@ import { leerConfigSupabase } from "@/lib/supabase/server";
 export async function proxy(request: NextRequest) {
   // Dominio propio de un negocio: su raíz y su página de reservas muestran la landing y la reserva
   // de ese negocio. Cualquier otra ruta (panel, login, gestión de turnos) sigue igual. En el dominio
-  // de ReservasWeb esto no hace nada y sale antes de consultar la sesión.
+  // de Tu Turno esto no hace nada y sale antes de consultar la sesión.
   const rutaPublica = request.nextUrl.pathname;
   if (rutaPublica === "/" || rutaPublica === "/reservar") {
     const slugDominio = slugPorDominio(request.headers.get("host"));

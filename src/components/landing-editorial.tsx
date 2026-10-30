@@ -473,7 +473,7 @@ export function LandingEditorial({
         <p>
           {conReservas ? "Reservas con" : "Web hecha con"}{" "}
           <Link href="/" className="underline hover:text-(--n-acento)">
-            ReservasWeb
+            Tu Turno
           </Link>{" "}
           ·{" "}
           <Link href="/privacidad" className="underline hover:text-(--n-acento)">

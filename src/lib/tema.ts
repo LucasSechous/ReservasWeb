@@ -48,7 +48,7 @@ export type Tema = {
   rubro?: Rubro;
 };
 
-// Misma identidad que la vitrina de ReservasWeb: oscuro, acento lima y destellos violeta.
+// Misma identidad que la vitrina de Tu Turno: oscuro, acento lima y destellos violeta.
 const TEMA_BASE: Tema = {
   fondo: "#09090b",
   texto: "#f6f5ef",

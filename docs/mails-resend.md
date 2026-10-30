@@ -1,6 +1,6 @@
 # Encender los mails (Resend)
 
-Los mails de ReservasWeb (confirmación al cliente, aviso al negocio, cancelaciones) ya están programados. Mientras no haya clave, no sale ninguno y todo lo demás funciona igual. Para encenderlos hacen falta tres cosas y un redeploy.
+Los mails de Tu Turno (confirmación al cliente, aviso al negocio, cancelaciones) ya están programados. Mientras no haya clave, no sale ninguno y todo lo demás funciona igual. Para encenderlos hacen falta tres cosas y un redeploy.
 
 ## 1. Clave de Resend
 
@@ -13,7 +13,7 @@ Cargala como `RESEND_API_KEY`:
 
 ## 2. Remitente
 
-`MAIL_FROM` tiene que ser una dirección de un dominio verificado en Resend, por ejemplo `ReservasWeb <reservas@tudominio.com>`.
+`MAIL_FROM` tiene que ser una dirección de un dominio verificado en Resend, por ejemplo `Tu Turno <turnos@tudominio.com>`.
 
 Para verificar el dominio: Resend, Domains, Add Domain, y copiá los registros DNS que te pide en el panel de tu registrador.
 

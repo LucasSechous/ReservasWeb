@@ -1,6 +1,6 @@
 # Dominio propio para un negocio
 
-Para que `barberiaelfaro.com.uy` muestre la web de «Barbería El Faro» en vez de `reservasweb.uy/barberia-el-faro`.
+Para que `barberiaelfaro.com.uy` muestre la web de «Barbería El Faro» en vez de `tuturno.uy/barberia-el-faro`.
 
 Qué hace el sistema: en ese dominio, la raíz (`/`) muestra la landing del negocio y `/reservar` su página de reservas. Todo lo demás (`/panel`, `/login`, el link para cancelar un turno) sigue funcionando igual.
 
@@ -17,7 +17,7 @@ Qué hace el sistema: en ese dominio, la raíz (`/`) muestra la landing del nego
 
 ## Qué tener en cuenta
 
-- Los mails (confirmación, recordatorio, link para cancelar) siguen saliendo con la dirección de ReservasWeb. Es lo esperable: el link funciona igual.
+- Los mails (confirmación, recordatorio, link para cancelar) siguen saliendo con la dirección de Tu Turno. Es lo esperable: el link funciona igual.
 - Los botones de la landing llevan a `/<slug>/reservar`, que también anda en el dominio propio. La barra de direcciones va a mostrar `/barberia-el-faro/reservar`: no es un error, solo no es tan prolija. Si algún cliente lo pide, se arregla en un paso aparte.
 - El dominio lo paga el cliente (en Uruguay, `.com.uy` ronda un monto anual bajo). Conviene ofrecerlo como parte del plan de «tu web en tu propia dirección» y cobrar el trámite.
-- Un dominio sin cargar acá no cambia nada: abre la vitrina de ReservasWeb.
+- Un dominio sin cargar acá no cambia nada: abre la vitrina de Tu Turno.

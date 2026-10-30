@@ -32,7 +32,7 @@ describe("token de gestión", () => {
 
   it("arma el link sin duplicar la barra final de la dirección", () => {
     const t = generarToken();
-    expect(buildGestionUrl(t, "https://reservasweb.uy/")).toBe(`https://reservasweb.uy/reserva/${t}`);
-    expect(buildGestionUrl(t, "https://reservasweb.uy")).toBe(`https://reservasweb.uy/reserva/${t}`);
+    expect(buildGestionUrl(t, "https://tuturno.uy/")).toBe(`https://tuturno.uy/reserva/${t}`);
+    expect(buildGestionUrl(t, "https://tuturno.uy")).toBe(`https://tuturno.uy/reserva/${t}`);
   });
 });
