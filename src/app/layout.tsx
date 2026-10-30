@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     template: "%s · ReservasWeb",
   },
   description:
-    "Páginas web con reservas online para barberías, peluquerías y centros de estética en Uruguay. Tus clientes reservan solos desde el celular.",
+    "Páginas web con reservas online para barberías, peluquerías, centros de estética, clínicas y consultorios en Uruguay. Tus clientes reservan solos desde el celular.",
   openGraph: {
     title: "ReservasWeb · Tu web con reservas online",
     description:

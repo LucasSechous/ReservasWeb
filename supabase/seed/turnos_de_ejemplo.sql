@@ -17,7 +17,7 @@ declare
   n record; p record; t record; s record;
   v_dia date; v_hoy date; v_cursor time; v_fin time; v_dur int;
   v_servicios uuid[]; v_ini timestamptz; v_fin_ts timestamptz;
-  v_prob numeric; v_azar numeric; v_nom text; v_ape text; v_estado text; v_i int := 0;
+  v_prob numeric; v_azar numeric; v_nom text; v_ape text; v_estado text; v_i int := 0; v_idx int;
 begin
   for n in select id, slug, timezone, anticipacion_minutos, ventana_dias from public.negocios
            where slug in ('barberia-demo', 'estetica-demo', 'peluqueria-demo')
@@ -45,7 +45,9 @@ begin
           loop
             exit when v_cursor >= t.hora_fin;
             if random() < v_prob then
-              select * into s from public.servicios where id = v_servicios[1 + floor(random() * cardinality(v_servicios))::int];
+              -- El índice se saca antes: random() dentro del where se evalúa fila por fila y casi nunca encuentra servicio.
+              v_idx := 1 + floor(random() * cardinality(v_servicios))::int;
+              select * into s from public.servicios where id = v_servicios[v_idx];
               v_dur := s.duracion_minutos;
               v_fin := v_cursor + make_interval(mins => v_dur);
               exit when v_fin > t.hora_fin or v_fin < v_cursor;

@@ -172,6 +172,15 @@ const rubros = [
   "DEPILACIÓN",
   "COSMETOLOGÍA",
   "SPAS",
+  "CLÍNICAS MÉDICAS",
+  "CONSULTORÍAS DENTALES",
+  "NUTRICIÓN",
+  "PSICOLOGÍA",
+  "KINESIOLOGÍA",
+  "UÑAS Y MASAJES",
+  "TATUAJES",
+  "VETERINARIAS",
+  "ENTRENADORES",
 ];
 
 export default function Home() {
@@ -202,7 +211,7 @@ export default function Home() {
                     <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent" />
                     <span className="relative inline-flex size-2 rounded-full bg-accent" />
                   </span>
-                  Webs con reservas online · Maldonado
+                  Webs con reservas online · Maldonado · Punta del Este · Piriápolis
                 </p>
               </Reveal>
               <HeroTitle
@@ -214,10 +223,10 @@ export default function Home() {
               />
               <Reveal delay={0.9} className="mt-8 max-w-xl">
                 <p className="text-lg text-white/70">
-                  Hago la página de tu barbería, peluquería o centro de estética
-                  con tu estilo y tus colores. Tus clientes reservan desde el
-                  celular a cualquier hora, y vos dejás de coordinar turnos por
-                  mensaje.
+                  Hago la página de tu barbería, peluquería, centro de estética,
+                  clínica o consultorio con tu estilo y tus colores. Tus clientes
+                  reservan desde el celular a cualquier hora, y vos dejás de
+                  coordinar turnos por mensaje.
                 </p>
               </Reveal>
               <Reveal delay={1} className="mt-6">
@@ -227,6 +236,16 @@ export default function Home() {
                     ["Peluquería", "#ef8fb0"],
                     ["Estética", "#7aa7ff"],
                     ["Spa", "#b9a6e6"],
+                    ["Clínica médica especializada", "#5fd3c4"],
+                    ["Consultoría dental", "#8fd6ff"],
+                    ["Nutrición", "#9be07a"],
+                    ["Psicología", "#c9a7ff"],
+                    ["Kinesiología", "#ffb27a"],
+                    ["Uñas y masajes", "#ff9bb0"],
+                    ["Tatuajes", "#e8e8e8"],
+                    ["Veterinaria", "#ffd98a"],
+                    ["Entrenadores y gimnasios", "#ff8a7a"],
+                    ["Estudios profesionales", "#a9b8ff"],
                   ].map(([rubro, color]) => (
                     <li
                       key={rubro}
