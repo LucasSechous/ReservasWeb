@@ -1,0 +1,23 @@
+name: Pruebas
+
+# En cada subida a develop o main, y en cada pull request: estilo, tipos y pruebas.
+# No hace el build: necesita las claves de Supabase, que no van a GitHub.
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx next typegen
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm test
