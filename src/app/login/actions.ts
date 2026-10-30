@@ -1,34 +1,38 @@
 "use server";
 
 import { crearClienteSesion } from "@/lib/supabase/sesion";
-import { urlBase } from "@/lib/url";
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-export type ResultadoLogin = { ok: true } | { ok: false; mensaje: string };
+export type ResultadoLogin = { ok: true; destino: string } | { ok: false; mensaje: string };
 
-// Pide el link mágico. Se responde siempre lo mismo, tenga o no acceso ese mail, para no revelar
-// quién está dado de alta. Quien no fue invitado entra a una cuenta sin ningún panel.
-export async function pedirLink(email: string): Promise<ResultadoLogin> {
+// Entra con mail y contraseña. Ante un error de datos se responde siempre lo mismo, exista o no el
+// mail, para no revelar quién tiene cuenta.
+export async function entrar(email: string, contrasena: string): Promise<ResultadoLogin> {
   const limpio = typeof email === "string" ? email.trim().toLowerCase() : "";
   if (limpio.length > 200 || !EMAIL.test(limpio)) {
     return { ok: false, mensaje: "Revisá el mail: parece que no es válido." };
   }
+  if (typeof contrasena !== "string" || contrasena === "" || contrasena.length > 200) {
+    return { ok: false, mensaje: "Escribí tu contraseña." };
+  }
 
   const supabase = await crearClienteSesion();
-  const { error } = await supabase.auth.signInWithOtp({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: limpio,
-    options: { emailRedirectTo: `${await urlBase()}/auth/callback` },
+    password: contrasena,
   });
 
-  if (error) {
+  if (error || !data.user) {
     return {
       ok: false,
       mensaje:
-        error.status === 429
-          ? "Pediste demasiados links seguidos. Esperá unos minutos y probá de nuevo."
-          : "No pudimos enviar el link. Probá de nuevo en unos minutos.",
+        error?.status === 429
+          ? "Hiciste muchos intentos seguidos. Esperá unos minutos y probá de nuevo."
+          : "El mail o la contraseña no coinciden. Revisalos y probá de nuevo.",
     };
   }
-  return { ok: true };
+
+  const debeCambiar = data.user.user_metadata?.debe_cambiar_password === true;
+  return { ok: true, destino: debeCambiar ? "/cambiar-contrasena" : "/panel" };
 }

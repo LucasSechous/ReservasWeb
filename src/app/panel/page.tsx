@@ -76,6 +76,7 @@ async function Contenido({ searchParams }: { searchParams: Promise<Params> }) {
   const params = await searchParams;
   const sesion = await obtenerSesion();
   if (!sesion) redirect("/login");
+  if (sesion.debeCambiarContrasena) redirect("/cambiar-contrasena");
   if (!sesion.perfil) return <SinAcceso email={sesion.email} />;
 
   const supabase = await crearClienteSesion();

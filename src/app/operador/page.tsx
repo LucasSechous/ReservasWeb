@@ -26,6 +26,7 @@ async function Contenido({
   const { creado } = await searchParams;
   const sesion = await obtenerSesion();
   if (!sesion) redirect("/login");
+  if (sesion.debeCambiarContrasena) redirect("/cambiar-contrasena");
   if (sesion.perfil?.rol !== "admin_plataforma") redirect("/panel");
 
   const supabase = await crearClienteSesion();

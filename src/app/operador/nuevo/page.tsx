@@ -21,6 +21,7 @@ export default function Nuevo() {
 async function Contenido() {
   const sesion = await obtenerSesion();
   if (!sesion) redirect("/login");
+  if (sesion.debeCambiarContrasena) redirect("/cambiar-contrasena");
   if (sesion.perfil?.rol !== "admin_plataforma") redirect("/panel");
 
   return (

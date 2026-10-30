@@ -30,6 +30,8 @@ export type Rol = "owner" | "staff" | "admin_plataforma";
 export type Sesion = {
   userId: string;
   email: string;
+  /** true mientras use la contraseña inicial que le dimos: tiene que elegir una propia. */
+  debeCambiarContrasena: boolean;
   /** null = logueado pero sin acceso a ningún panel (nadie lo invitó). */
   perfil: { rol: Rol; negocioId: string | null } | null;
 };
@@ -48,6 +50,7 @@ export async function obtenerSesion(): Promise<Sesion | null> {
   return {
     userId: user.id,
     email: user.email ?? "",
+    debeCambiarContrasena: user.user_metadata?.debe_cambiar_password === true,
     perfil: fila ? { rol: fila.rol, negocioId: fila.negocio_id } : null,
   };
 }

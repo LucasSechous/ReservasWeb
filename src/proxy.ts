@@ -27,7 +27,10 @@ export async function proxy(request: NextRequest) {
 
   // Los paneles no se renderizan sin sesión: se corta acá, antes de empezar la página.
   const ruta = request.nextUrl.pathname;
-  const protegida = ruta.startsWith("/panel") || ruta.startsWith("/operador");
+  const protegida =
+    ruta.startsWith("/panel") ||
+    ruta.startsWith("/operador") ||
+    ruta.startsWith("/cambiar-contrasena");
   if (protegida && !user) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -36,5 +39,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/panel/:path*", "/operador/:path*", "/login", "/auth/:path*"],
+  matcher: ["/panel/:path*", "/operador/:path*", "/cambiar-contrasena", "/login", "/auth/:path*"],
 };
