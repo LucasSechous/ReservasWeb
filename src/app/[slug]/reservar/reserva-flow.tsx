@@ -12,6 +12,7 @@ import {
   formatoDuracion,
   formatoPrecio,
 } from "@/lib/negocios";
+import { type Vocabulario, capitalizar } from "@/lib/vocabulario";
 import {
   type ResultadoReserva,
   type Turno,
@@ -27,7 +28,7 @@ type NegocioFlow = {
   ventana_dias: number;
 };
 
-const PASOS = ["Servicio", "Día", "Horario", "Tus datos"];
+const pasosDe = (v: Vocabulario) => [capitalizar(v.servicio), "Día", "Horario", "Tus datos"];
 const TELEFONO = /^\+?[0-9 ()-]{6,20}$/;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -55,11 +56,13 @@ export function ReservaFlow({
   negocio,
   servicios,
   profesionales,
+  vocabulario,
   turnstileSiteKey,
 }: {
   negocio: NegocioFlow;
   servicios: Servicio[];
   profesionales: Profesional[];
+  vocabulario: Vocabulario;
   turnstileSiteKey: string | null;
 }) {
   const [paso, setPaso] = useState(1);
@@ -179,7 +182,7 @@ export function ReservaFlow({
         </p>
         <dl className="mx-auto mt-6 max-w-sm space-y-2 rounded-2xl bg-(--n-texto)/5 p-5 text-left text-sm">
           <div className="flex justify-between gap-4">
-            <dt className="text-(--n-texto)/55">Servicio</dt>
+            <dt className="text-(--n-texto)/55">{capitalizar(vocabulario.servicio)}</dt>
             <dd className="font-semibold">{servicio.nombre}</dd>
           </div>
           <div className="flex justify-between gap-4">
@@ -220,7 +223,7 @@ export function ReservaFlow({
   return (
     <div>
       <ol className="mb-8 flex gap-2" aria-label="Pasos de la reserva">
-        {PASOS.map((nombrePaso, i) => (
+        {pasosDe(vocabulario).map((nombrePaso, i) => (
           <li key={nombrePaso} className="flex-1">
             <span
               className={`block h-1 rounded-full transition-colors ${
@@ -258,7 +261,7 @@ export function ReservaFlow({
         >
           {paso === 1 && (
             <section>
-              <h1 className="text-2xl font-extrabold sm:text-3xl">¿Qué querés hacerte?</h1>
+              <h1 className="text-2xl font-extrabold sm:text-3xl">{vocabulario.queQueres}</h1>
               <div className="mt-6 space-y-3">
                 {servicios.map((s) => (
                   <button
@@ -286,7 +289,7 @@ export function ReservaFlow({
 
               {servicioId && elegibles.length > 1 && (
                 <div className="mt-8">
-                  <h2 className="font-bold">¿Con quién?</h2>
+                  <h2 className="font-bold">{vocabulario.conQuien}</h2>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
                       type="button"

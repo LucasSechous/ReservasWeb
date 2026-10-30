@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { vocabularioDe, type Rubro, type Vocabulario } from "@/lib/vocabulario";
 
 // Identidad visual de cada negocio. Vive en el código, un tema por slug (ver docs/plan-v1.md).
 // Para dar de alta un negocio con otra marca, se agrega una entrada a TEMAS.
@@ -43,6 +44,8 @@ export type Tema = {
   detalle?: string;
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
   demo?: boolean;
+  /** Rubro del negocio: define las palabras (especialista, consulta, clase…). Sin valor, las genéricas. */
+  rubro?: Rubro;
 };
 
 // Misma identidad que la vitrina de ReservasWeb: oscuro, acento lima y destellos violeta.
@@ -99,6 +102,25 @@ const TEMAS: Record<string, Tema> = {
     ],
     demo: true,
   },
+  "clinica-demo": {
+    estilo: "editorial",
+    rubro: "salud",
+    fondo: "#f2f7f6",
+    texto: "#12302e",
+    tarjeta: "#ffffff",
+    acento: "#0f766e",
+    acentoTinta: "#f2fbfa",
+    brillo: "#cfe9e5",
+    detalle: "#5b7f7b",
+    lema: "Tu salud, con turno.",
+    intro:
+      "Consultas con especialistas, sin llamadas ni esperas. Elegí la consulta, tu especialista y el horario que te quede bien.",
+    etiqueta: "Clínica de especialidades",
+    tituloServicios: "Consultas",
+    subtituloServicios: "Elegí la consulta que necesitás.",
+    logo: "/negocios/clinica-demo/logo.svg",
+    demo: true,
+  },
   "cafe-demo": {
     estilo: "retro",
     fondo: "#f1e3c0",
@@ -134,6 +156,11 @@ function esClaro(hex: string): boolean {
 
 export function getTema(slug: string): Tema {
   return TEMAS[slug] ?? TEMA_BASE;
+}
+
+/** Las palabras del rubro del negocio (genéricas si el tema no define rubro). */
+export function getVocabulario(slug: string): Vocabulario {
+  return vocabularioDe(getTema(slug).rubro);
 }
 
 /**

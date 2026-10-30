@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { BannerDemo } from "@/components/banner-demo";
 import { getNegocio, getProfesionales, getServicios } from "@/lib/negocios";
 import { getTema, temaStyle } from "@/lib/tema";
+import { vocabularioDe } from "@/lib/vocabulario";
 import { ReservaFlow } from "./reserva-flow";
 
 export default function Reservar({ params }: PageProps<"/[slug]/reservar">) {
@@ -62,6 +63,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
               }}
               servicios={servicios}
               profesionales={profesionales}
+              vocabulario={vocabularioDe(tema.rubro)}
               turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? null}
             />
           )}

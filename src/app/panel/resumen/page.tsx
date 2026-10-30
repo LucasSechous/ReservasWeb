@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ahoraMs, formatoHora, hoyEn, instanteLocal, parseRango } from "@/lib/fechas";
+import { getVocabulario } from "@/lib/tema";
 import { cargarContexto, texto, uno } from "../contexto";
 import { PanelShell, SinAcceso } from "../shell";
 
@@ -79,6 +80,7 @@ async function Contenido({
   const { ctx } = r;
   const { supabase, negocio, enlace } = ctx;
   const tz = negocio.timezone;
+  const vocab = getVocabulario(negocio.slug);
 
   const ahora = ahoraMs();
   const mesActual = hoyEn(tz).slice(0, 7);
@@ -254,8 +256,8 @@ async function Contenido({
           )}
 
           {porProfesional.length > 1 && (
-            <section className="mt-8" aria-label="Turnos por profesional">
-              <h3 className="font-display text-xl font-bold">Por profesional</h3>
+            <section className="mt-8" aria-label={`Turnos por ${vocab.profesional}`}>
+              <h3 className="font-display text-xl font-bold">Por {vocab.profesional}</h3>
               <ul className="mt-3 space-y-3 rounded-3xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-5">
                 {porProfesional.map(([nombre, n]) => (
                   <Barra key={nombre} etiqueta={nombre} valor={n} maximo={porProfesional[0][1]} />

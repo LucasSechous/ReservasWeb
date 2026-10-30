@@ -38,8 +38,11 @@ export function GestionReserva({
   inicial,
   ventanaDias,
   maxReprogramaciones,
+  etiquetaServicio,
 }: {
   token: string;
+  /** «Servicio», «Consulta», «Clase»… según el rubro del negocio. */
+  etiquetaServicio: string;
   inicial: ReservaGestion;
   ventanaDias: number;
   maxReprogramaciones: number;
@@ -193,7 +196,7 @@ export function GestionReserva({
               <dd className="text-right font-semibold">{reserva.negocio_nombre}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-(--n-texto)/55">Servicio</dt>
+              <dt className="text-(--n-texto)/55">{etiquetaServicio}</dt>
               <dd className="text-right font-semibold">
                 {reserva.servicio_nombre ?? "Turno"}
                 {reserva.precio_final != null ? ` · ${formatoPrecio(reserva.precio_final)}` : ""}
