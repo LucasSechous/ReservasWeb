@@ -231,6 +231,24 @@ La ficha de marca del tracker es el puente: los servicios, colores y estilo que 
 
 Con varios profesionales en la v1, la rúbrica de calificación de leads ya no tiene por qué penalizar a los negocios con 4 o más profesionales: pasan a encajar.
 
+### Fase 9: Panel v2 (30 de octubre de 2026)
+
+Rediseño del panel en oscuro y pensado para el celular, más las funciones que pidió el primer ciclo de ventas.
+
+- [x] Login con mail y contraseña (contraseña provisoria con cambio obligatorio en el primer ingreso); el link por mail se eliminó
+- [x] Mails listos para encender: botón de prueba en `/operador` y guía en `docs/mails-resend.md`
+- [x] Panel nuevo: Hoy, Agenda, Clientes, Resumen y botón «Agendar» siempre a mano
+- [x] Agendar un turno a mano: solo el nombre es obligatorio (teléfono y mail opcionales)
+- [x] «Vino» / «No vino» en cada turno que ya empezó, con deshacer
+- [x] Resumen del mes: se presentaron / no se presentaron, asistencia, ingresos, lo más pedido y horas con más turnos
+- [x] Fichas de clientes por negocio, reconocidos por teléfono, mail o nombre
+- [x] Aviso al dueño cuando alguien con 5 o más ausencias vuelve a reservar
+- [x] Recordatorio por mail el día anterior (tarea diaria de Vercel en `/api/recordatorios`)
+- [ ] **Antes de probar los recordatorios:** aplicar `supabase/migrations/20261030000000_recordatorios.sql` y cargar `CRON_SECRET` en Vercel
+- [ ] Prueba real de punta a punta con un dueño (login, agendar a mano, marcar asistencia)
+
+Para más adelante: cuentas de clientes con sus datos guardados, seña con Mercado Pago, un mismo dueño con varios negocios (hoy cada dueño tiene uno).
+
 ## Decisiones pendientes y riesgos
 
 **Decididas:**

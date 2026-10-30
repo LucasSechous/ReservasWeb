@@ -1,28 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import {
-  fechaLocalDe,
+  ahoraMs,
   formatoFechaLarga,
-  formatoHora,
   hoyEn,
   instanteLocal,
   parseRango,
   sumarDias,
 } from "@/lib/fechas";
-import { crearClienteSesion, obtenerSesion } from "@/lib/supabase/sesion";
-import { BloquearForm } from "./bloquear-form";
-import { type ItemAgenda, ReservaItem } from "./reserva-item";
+import { cargarContexto } from "./contexto";
+import { ReservaItem } from "./reserva-item";
+import { PanelShell, SinAcceso } from "./shell";
+import { aItem, COLUMNAS_TURNO, cuentanComoTurno, type FilaTurno } from "./turnos";
 
 export const metadata: Metadata = {
-  title: "Agenda",
+  title: "Hoy",
   robots: { index: false, follow: false },
 };
 
-type Params = { [clave: string]: string | string[] | undefined };
-
-export default function Panel({ searchParams }: PageProps<"/panel">) {
+export default function Hoy({ searchParams }: PageProps<"/panel">) {
   return (
     <Suspense fallback={<p className="p-8 text-white/50">Cargando tu agenda…</p>}>
       <Contenido searchParams={searchParams} />
@@ -30,245 +27,157 @@ export default function Panel({ searchParams }: PageProps<"/panel">) {
   );
 }
 
-function uno<T>(valor: T | T[] | null | undefined): T | null {
-  return Array.isArray(valor) ? (valor[0] ?? null) : (valor ?? null);
+function enCuanto(minutos: number): string {
+  if (minutos <= 0) return "Ahora";
+  if (minutos < 60) return `En ${minutos} min`;
+  const h = Math.floor(minutos / 60);
+  const m = minutos % 60;
+  return m === 0 ? `En ${h} h` : `En ${h} h ${m} min`;
 }
 
-function texto(valor: string | string[] | undefined): string | undefined {
-  return Array.isArray(valor) ? valor[0] : valor;
-}
-
-function lunesDe(fecha: string): string {
-  const [a, m, d] = fecha.split("-").map(Number);
-  const diaSemana = new Date(Date.UTC(a, m - 1, d)).getUTCDay(); // 0 = domingo
-  return sumarDias(fecha, -((diaSemana + 6) % 7));
-}
-
-function SalirBoton() {
+function Dato({ valor, etiqueta, marca }: { valor: number; etiqueta: string; marca?: string }) {
   return (
-    <form action="/auth/salir" method="post">
-      <button
-        type="submit"
-        className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold hover:border-white/50"
-      >
-        Cerrar sesión
-      </button>
-    </form>
-  );
-}
-
-function SinAcceso({ email }: { email: string }) {
-  return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-12">
-      <h1 className="font-display text-3xl font-extrabold">Tu cuenta no tiene un panel</h1>
-      <p className="mt-3 text-white/70">
-        Entraste como {email}, pero ese mail no está asociado a ningún negocio. Si sos dueño o parte
-        del equipo de un negocio, pedile a quien armó tu web que te dé de alta con este mail.
+    <div className="rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) px-4 py-3">
+      <p className={`font-display text-3xl font-extrabold ${marca ?? ""}`}>{valor}</p>
+      <p className="text-xs font-semibold uppercase tracking-wider text-(--n-texto)/55">
+        {etiqueta}
       </p>
-      <div className="mt-6">
-        <SalirBoton />
-      </div>
-    </main>
+    </div>
   );
 }
 
-async function Contenido({ searchParams }: { searchParams: Promise<Params> }) {
-  const params = await searchParams;
-  const sesion = await obtenerSesion();
-  if (!sesion) redirect("/login");
-  if (sesion.debeCambiarContrasena) redirect("/cambiar-contrasena");
-  if (!sesion.perfil) return <SinAcceso email={sesion.email} />;
+async function Contenido({
+  searchParams,
+}: {
+  searchParams: Promise<{ [clave: string]: string | string[] | undefined }>;
+}) {
+  const r = await cargarContexto(await searchParams);
+  if (!r.ok) return <SinAcceso email={r.email} />;
+  const { ctx } = r;
+  const { supabase, negocio, enlace } = ctx;
+  const tz = negocio.timezone;
 
-  const supabase = await crearClienteSesion();
-  const esOperador = sesion.perfil.rol === "admin_plataforma";
-  const slugElegido = texto(params.negocio);
-
-  // El operador elige qué negocio mirar con ?negocio=slug; un dueño ve siempre el suyo.
-  if (esOperador && !slugElegido) redirect("/operador");
-  let consultaNegocio = supabase.from("negocios").select("id, slug, nombre, timezone");
-  consultaNegocio =
-    esOperador && slugElegido
-      ? consultaNegocio.eq("slug", slugElegido)
-      : consultaNegocio.eq("id", sesion.perfil.negocioId ?? "");
-  const { data: negocio } = await consultaNegocio.maybeSingle();
-  if (!negocio) return <SinAcceso email={sesion.email} />;
-
-  const tz: string = negocio.timezone;
+  const ahora = ahoraMs();
   const hoy = hoyEn(tz);
-  const fechaPedida = texto(params.fecha);
-  const fecha = fechaPedida && /^\d{4}-\d{2}-\d{2}$/.test(fechaPedida) ? fechaPedida : hoy;
-  const vista = texto(params.vista) === "semana" ? "semana" : "dia";
+  const inicioHoy = instanteLocal(hoy, "00:00", tz);
+  const inicioManana = instanteLocal(sumarDias(hoy, 1), "00:00", tz);
+  const hace14 = instanteLocal(sumarDias(hoy, -14), "00:00", tz);
 
-  const desde = vista === "semana" ? lunesDe(fecha) : fecha;
-  const hasta = vista === "semana" ? sumarDias(desde, 6) : fecha;
-  const salto = vista === "semana" ? 7 : 1;
-
-  const enlace = (cambios: { fecha?: string; vista?: string }) => {
-    const q = new URLSearchParams();
-    if (esOperador && slugElegido) q.set("negocio", slugElegido);
-    q.set("vista", cambios.vista ?? vista);
-    q.set("fecha", cambios.fecha ?? fecha);
-    return `/panel?${q.toString()}`;
-  };
-
-  const [{ data: filas }, { data: profesionales }] = await Promise.all([
+  const [{ data: deHoy }, { data: sinMarcarFilas }] = await Promise.all([
     supabase
       .from("reservas")
-      .select(
-        "id, rango, origen, estado, cancelada_por, cliente_nombre, cliente_telefono, cliente_email, notas, servicios(nombre), profesionales(nombre)",
-      )
-      // Las canceladas se siguen viendo, marcadas como tales; sus horarios ya no ocupan la agenda.
-      .in("estado", ["confirmada", "cancelada"])
+      .select(COLUMNAS_TURNO)
       .eq("negocio_id", negocio.id)
-      .overlaps(
-        "rango",
-        `[${instanteLocal(desde, "00:00", tz)},${instanteLocal(sumarDias(hasta, 1), "00:00", tz)})`,
-      ),
+      .in("estado", ["confirmada", "cancelada", "completada", "no_show"])
+      .overlaps("rango", `[${inicioHoy},${inicioManana})`),
+    // Turnos de los últimos 14 días que nadie marcó: de ahí salen las estadísticas de asistencia.
     supabase
-      .from("profesionales")
-      .select("id, nombre")
+      .from("reservas")
+      .select(COLUMNAS_TURNO)
       .eq("negocio_id", negocio.id)
-      .eq("activo", true)
-      .order("created_at", { ascending: true }),
+      .eq("estado", "confirmada")
+      .neq("origen", "bloqueo")
+      .overlaps("rango", `[${hace14},${inicioHoy})`),
   ]);
 
-  // Se agrupa por día (en hora del negocio) y se ordena por hora de inicio.
-  const porDia = new Map<string, (ItemAgenda & { orden: string })[]>();
-  for (const f of filas ?? []) {
-    const { inicio, fin } = parseRango(f.rango);
-    const dia = fechaLocalDe(inicio, tz);
-    const esBloqueo = f.origen === "bloqueo";
-    // Un bloqueo quitado no aporta nada: solo se muestran las reservas canceladas.
-    if (esBloqueo && f.estado === "cancelada") continue;
-    const lista = porDia.get(dia) ?? [];
-    lista.push({
-      id: f.id,
-      orden: inicio,
-      horario: `${formatoHora(inicio, tz)} – ${formatoHora(fin, tz)}`,
-      esBloqueo,
-      servicio: uno<{ nombre: string }>(f.servicios)?.nombre ?? "Turno",
-      profesional: uno<{ nombre: string }>(f.profesionales)?.nombre ?? "",
-      cliente: f.cliente_nombre,
-      telefono: f.cliente_telefono,
-      email: f.cliente_email,
-      notas: f.notas,
-      origen: f.origen,
-      cancelada: f.estado === "cancelada",
-      canceladaPor: f.cancelada_por,
-    });
-    porDia.set(dia, lista);
-  }
+  const items = ((deHoy ?? []) as FilaTurno[])
+    .map((f) => aItem(f, tz, ahora))
+    .filter((i) => i !== null)
+    .sort((a, b) => a.orden.localeCompare(b.orden));
+  const sinMarcar = ((sinMarcarFilas ?? []) as FilaTurno[])
+    .map((f) => aItem(f, tz, ahora, true))
+    .filter((i) => i !== null)
+    .sort((a, b) => b.orden.localeCompare(a.orden));
 
-  const dias: string[] = [];
-  for (let d = desde; d <= hasta; d = sumarDias(d, 1)) dias.push(d);
-  const visibles = vista === "semana" ? dias.filter((d) => porDia.has(d)) : dias;
-  const total = [...porDia.values()].reduce(
-    (n, l) => n + l.filter((i) => !i.esBloqueo && !i.cancelada).length,
-    0,
-  );
+  const turnos = items.filter(cuentanComoTurno);
+  const proximo = ((deHoy ?? []) as FilaTurno[])
+    .filter((f) => f.estado === "confirmada" && f.origen !== "bloqueo")
+    .map((f) => ({ f, ...parseRango(f.rango) }))
+    .filter((t) => new Date(t.fin).getTime() > ahora)
+    .sort((a, b) => a.inicio.localeCompare(b.inicio))[0];
+  const itemProximo = proximo ? items.find((i) => i.id === proximo.f.id) : undefined;
 
-  const pestana = (activa: boolean) =>
-    `rounded-full px-4 py-2 text-sm font-semibold ${
-      activa ? "bg-accent text-accent-ink" : "border border-white/20 hover:border-white/50"
-    }`;
+  const vinieron = items.filter((i) => i.estado === "completada").length;
+  const faltan = turnos.filter((i) => i.estado === "confirmada" && !i.empezo).length;
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-6 sm:py-10">
-      <header className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">Agenda</p>
-          <h1 className="font-display text-3xl font-extrabold">{negocio.nombre}</h1>
-          <p className="text-sm text-white/50">{sesion.email}</p>
-        </div>
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          {/* El operador mira la agenda de un cliente: volver lo lleva a su lista, sin cerrar su sesión. */}
-          {esOperador && (
-            <Link
-              href="/operador"
-              className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-ink hover:brightness-110"
-            >
-              ← Volver a mis negocios
-            </Link>
-          )}
-          <SalirBoton />
-        </div>
-      </header>
-
-      <nav className="mt-6 flex flex-wrap items-center gap-2" aria-label="Vista de la agenda">
-        <Link href={enlace({ vista: "dia" })} className={pestana(vista === "dia")}>
-          Día
-        </Link>
-        <Link href={enlace({ vista: "semana" })} className={pestana(vista === "semana")}>
-          Semana
-        </Link>
-        <span className="mx-1 hidden h-6 w-px bg-white/15 sm:block" />
-        <Link
-          href={enlace({ fecha: sumarDias(fecha, -salto) })}
-          aria-label="Anterior"
-          className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold hover:border-white/50"
-        >
-          ←
-        </Link>
-        <Link href={enlace({ fecha: hoy })} className={pestana(false)}>
-          Hoy
-        </Link>
-        <Link
-          href={enlace({ fecha: sumarDias(fecha, salto) })}
-          aria-label="Siguiente"
-          className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold hover:border-white/50"
-        >
-          →
-        </Link>
-      </nav>
-
-      <p className="mt-5 text-white/70">
-        {vista === "semana"
-          ? `Semana del ${formatoFechaLarga(desde)} al ${formatoFechaLarga(hasta)}`
-          : formatoFechaLarga(fecha)}
-        {" · "}
-        <span className="font-semibold text-white">
-          {total} {total === 1 ? "turno" : "turnos"}
-        </span>
+    <PanelShell ctx={ctx} activa="hoy">
+      <p className="text-sm font-semibold capitalize text-(--n-texto)/60">
+        {formatoFechaLarga(hoy)}
       </p>
 
-      <div className="mt-5">
-        <BloquearForm
-          negocioId={negocio.id}
-          fechaInicial={fecha}
-          profesionales={profesionales ?? []}
-        />
+      {itemProximo && proximo ? (
+        <section
+          aria-label="Próximo turno"
+          className="mt-3 rounded-3xl border border-(--n-acento)/40 bg-gradient-to-br from-(--n-acento)/15 to-(--n-tarjeta) p-5 sm:p-6"
+        >
+          <p className="text-xs font-bold uppercase tracking-widest text-(--n-acento)">
+            Próximo turno ·{" "}
+            {enCuanto(Math.round((new Date(proximo.inicio).getTime() - ahora) / 60000))}
+          </p>
+          <p className="mt-2 font-display text-4xl font-extrabold">
+            {itemProximo.horario.split(" – ")[0]}
+          </p>
+          <p className="mt-1 text-xl font-bold">{itemProximo.cliente}</p>
+          <p className="text-(--n-texto)/70">
+            {itemProximo.servicio} · con {itemProximo.profesional}
+          </p>
+        </section>
+      ) : (
+        <section className="mt-3 rounded-3xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-5 sm:p-6">
+          <p className="font-display text-2xl font-extrabold">
+            {turnos.length === 0 ? "Hoy no tenés turnos" : "No quedan más turnos por hoy"}
+          </p>
+          <p className="mt-1 text-(--n-texto)/65">
+            {turnos.length === 0
+              ? "Si alguien te escribe para reservar, cargalo a mano en un momento."
+              : "Buen trabajo. Repasá abajo cómo salió el día."}
+          </p>
+          <Link
+            href={enlace("/panel/nuevo")}
+            className="mt-4 inline-flex min-h-11 items-center rounded-full bg-(--n-acento) px-5 text-sm font-bold text-(--n-acento-tinta) hover:brightness-110"
+          >
+            + Agendar un turno
+          </Link>
+        </section>
+      )}
+
+      <div className="mt-4 grid grid-cols-3 gap-3">
+        <Dato valor={turnos.length} etiqueta="Turnos hoy" />
+        <Dato valor={faltan} etiqueta="Todavía faltan" />
+        <Dato valor={vinieron} etiqueta="Vinieron" marca="text-(--n-acento)" />
       </div>
 
-      <div className="mt-8 space-y-8">
-        {visibles.length === 0 && (
-          <p className="rounded-2xl border border-white/10 bg-ink-2 p-6 text-white/65">
-            No hay turnos en esta semana.
+      {sinMarcar.length > 0 && (
+        <section className="mt-8" aria-label="Turnos sin marcar">
+          <h2 className="font-display text-xl font-bold text-amber-300">
+            Falta marcar ({sinMarcar.length})
+          </h2>
+          <p className="mt-1 text-sm text-(--n-texto)/65">
+            Contanos si vinieron. Así tus estadísticas son reales.
           </p>
+          <ul className="mt-3 space-y-3">
+            {sinMarcar.map((item) => (
+              <ReservaItem key={item.id} item={item} />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section className="mt-8" aria-label="Turnos de hoy">
+        <h2 className="font-display text-xl font-bold">Hoy</h2>
+        {items.length === 0 ? (
+          <p className="mt-3 rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-5 text-(--n-texto)/65">
+            Sin turnos este día.
+          </p>
+        ) : (
+          <ul className="mt-3 space-y-3">
+            {items.map((item) => (
+              <ReservaItem key={item.id} item={item} />
+            ))}
+          </ul>
         )}
-        {visibles.map((dia) => {
-          const items = (porDia.get(dia) ?? []).sort((a, b) => a.orden.localeCompare(b.orden));
-          return (
-            <section key={dia} aria-label={formatoFechaLarga(dia)}>
-              {vista === "semana" && (
-                <h2 className="mb-3 font-display text-xl font-bold capitalize">
-                  {formatoFechaLarga(dia)}
-                </h2>
-              )}
-              {items.length === 0 ? (
-                <p className="rounded-2xl border border-white/10 bg-ink-2 p-6 text-white/65">
-                  Sin turnos este día.
-                </p>
-              ) : (
-                <ul className="space-y-3">
-                  {items.map((item) => (
-                    <ReservaItem key={item.id} item={item} />
-                  ))}
-                </ul>
-              )}
-            </section>
-          );
-        })}
-      </div>
-    </div>
+      </section>
+    </PanelShell>
   );
 }

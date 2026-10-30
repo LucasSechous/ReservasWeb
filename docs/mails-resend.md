@@ -32,3 +32,17 @@ Después de cargar las variables hay que redeployar en Vercel. Entrá a `/operad
 - «Todavía no hay una clave»: la variable no está cargada en ese entorno, o falta el redeploy.
 - «Resend rechazó el envío»: la clave es incorrecta, o `MAIL_FROM` no es de un dominio verificado.
 - No llega pero dice que salió: mirá spam.
+
+## Recordatorios del día anterior
+
+Cada día a las 9:00 (hora de Uruguay) Vercel llama a `/api/recordatorios` y se manda un mail a quienes tienen turno al día siguiente y dejaron su mail. Para que funcione:
+
+1. Aplicar la migración `supabase/migrations/20261030000000_recordatorios.sql` en el SQL Editor de Supabase (suma una columna, no cambia nada existente).
+2. Cargar `CRON_SECRET` en Vercel (cualquier texto largo y al azar) y redeployar.
+3. Tener los mails encendidos (pasos de arriba).
+
+Si falta la migración, la tarea responde «Falta aplicar la migración de recordatorios» y no manda nada. En el plan gratuito de Vercel una tarea programada puede correr una vez por día, que es lo que se usa.
+
+## Aviso de clientes que suelen faltar
+
+Cuando alguien que ya faltó 5 veces o más a turnos de un negocio vuelve a reservar, ese negocio recibe un mail de aviso (a la dirección de mail que tenga cargada el negocio). Solo cuenta lo que ese negocio marcó como «No vino» y lo ve únicamente el dueño.
