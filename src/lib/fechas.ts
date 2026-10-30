@@ -121,3 +121,8 @@ export function parseRango(rango: string): { inicio: string; fin: string } {
   );
   return { inicio, fin };
 }
+
+/** El momento actual en milisegundos. Las páginas lo piden por acá para no llamar a Date.now() al renderizar. */
+export function ahoraMs(): number {
+  return Date.now();
+}

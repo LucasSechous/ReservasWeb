@@ -33,8 +33,17 @@ function plantilla(opciones: {
   return `<!doctype html><html lang="es"><body style="margin:0;background:#f4f4f2;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;"><div style="max-width:520px;margin:0 auto;padding:32px 16px;"><div style="background:#fff;border-radius:16px;padding:28px;"><h1 style="margin:0 0 16px;font-size:22px;color:#111;">${esc(opciones.titulo)}</h1><table role="presentation" style="border-collapse:collapse;">${filas}</table>${boton}${pie}</div><p style="text-align:center;font-size:12px;color:#9a9a9a;margin:16px 0 0;">Enviado por ReservasWeb</p></div></body></html>`;
 }
 
-function texto(titulo: string, lineas: { etiqueta: string; valor: string }[], extra?: string): string {
-  return [titulo, "", ...lineas.map((l) => `${l.etiqueta}: ${l.valor}`), ...(extra ? ["", extra] : [])].join("\n");
+function texto(
+  titulo: string,
+  lineas: { etiqueta: string; valor: string }[],
+  extra?: string,
+): string {
+  return [
+    titulo,
+    "",
+    ...lineas.map((l) => `${l.etiqueta}: ${l.valor}`),
+    ...(extra ? ["", extra] : []),
+  ].join("\n");
 }
 
 export function mailConfirmacionCliente(d: {
@@ -106,7 +115,11 @@ export function mailAvisoCancelacion(d: {
   ];
   return {
     asunto: `Turno cancelado: ${d.cliente}, ${d.cuando}`,
-    html: plantilla({ titulo, lineas, pie: `El horario volvió a quedar libre en la web de ${d.negocio}.` }),
+    html: plantilla({
+      titulo,
+      lineas,
+      pie: `El horario volvió a quedar libre en la web de ${d.negocio}.`,
+    }),
     texto: texto(titulo, lineas, `El horario volvió a quedar libre en la web de ${d.negocio}.`),
   };
 }
@@ -155,5 +168,52 @@ export function mailCanceladoPorNegocio(d: {
       pie: "Lamentamos el inconveniente. Podés elegir otro horario cuando quieras.",
     }),
     texto: texto(titulo, lineas, `Para reservar otro horario: ${d.reservarUrl}`),
+  };
+}
+
+export function mailRecordatorio(d: {
+  negocio: string;
+  servicio: string;
+  profesional: string;
+  cuando: string;
+  direccion: string | null;
+  telefono: string | null;
+}): Mail {
+  const titulo = "Mañana tenés turno";
+  const lineas = [
+    { etiqueta: "Dónde", valor: d.negocio },
+    ...(d.direccion ? [{ etiqueta: "Dirección", valor: d.direccion }] : []),
+    { etiqueta: "Servicio", valor: d.servicio },
+    { etiqueta: "Cuándo", valor: d.cuando },
+    { etiqueta: "Con", valor: d.profesional },
+  ];
+  const pie = d.telefono
+    ? `Si no podés venir, avisanos al ${d.telefono} o usá el link del mail de confirmación, así otra persona puede usar el horario.`
+    : "Si no podés venir, usá el link del mail de confirmación para cancelar o cambiar el turno, así otra persona puede usar el horario.";
+  return {
+    asunto: `Recordatorio: mañana tenés turno en ${d.negocio}`,
+    html: plantilla({ titulo, lineas, pie }),
+    texto: texto(titulo, lineas, pie),
+  };
+}
+
+export function mailAvisoAusencias(d: {
+  negocio: string;
+  cliente: string;
+  cuando: string;
+  ausencias: number;
+}): Mail {
+  const titulo = "Ojo con este turno";
+  const lineas = [
+    { etiqueta: "Cliente", valor: d.cliente },
+    { etiqueta: "Turno", valor: d.cuando },
+    { etiqueta: "No se presentó", valor: `${d.ausencias} veces en ${d.negocio}` },
+  ];
+  const pie =
+    "Esta persona suele no presentarse. Si querés, confirmá el turno con ella antes. Este dato lo ves solo vos.";
+  return {
+    asunto: `Ojo: ${d.cliente} suele no presentarse`,
+    html: plantilla({ titulo, lineas, pie }),
+    texto: texto(titulo, lineas, pie),
   };
 }

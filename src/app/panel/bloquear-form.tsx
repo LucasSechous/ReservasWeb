@@ -152,7 +152,10 @@ export function BloquearForm({
       </div>
 
       {error && (
-        <div role="alert" className="mt-4 rounded-xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-200">
+        <div
+          role="alert"
+          className="mt-4 rounded-xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-200"
+        >
           <p>{error}</p>
           {conflictos !== null && (
             <div className="mt-3">

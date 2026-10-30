@@ -3,7 +3,7 @@
 import { after } from "next/server";
 import { verificarCaptcha } from "@/lib/captcha";
 import { buildGestionUrl, generarToken, hashToken } from "@/lib/gestion";
-import { notificarReserva } from "@/lib/notificaciones";
+import { avisarSiSueleFaltar, notificarReserva } from "@/lib/notificaciones";
 import { createPublicClient } from "@/lib/supabase/server";
 import { urlBase } from "@/lib/url";
 
@@ -38,13 +38,11 @@ export async function obtenerHorarios(
 
   return {
     ok: true,
-    turnos: (data ?? []).map(
-      (t: { profesional_id: string; inicio: string; fin: string }) => ({
-        profesionalId: t.profesional_id,
-        inicio: t.inicio,
-        fin: t.fin,
-      }),
-    ),
+    turnos: (data ?? []).map((t: { profesional_id: string; inicio: string; fin: string }) => ({
+      profesionalId: t.profesional_id,
+      inicio: t.inicio,
+      fin: t.fin,
+    })),
   };
 }
 
@@ -116,8 +114,8 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
 
   // Los mails salen después de responderle al cliente; si fallan, la reserva igual queda hecha.
   const gestionUrl = buildGestionUrl(token, await urlBase());
-  after(() =>
-    notificarReserva({
+  after(async () => {
+    await notificarReserva({
       negocioId: datos.negocioId,
       servicioId: datos.servicioId,
       profesionalId: fila.profesional_id,
@@ -126,8 +124,16 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
       clienteTelefono: datos.telefono.trim(),
       clienteEmail: datos.email.trim() || null,
       gestionUrl,
-    }),
-  );
+    });
+    // Si esa persona suele faltar, el dueño se entera antes del turno.
+    await avisarSiSueleFaltar({
+      negocioId: datos.negocioId,
+      clienteNombre: datos.nombre.trim(),
+      clienteTelefono: datos.telefono.trim(),
+      clienteEmail: datos.email.trim() || null,
+      inicio: fila.inicio,
+    });
+  });
 
   return {
     ok: true,
