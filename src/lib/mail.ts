@@ -14,7 +14,7 @@ export async function enviarMail(mail: {
   const clave = process.env.RESEND_API_KEY;
   if (!clave) return false;
 
-  const remitente = process.env.MAIL_FROM ?? "ReservasWeb <onboarding@resend.dev>";
+  const remitente = process.env.MAIL_FROM ?? "Tu Turno <onboarding@resend.dev>";
 
   try {
     const respuesta = await fetch("https://api.resend.com/emails", {

@@ -30,7 +30,7 @@ function plantilla(opciones: {
     ? `<p style="margin:24px 0 0;font-size:13px;color:#6b6b6b;">${esc(opciones.pie)}</p>`
     : "";
 
-  return `<!doctype html><html lang="es"><body style="margin:0;background:#f4f4f2;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;"><div style="max-width:520px;margin:0 auto;padding:32px 16px;"><div style="background:#fff;border-radius:16px;padding:28px;"><h1 style="margin:0 0 16px;font-size:22px;color:#111;">${esc(opciones.titulo)}</h1><table role="presentation" style="border-collapse:collapse;">${filas}</table>${boton}${pie}</div><p style="text-align:center;font-size:12px;color:#9a9a9a;margin:16px 0 0;">Enviado por ReservasWeb</p></div></body></html>`;
+  return `<!doctype html><html lang="es"><body style="margin:0;background:#f4f4f2;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;"><div style="max-width:520px;margin:0 auto;padding:32px 16px;"><div style="background:#fff;border-radius:16px;padding:28px;"><h1 style="margin:0 0 16px;font-size:22px;color:#111;">${esc(opciones.titulo)}</h1><table role="presentation" style="border-collapse:collapse;">${filas}</table>${boton}${pie}</div><p style="text-align:center;font-size:12px;color:#9a9a9a;margin:16px 0 0;">Enviado por Tu Turno</p></div></body></html>`;
 }
 
 function texto(

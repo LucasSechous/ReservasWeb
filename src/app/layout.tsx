@@ -69,13 +69,13 @@ const jost = Jost({
 
 export const metadata: Metadata = {
   title: {
-    default: "ReservasWeb · Tu web con reservas online",
-    template: "%s · ReservasWeb",
+    default: "Tu Turno · Webs con reservas online",
+    template: "%s · Tu Turno",
   },
   description:
     "Páginas web con reservas online para barberías, peluquerías, centros de estética, clínicas y consultorios en Uruguay. Tus clientes reservan solos desde el celular.",
   openGraph: {
-    title: "ReservasWeb · Tu web con reservas online",
+    title: "Tu Turno · Webs con reservas online",
     description:
       "Tu negocio con su propia web, y turnos que se reservan solos.",
     locale: "es_UY",

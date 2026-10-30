@@ -1,12 +1,12 @@
-# Plan reservasWeb v1
+# Plan Tu Turno v1
 
 Oct 27, 2026 · actualizado el 28 de octubre de 2026 · @Luckyrex
 
 ## Objetivo y alcance
 
-ReservasWeb vende **páginas web a medida con reservas online** para negocios de salud y estética: barberías, peluquerías, centros de estética. Cada negocio tiene su propia web, con su identidad, donde sus clientes reservan desde el celular a cualquier hora. No es un marketplace donde el público elige entre negocios (como Fresha): la web es del negocio.
+Tu Turno vende **páginas web a medida con reservas online** para negocios de salud y estética: barberías, peluquerías, centros de estética. Cada negocio tiene su propia web, con su identidad, donde sus clientes reservan desde el celular a cualquier hora. No es un marketplace donde el público elige entre negocios (como Fresha): la web es del negocio.
 
-La cara pública de ReservasWeb es una **vitrina** en `/`: una landing tuya con demos y botones a tu WhatsApp y tu mail para pedir una web. Los clientes no llegan solos: los agentes encuentran leads, vos los contactás, pedís permiso para mostrarles una demo de su negocio y la armás en el momento.
+La cara pública de Tu Turno es una **vitrina** en `/`: una landing tuya con demos y botones a tu WhatsApp y tu mail para pedir una web. Los clientes no llegan solos: los agentes encuentran leads, vos los contactás, pedís permiso para mostrarles una demo de su negocio y la armás en el momento.
 
 La v1 es lo mínimo para venderle reservas a los primeros clientes que salgan del tracker de leads. Por dentro, todos los negocios comparten un solo proyecto y una sola base (más barato y simple de mantener); el cliente final nunca ve eso.
 
@@ -216,7 +216,7 @@ Hecho el 28 de octubre de 2026 lo que depende del código. Cuando la demo esté 
 
 ## Conexión con los agentes
 
-reservasWeb cierra el embudo que ya funciona: lead, demo, cliente, negocio online. Los agentes corren como rutinas programadas en la nube y se comunican a través del tracker de leads. Ninguno envía mensajes a un lead: todo queda como borrador para que lo mandes vos. Cada paso nuevo se suma cuando su fase está terminada.
+Tu Turno cierra el embudo que ya funciona: lead, demo, cliente, negocio online. Los agentes corren como rutinas programadas en la nube y se comunican a través del tracker de leads. Ninguno envía mensajes a un lead: todo queda como borrador para que lo mandes vos. Cada paso nuevo se suma cuando su fase está terminada.
 
 | Cuándo | Qué cambia | Agente |
 | --- | --- | --- |
@@ -227,7 +227,7 @@ reservasWeb cierra el embudo que ya funciona: lead, demo, cliente, negocio onlin
 | Después de la Fase 7 | Al marcar un lead como «Cerrado», se prepara el alta: negocio y servicios desde su ficha de marca, más su landing. Vos revisás, cargás precios y fotos | Alta de clientes (nuevo) |
 | Cuando haya paquetes y precios | Al pasar un lead a «respondió» o «reunión», se redacta una propuesta con alcance, plazos y precio | Propuestas (nuevo) |
 
-La ficha de marca del tracker es el puente: los servicios, colores y estilo que juntan los agentes son los mismos datos que después se cargan en reservasWeb.
+La ficha de marca del tracker es el puente: los servicios, colores y estilo que juntan los agentes son los mismos datos que después se cargan en Tu Turno.
 
 Con varios profesionales en la v1, la rúbrica de calificación de leads ya no tiene por qué penalizar a los negocios con 4 o más profesionales: pasan a encajar.
 
@@ -270,7 +270,7 @@ Para más adelante: cuentas de clientes con sus datos guardados, seña con Merca
 **Decididas:**
 
 - [x] Varios profesionales por negocio desde la v1 (28 de octubre de 2026): el esquema ya lo soporta y evita migrar después una tabla con reservas reales.
-- [x] ReservasWeb es una vitrina y webs a medida, no un marketplace (28 de octubre de 2026).
+- [x] Tu Turno es una vitrina y webs a medida, no un marketplace (28 de octubre de 2026).
 
 **A decidir:**
 

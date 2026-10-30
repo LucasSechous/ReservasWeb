@@ -480,7 +480,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
         <p>
           {conReservas ? "Reservas con" : "Web hecha con"}{" "}
           <Link href="/" className="underline hover:text-white">
-            ReservasWeb
+            Tu Turno
           </Link>{" "}
           ·{" "}
           <Link href="/privacidad" className="underline hover:text-white">

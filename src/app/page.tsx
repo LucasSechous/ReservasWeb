@@ -188,7 +188,7 @@ export default function Home() {
     <>
       <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
         <span className="font-display text-xl font-extrabold tracking-tight">
-          reservas<span className="text-accent">web</span>
+          tu<span className="text-accent">turno</span>
         </span>
         <a
           href={whatsappUrl}
@@ -386,7 +386,7 @@ export default function Home() {
               <p className="mt-3 max-w-2xl text-white/70">
                 Cada negocio tiene su dirección propia, algo como
                 {" "}<span className="font-semibold text-white">tunegocio.com.uy</span>,
-                {" "}y no una dirección de ReservasWeb. Si ya tenés una, la
+                {" "}y no una dirección de Tu Turno. Si ya tenés una, la
                 conecto. Si no, hay dos formas de conseguirla:
               </p>
               <ul className="mt-8 grid gap-4 md:grid-cols-2">
@@ -496,7 +496,7 @@ export default function Home() {
 
       <footer className="mx-auto w-full max-w-6xl px-5 pb-24 pt-8 text-sm text-white/45">
         <p>
-          ReservasWeb · Maldonado, Uruguay · {TELEFONO_MOSTRADO} ·{" "}
+          Tu Turno · Maldonado, Uruguay · {TELEFONO_MOSTRADO} ·{" "}
           <a href={mailUrl} className="underline hover:text-white">
             {EMAIL}
           </a>

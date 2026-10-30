@@ -49,7 +49,7 @@ export default function Privacidad() {
         <div>
           <h2 className="text-xl font-bold text-white">Quién es responsable</h2>
           <p className="mt-2">
-            El negocio donde reservás es responsable del tratamiento de tus datos. ReservasWeb
+            El negocio donde reservás es responsable del tratamiento de tus datos. Tu Turno
             provee la plataforma que los guarda y los procesa por cuenta del negocio, con medidas de
             seguridad para evitar el acceso no autorizado.
           </p>

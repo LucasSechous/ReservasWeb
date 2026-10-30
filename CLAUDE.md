@@ -1,6 +1,8 @@
-# ReservasWeb
+# Tu Turno
 
-Páginas web a medida con reservas online para barberías, peluquerías y centros de estética (Uruguay primero; después Argentina y Brasil). No es un marketplace: la web es de cada negocio, como una landing propia, y no un sitio donde el público elige entre negocios. La cara pública de ReservasWeb es una vitrina en `/` con demos y botones a WhatsApp y mail de Lucas. Lucas es el único operador: arma la landing de cada negocio a mano y les da de alta; los dueños no tienen panel de personalización. Los clientes salen del tracker de leads: Lucas los contacta, les pide permiso para mostrarles una demo y la arma en el momento.
+Páginas web a medida con reservas online para barberías, peluquerías y centros de estética (Uruguay primero; después Argentina y Brasil). No es un marketplace: la web es de cada negocio, como una landing propia, y no un sitio donde el público elige entre negocios. La cara pública de Tu Turno es una vitrina en `/` con demos y botones a WhatsApp y mail de Lucas. Lucas es el único operador: arma la landing de cada negocio a mano y les da de alta; los dueños no tienen panel de personalización. Los clientes salen del tracker de leads: Lucas los contacta, les pide permiso para mostrarles una demo y la arma en el momento.
+
+El nombre de la marca es **Tu Turno** (antes ReservasWeb; dominio previsto: tuturno.uy, todavía sin comprar). Conservan el nombre viejo, por ser identificadores técnicos que no se renombran: la carpeta local, el repositorio de GitHub, el proyecto `reservasweb` de Supabase y el proyecto `reservas_web` de Vercel.
 
 Por dentro, todos los negocios comparten un solo proyecto y una sola base (decisión técnica interna, que el cliente final no ve).
 

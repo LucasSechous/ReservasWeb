@@ -18,7 +18,7 @@ export function MailPrueba({ activos }: { activos: boolean }) {
     <section className="mt-12 rounded-2xl border border-white/10 p-5 text-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-bold">Mails de ReservasWeb</h2>
+          <h2 className="font-bold">Mails de Tu Turno</h2>
           <p className="mt-1 text-white/60">
             {activos
               ? "Encendidos: las reservas mandan mail al cliente y al negocio."

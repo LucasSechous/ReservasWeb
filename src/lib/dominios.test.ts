@@ -13,8 +13,8 @@ describe("slugPorDominio", () => {
     expect(slugPorDominio("barberiaelfaro.com.uy:443", mapa)).toBe("barberia-el-faro");
   });
 
-  it("devuelve null para el dominio de ReservasWeb y para los desconocidos", () => {
-    expect(slugPorDominio("reservasweb.uy", mapa)).toBeNull();
+  it("devuelve null para el dominio de Tu Turno y para los desconocidos", () => {
+    expect(slugPorDominio("tuturno.uy", mapa)).toBeNull();
     expect(slugPorDominio("otro.com", mapa)).toBeNull();
     expect(slugPorDominio(null, mapa)).toBeNull();
     expect(slugPorDominio("", mapa)).toBeNull();
@@ -26,7 +26,7 @@ describe("slugPorDominio", () => {
   });
 
   it("sin dominios cargados (como está hoy) nunca reescribe nada", () => {
-    expect(slugPorDominio("reservasweb.uy")).toBeNull();
+    expect(slugPorDominio("tuturno.uy")).toBeNull();
     expect(slugPorDominio("localhost:3000")).toBeNull();
   });
 });
