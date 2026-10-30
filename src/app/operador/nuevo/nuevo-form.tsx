@@ -3,6 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { crearNegocio } from "../actions";
+import {
+  type DiaHorario,
+  type FilaServicio,
+  HORARIO_COMERCIAL,
+  PLANTILLAS,
+} from "./plantillas";
 
 const DIAS = [
   { n: 1, nombre: "Lunes" },
@@ -14,19 +20,6 @@ const DIAS = [
   { n: 0, nombre: "Domingo" },
 ];
 
-type DiaHorario = { activo: boolean; d1: string; h1: string; d2: string; h2: string };
-
-const HORARIO_INICIAL: Record<number, DiaHorario> = {
-  1: { activo: true, d1: "09:00", h1: "13:00", d2: "14:00", h2: "19:00" },
-  2: { activo: true, d1: "09:00", h1: "13:00", d2: "14:00", h2: "19:00" },
-  3: { activo: true, d1: "09:00", h1: "13:00", d2: "14:00", h2: "19:00" },
-  4: { activo: true, d1: "09:00", h1: "13:00", d2: "14:00", h2: "19:00" },
-  5: { activo: true, d1: "09:00", h1: "13:00", d2: "14:00", h2: "19:00" },
-  6: { activo: true, d1: "09:00", h1: "14:00", d2: "", h2: "" },
-  0: { activo: false, d1: "09:00", h1: "13:00", d2: "", h2: "" },
-};
-
-type FilaServicio = { nombre: string; descripcion: string; minutos: string; precio: string };
 
 function slugDe(texto: string): string {
   return texto
@@ -60,17 +53,30 @@ export function NuevoForm() {
     { nombre: "", descripcion: "", minutos: "30", precio: "" },
   ]);
   const [profesionales, setProfesionales] = useState<string[]>([""]);
-  const [horario, setHorario] = useState(HORARIO_INICIAL);
+  const [horario, setHorario] = useState<Record<number, DiaHorario>>(HORARIO_COMERCIAL);
   const [duenoEmail, setDuenoEmail] = useState("");
   const [duenoNombre, setDuenoNombre] = useState("");
   const [anticipacion, setAnticipacion] = useState("60");
   const [ventana, setVentana] = useState("30");
+  const [plantillaId, setPlantillaId] = useState("");
+  const plantilla = PLANTILLAS.find((x) => x.id === plantillaId);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function cambiarNombre(valor: string) {
     setNombre(valor);
     if (!slugEditado) setSlug(slugDe(valor));
+  }
+
+  // Carga los servicios, el horario y los plazos típicos del rubro. Lo que ya se escribió del negocio no se toca.
+  function aplicarPlantilla(id: string) {
+    setPlantillaId(id);
+    const p = PLANTILLAS.find((x) => x.id === id);
+    if (!p) return;
+    setServicios(p.servicios.map((x) => ({ ...x })));
+    setHorario(p.horario);
+    setAnticipacion(p.anticipacion);
+    setVentana(p.ventana);
   }
 
   function actualizarServicio(i: number, cambios: Partial<FilaServicio>) {
@@ -185,6 +191,35 @@ export function NuevoForm() {
           {error}
         </p>
       )}
+
+      <section className="space-y-3">
+        <h2 className="font-display text-xl font-bold">Punto de partida</h2>
+        <label className="block">
+          <span className={etiqueta}>
+            Plantilla por rubro <span className="font-normal text-white/50">(opcional)</span>
+          </span>
+          <select
+            value={plantillaId}
+            onChange={(e) => aplicarPlantilla(e.target.value)}
+            className={campo}
+          >
+            <option value="">Empezar en blanco</option>
+            {PLANTILLAS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nombre}
+              </option>
+            ))}
+          </select>
+        </label>
+        {plantilla && (
+          <p className="text-sm text-white/60">
+            Cargó servicios, horario y plazos típicos del rubro. Los precios son de ejemplo: cambialos.
+            Para que la web y el panel usen las palabras del rubro, en{" "}
+            <span className="font-mono">src/lib/tema.ts</span> el tema de este negocio lleva{" "}
+            <span className="font-mono">rubro: &quot;{plantilla.rubro}&quot;</span>.
+          </p>
+        )}
+      </section>
 
       <section className="space-y-4">
         <h2 className="font-display text-xl font-bold">1. El negocio</h2>

@@ -62,6 +62,7 @@ const TEMA_BASE: Tema = {
 
 const TEMAS: Record<string, Tema> = {
   "barberia-demo": {
+    rubro: "barberia",
     fondo: "#0e0808",
     texto: "#fbf1ee",
     tarjeta: "#1b0f0f",
