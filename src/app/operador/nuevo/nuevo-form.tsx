@@ -44,6 +44,12 @@ const etiqueta = "text-sm font-semibold";
 
 export function NuevoForm() {
   const router = useRouter();
+  const [creado, setCreado] = useState<{
+    slug: string;
+    email: string;
+    contrasena?: string;
+    aviso?: string;
+  } | null>(null);
   const [nombre, setNombre] = useState("");
   const [slug, setSlug] = useState("");
   const [slugEditado, setSlugEditado] = useState(false);
@@ -108,8 +114,59 @@ export function NuevoForm() {
     });
     setEnviando(false);
 
-    if (r.ok) router.push(`/operador?creado=${encodeURIComponent(r.slug)}`);
-    else setError(r.mensaje);
+    if (!r.ok) {
+      setError(r.mensaje);
+      return;
+    }
+    // Con un dueño nuevo hay que mostrar la contraseña provisoria una sola vez, antes de salir.
+    if (r.acceso) setCreado({ slug: r.slug, ...r.acceso });
+    else router.push(`/operador?creado=${encodeURIComponent(r.slug)}`);
+  }
+
+  if (creado) {
+    return (
+      <section className="space-y-4 rounded-3xl border border-accent/40 bg-accent/10 p-6">
+        <h2 className="font-display text-2xl font-bold">Listo, «{creado.slug}» quedó creado</h2>
+        {creado.contrasena ? (
+          <>
+            <p className="text-white/75">
+              Pasale estos datos al dueño. La contraseña es provisoria: al entrar por primera vez el
+              panel le pide elegir una propia. Después de salir de esta pantalla no se vuelve a
+              mostrar.
+            </p>
+            <dl className="space-y-3 rounded-2xl border border-white/15 bg-ink-2 p-4">
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wider text-white/50">
+                  Entrar en
+                </dt>
+                <dd className="font-semibold">{`${typeof window === "undefined" ? "" : window.location.origin}/login`}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wider text-white/50">
+                  Mail
+                </dt>
+                <dd className="font-semibold">{creado.email}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wider text-white/50">
+                  Contraseña provisoria
+                </dt>
+                <dd className="font-mono text-lg font-bold select-all">{creado.contrasena}</dd>
+              </div>
+            </dl>
+          </>
+        ) : (
+          <p className="text-white/75">{creado.aviso}</p>
+        )}
+        <button
+          type="button"
+          onClick={() => router.push(`/operador?creado=${encodeURIComponent(creado.slug)}`)}
+          className="inline-flex min-h-12 items-center justify-center rounded-full bg-accent px-6 font-bold text-accent-ink"
+        >
+          Ya la anoté, volver
+        </button>
+      </section>
+    );
   }
 
   return (
@@ -133,7 +190,12 @@ export function NuevoForm() {
         <h2 className="font-display text-xl font-bold">1. El negocio</h2>
         <label className="block">
           <span className={etiqueta}>Nombre</span>
-          <input value={nombre} onChange={(e) => cambiarNombre(e.target.value)} required className={campo} />
+          <input
+            value={nombre}
+            onChange={(e) => cambiarNombre(e.target.value)}
+            required
+            className={campo}
+          />
         </label>
         <label className="block">
           <span className={etiqueta}>
@@ -152,16 +214,30 @@ export function NuevoForm() {
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
             <span className={etiqueta}>Mail del negocio</span>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className={campo} />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              className={campo}
+            />
           </label>
           <label className="block">
             <span className={etiqueta}>Teléfono / WhatsApp</span>
-            <input value={telefono} onChange={(e) => setTelefono(e.target.value)} type="tel" className={campo} />
+            <input
+              value={telefono}
+              onChange={(e) => setTelefono(e.target.value)}
+              type="tel"
+              className={campo}
+            />
           </label>
         </div>
         <label className="block">
           <span className={etiqueta}>Dirección</span>
-          <input value={direccion} onChange={(e) => setDireccion(e.target.value)} className={campo} />
+          <input
+            value={direccion}
+            onChange={(e) => setDireccion(e.target.value)}
+            className={campo}
+          />
         </label>
       </section>
 
@@ -236,8 +312,8 @@ export function NuevoForm() {
       <section className="space-y-4">
         <h2 className="font-display text-xl font-bold">3. Profesionales</h2>
         <p className="text-sm text-white/55">
-          Todos hacen todos los servicios y tienen el horario de abajo. Un negocio de una sola persona
-          carga un solo profesional.
+          Todos hacen todos los servicios y tienen el horario de abajo. Un negocio de una sola
+          persona carga un solo profesional.
         </p>
         {profesionales.map((p, i) => (
           <div key={i} className="flex items-center gap-3">
@@ -362,8 +438,8 @@ export function NuevoForm() {
       <section className="space-y-4">
         <h2 className="font-display text-xl font-bold">5. Dueño (opcional)</h2>
         <p className="text-sm text-white/55">
-          Con su mail va a poder entrar a su agenda desde /login. Sin mail, el negocio funciona igual y
-          las reservas las ves vos.
+          Con su mail va a poder entrar a su agenda desde /login. Sin mail, el negocio funciona
+          igual y las reservas las ves vos.
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
@@ -377,7 +453,11 @@ export function NuevoForm() {
           </label>
           <label className="block">
             <span className={etiqueta}>Nombre</span>
-            <input value={duenoNombre} onChange={(e) => setDuenoNombre(e.target.value)} className={campo} />
+            <input
+              value={duenoNombre}
+              onChange={(e) => setDuenoNombre(e.target.value)}
+              className={campo}
+            />
           </label>
         </div>
       </section>

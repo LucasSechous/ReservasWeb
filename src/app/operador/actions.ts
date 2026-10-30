@@ -1,5 +1,7 @@
 "use server";
 
+import { MARCA_CAMBIO, contrasenaTemporal } from "@/lib/contrasena";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { crearClienteSesion, obtenerSesion } from "@/lib/supabase/sesion";
 
 // Solo el operador. Además de esta comprobación, la base lo exige: crear_negocio() y las
@@ -28,7 +30,15 @@ export type DatosNegocio = {
   duenoNombre: string;
 };
 
-export type ResultadoAlta = { ok: true; slug: string } | { ok: false; mensaje: string };
+// `acceso` aparece si se dio de alta un dueño: su mail y la contraseña provisoria para pasarle
+// (o `aviso`, si no se pudo crear su cuenta y hay que hacerlo aparte).
+export type ResultadoAlta =
+  | {
+      ok: true;
+      slug: string;
+      acceso?: { email: string; contrasena?: string; aviso?: string };
+    }
+  | { ok: false; mensaje: string };
 
 const MENSAJES: Record<string, string> = {
   SLUG_RESERVADO: "Ese slug lo usa la aplicación (panel, login, etc.). Elegí otro.",
@@ -72,9 +82,16 @@ export async function crearNegocio(d: DatosNegocio): Promise<ResultadoAlta> {
   }
   for (const h of d.horario) {
     const valido =
-      Number.isInteger(h.dia) && h.dia >= 0 && h.dia <= 6 && HORA.test(h.desde) && HORA.test(h.hasta);
+      Number.isInteger(h.dia) &&
+      h.dia >= 0 &&
+      h.dia <= 6 &&
+      HORA.test(h.desde) &&
+      HORA.test(h.hasta);
     if (!valido || h.hasta <= h.desde) {
-      return { ok: false, mensaje: "Revisá los horarios: la hora de fin tiene que ser después de la de inicio." };
+      return {
+        ok: false,
+        mensaje: "Revisá los horarios: la hora de fin tiene que ser después de la de inicio.",
+      };
     }
   }
   if (!Number.isInteger(d.ventanaDias) || d.ventanaDias < 1 || d.ventanaDias > 365) {
@@ -109,11 +126,40 @@ export async function crearNegocio(d: DatosNegocio): Promise<ResultadoAlta> {
 
   if (error) {
     if (error.code === "23505") {
-      return { ok: false, mensaje: "Ya existe un negocio con ese slug, o un usuario con el mail del dueño." };
+      return {
+        ok: false,
+        mensaje: "Ya existe un negocio con ese slug, o un usuario con el mail del dueño.",
+      };
     }
-    return { ok: false, mensaje: MENSAJES[error.message] ?? "No pudimos crear el negocio. Revisá los datos." };
+    return {
+      ok: false,
+      mensaje: MENSAJES[error.message] ?? "No pudimos crear el negocio. Revisá los datos.",
+    };
   }
-  return { ok: true, slug };
+
+  // El dueño entra con mail y contraseña: se le crea la cuenta con una provisoria que debe cambiar.
+  const duenoEmail = d.duenoEmail.trim().toLowerCase();
+  if (!duenoEmail) return { ok: true, slug };
+
+  const contrasena = contrasenaTemporal(d.nombre);
+  const { error: errorCuenta } = await createAdminClient().auth.admin.createUser({
+    email: duenoEmail,
+    password: contrasena,
+    email_confirm: true,
+    user_metadata: { [MARCA_CAMBIO]: true },
+  });
+  if (errorCuenta) {
+    return {
+      ok: true,
+      slug,
+      acceso: {
+        email: duenoEmail,
+        aviso:
+          "El negocio quedó creado, pero ese mail ya tenía una cuenta o no se pudo crear. Si hace falta, dale una contraseña nueva con el script de contraseñas.",
+      },
+    };
+  }
+  return { ok: true, slug, acceso: { email: duenoEmail, contrasena } };
 }
 
 export async function cambiarActivo(id: string, activo: boolean): Promise<{ ok: boolean }> {
