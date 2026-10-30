@@ -244,8 +244,24 @@ Rediseño del panel en oscuro y pensado para el celular, más las funciones que 
 - [x] Fichas de clientes por negocio, reconocidos por teléfono, mail o nombre
 - [x] Aviso al dueño cuando alguien con 5 o más ausencias vuelve a reservar
 - [x] Recordatorio por mail el día anterior (tarea diaria de Vercel en `/api/recordatorios`)
-- [ ] **Antes de probar los recordatorios:** aplicar `supabase/migrations/20261030000000_recordatorios.sql` y cargar `CRON_SECRET` en Vercel
-- [ ] Prueba real de punta a punta con un dueño (login, agendar a mano, marcar asistencia)
+- [x] Migración de recordatorios aplicada y `CRON_SECRET` cargado en Vercel (30 de octubre de 2026)
+- [ ] Prueba real de punta a punta con un dueño (login, agendar a mano, marcar asistencia): ver `docs/prueba-panel.md`
+
+### Fase 10: Mejoras (30 de octubre de 2026)
+
+Detalle, opciones y recomendaciones de cada punto en `docs/plan-mejoras.md`.
+
+- [x] Seed de turnos de ejemplo corregido (bucle infinito por `random()` en un `WHERE`) y guía de prueba del panel
+- [ ] Cargar los turnos de ejemplo y recorrer la guía (Lucas)
+- [x] Vocabulario por rubro (especialista, consulta, clase…), demo de clínica y privacidad con salud y asistencia
+- [ ] Correr `supabase/seed/clinica_demo.sql` y agregar la tarjeta de la demo en la vitrina
+- [ ] Revisión legal de la política de privacidad
+- [x] Respaldo propio (`scripts/respaldo.mjs`) y punto de control `/api/salud`
+- [ ] Monitor de caídas, claves de Resend y planes pagos de Vercel y Supabase (Lucas)
+- [x] 45 pruebas de lógica, prueba de base del panel (`supabase/tests/panel_v2.sql`) e integración continua
+- [ ] Volver a correr las pruebas de base de las fases 2, 3, 4, 6, 7 y gestión de reserva antes de subir a `main`
+- [x] Plantillas por rubro en el alta del operador y dominio propio por negocio (`docs/dominios-propios.md`)
+- [ ] Tema, rubro y dominio guardados en la base con editor en `/operador` (cuando haya unos 5 clientes; requiere migración)
 
 Para más adelante: cuentas de clientes con sus datos guardados, seña con Mercado Pago, un mismo dueño con varios negocios (hoy cada dueño tiene uno).
 

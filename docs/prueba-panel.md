@@ -8,7 +8,8 @@ Para recorrer el panel nuevo antes de mostrárselo a un cliente. Hacela en la vi
    `node scripts/asignar-contrasena.mjs sechouslucasuy@gmail.com operador`
    Imprime una contraseña provisoria. Entrá con tu mail y esa contraseña; el sistema te pide cambiarla.
 2. **Turnos de ejemplo.** Pegá `supabase/seed/turnos_de_ejemplo.sql` en el SQL Editor de Supabase y ejecutalo. Tarda unos segundos. (Antes se colgaba por un error del script; ya está corregido.)
-3. **Recordatorios** (solo si querés probarlos): aplicar `supabase/migrations/20261030000000_recordatorios.sql` y cargar `CRON_SECRET` en Vercel. Ver `docs/plan-mejoras.md`, punto 3.
+3. **Demo de clínica** (opcional): pegá `supabase/seed/clinica_demo.sql` en el SQL Editor y abrí `/clinica-demo` para ver cómo habla un negocio de salud («especialistas», «consulta»).
+4. **Recordatorios:** la migración y el `CRON_SECRET` ya están cargados. Solo faltan las claves de Resend (ver `docs/plan-mejoras.md`, punto 3), y la tarea diaria corre únicamente en producción (`main`).
 
 ## Recorrido
 
