@@ -13,22 +13,37 @@ export default function Privacidad() {
         ← Volver
       </Link>
       <h1 className="mt-6 font-display text-4xl font-extrabold">Política de privacidad</h1>
-      <p className="mt-2 text-sm text-white/50">Última actualización: 28 de octubre de 2026</p>
+      <p className="mt-2 text-sm text-white/50">Última actualización: 30 de octubre de 2026</p>
 
       <section className="mt-8 space-y-6 text-white/80">
         <div>
           <h2 className="text-xl font-bold text-white">Qué datos se piden</h2>
           <p className="mt-2">
             Al reservar un turno se piden tu nombre, tu teléfono y, de forma opcional, tu mail.
-            También se guarda el servicio elegido, el día y la hora del turno.
+            También se guarda el servicio elegido, el día y la hora del turno y, si el negocio lo
+            marca, si asististe o no.
           </p>
         </div>
         <div>
           <h2 className="text-xl font-bold text-white">Para qué se usan</h2>
           <p className="mt-2">
-            Solo para gestionar tu reserva: confirmarla, avisarte por mail si dejaste uno, y
-            permitirte cancelarla. El negocio donde reservás ve estos datos para atenderte. No se
-            usan para publicidad ni se venden o ceden a terceros.
+            Solo para gestionar tu reserva: confirmarla, avisarte por mail si dejaste uno (incluido
+            un recordatorio el día anterior al turno), y permitirte cancelarla. El negocio donde
+            reservás ve estos datos para atenderte y lleva un historial de tus turnos y de tu
+            asistencia, que usa para organizar su agenda; por ejemplo, puede recibir un aviso si
+            reservás de nuevo después de haber faltado varias veces sin cancelar. Ese historial es
+            propio de cada negocio: no se comparte con otros. No se usan tus datos para publicidad
+            ni se venden o ceden a terceros.
+          </p>
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-white">Servicios de salud</h2>
+          <p className="mt-2">
+            Si reservás en una clínica, un consultorio u otro servicio de salud, los datos de la
+            reserva sirven únicamente para coordinar el turno. No escribas información clínica
+            (síntomas, diagnósticos, tratamientos) en los campos de la reserva: eso se conversa
+            directamente con el profesional, que es quien responde por el tratamiento de los datos
+            de salud, considerados sensibles por la ley.
           </p>
         </div>
         <div>

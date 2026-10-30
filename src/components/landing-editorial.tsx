@@ -11,6 +11,7 @@ import {
   formatoPrecio,
 } from "@/lib/negocios";
 import { type Tema, temaStyle } from "@/lib/tema";
+import { cantidadDe, vocabularioDe } from "@/lib/vocabulario";
 
 // Landing con estilo editorial: fondo claro, letras serif finas, mucho aire y líneas delgadas, como una
 // revista de belleza. Se elige con `estilo: "editorial"` en el tema. El flujo de reservar (/[slug]/reservar)
@@ -71,15 +72,16 @@ export function LandingEditorial({
   reservarHref,
 }: Props) {
   const conReservas = tema.reservas !== false;
+  const vocab = vocabularioDe(tema.rubro);
   const hayContacto = negocio.direccion || negocio.telefono || negocio.email;
   const datos = [
     servicios.length > 0
-      ? `${servicios.length} ${conReservas ? "tratamientos" : "servicios"}`
+      ? tema.rubro && tema.rubro !== "belleza"
+        ? cantidadDe(servicios.length, vocab, "servicio")
+        : `${servicios.length} ${conReservas ? "tratamientos" : "servicios"}`
       : null,
     conReservas && profesionales.length > 0
-      ? profesionales.length === 1
-        ? "1 profesional"
-        : `${profesionales.length} profesionales`
+      ? cantidadDe(profesionales.length, vocab, "profesional")
       : null,
     conReservas ? "Confirmación al instante" : null,
   ].filter((d): d is string => d !== null);
@@ -315,7 +317,7 @@ export function LandingEditorial({
                 <Reveal>
                   <p className={etiqueta}>Manos expertas</p>
                   <div className="mt-4">
-                    <Titulo id="equipo-titulo">El equipo</Titulo>
+                    <Titulo id="equipo-titulo">{vocab.equipo}</Titulo>
                   </div>
                 </Reveal>
                 <ul className="mt-10 divide-y divide-(--n-texto)/15 border-y border-(--n-texto)/15">

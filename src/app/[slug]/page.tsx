@@ -18,6 +18,7 @@ import {
   getServicios,
 } from "@/lib/negocios";
 import { getTema, temaStyle } from "@/lib/tema";
+import { cantidadDe, vocabularioDe } from "@/lib/vocabulario";
 
 const boton =
   "group inline-flex min-h-13 items-center justify-center gap-2 rounded-full bg-accent px-8 text-base font-bold text-accent-ink transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-8px_var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent";
@@ -96,6 +97,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
     getProfesionales(negocio.id),
   ]);
   const tema = getTema(negocio.slug);
+  const vocab = vocabularioDe(tema.rubro);
   const whatsapp = negocio.telefono ? whatsappDe(negocio.telefono) : null;
   const mapa = negocio.direccion
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(negocio.direccion)}`
@@ -198,12 +200,12 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                 <ul className="flex flex-wrap gap-2 text-sm text-white/70">
                   {conReservas && servicios.length > 0 && (
                     <li className="rounded-full border border-white/15 px-4 py-2">
-                      {servicios.length} servicios
+                      {cantidadDe(servicios.length, vocab, "servicio")}
                     </li>
                   )}
                   {conReservas && profesionales.length > 0 && (
                     <li className="rounded-full border border-white/15 px-4 py-2">
-                      {profesionales.length === 1 ? "1 profesional" : `${profesionales.length} profesionales`}
+                      {cantidadDe(profesionales.length, vocab, "profesional")}
                     </li>
                   )}
                   {conReservas && (
@@ -312,7 +314,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                   id="equipo"
                   className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl"
                 >
-                  El equipo
+                  {vocab.equipo}
                 </h2>
               </Reveal>
               <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

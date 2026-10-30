@@ -5,6 +5,7 @@ import { MAX_REPROGRAMACIONES, type ReservaGestion, hashToken, tokenValido } fro
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createPublicClient } from "@/lib/supabase/server";
 import { getTema, temaStyle } from "@/lib/tema";
+import { capitalizar, vocabularioDe } from "@/lib/vocabulario";
 import { GestionReserva } from "./gestion-reserva";
 
 // El link va por mail y es una llave: no se indexa y no se manda como referrer a otros sitios.
@@ -47,6 +48,7 @@ async function Contenido({ params }: { params: Promise<{ token: string }> }) {
           inicial={reserva}
           ventanaDias={await ventanaDiasDe(reserva.negocio_id)}
           maxReprogramaciones={MAX_REPROGRAMACIONES}
+          etiquetaServicio={capitalizar(vocabularioDe(getTema(reserva.negocio_slug).rubro).servicio)}
         />
       </div>
     </div>
