@@ -1,10 +1,23 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { slugPorDominio } from "@/lib/dominios";
 import { leerConfigSupabase } from "@/lib/supabase/server";
 
 // Renueva la sesión de Supabase (los tokens vencen) en las rutas que la usan.
 // Las páginas públicas (vitrina, landings, reserva) no pasan por acá.
 export async function proxy(request: NextRequest) {
+  // Dominio propio de un negocio: su raíz y su página de reservas muestran la landing y la reserva
+  // de ese negocio. Cualquier otra ruta (panel, login, gestión de turnos) sigue igual. En el dominio
+  // de ReservasWeb esto no hace nada y sale antes de consultar la sesión.
+  const rutaPublica = request.nextUrl.pathname;
+  if (rutaPublica === "/" || rutaPublica === "/reservar") {
+    const slugDominio = slugPorDominio(request.headers.get("host"));
+    if (!slugDominio) return NextResponse.next();
+    const destino = request.nextUrl.clone();
+    destino.pathname = `/${slugDominio}${rutaPublica === "/" ? "" : rutaPublica}`;
+    return NextResponse.rewrite(destino);
+  }
+
   let respuesta = NextResponse.next({ request });
   const { url, key } = leerConfigSupabase();
 
@@ -39,5 +52,13 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/panel/:path*", "/operador/:path*", "/cambiar-contrasena", "/login", "/auth/:path*"],
+  matcher: [
+    "/",
+    "/reservar",
+    "/panel/:path*",
+    "/operador/:path*",
+    "/cambiar-contrasena",
+    "/login",
+    "/auth/:path*",
+  ],
 };
