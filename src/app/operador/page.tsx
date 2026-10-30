@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { mailsActivos } from "@/lib/mail";
 import { crearClienteSesion, obtenerSesion } from "@/lib/supabase/sesion";
+import { MailPrueba } from "./mail-prueba";
 import { type NegocioListado, NegocioFila } from "./negocio-fila";
 
 export const metadata: Metadata = {
@@ -81,7 +83,9 @@ async function Contenido({
         ))}
       </ul>
 
-      <section className="mt-12 rounded-2xl border border-white/10 p-5 text-sm text-white/60">
+      <MailPrueba activos={mailsActivos()} />
+
+      <section className="mt-6 rounded-2xl border border-white/10 p-5 text-sm text-white/60">
         <h2 className="font-bold text-white">Identidad visual de un negocio</h2>
         <p className="mt-2">
           Un negocio nuevo sale con el diseño base. Para darle sus colores, agregá una entrada en{" "}

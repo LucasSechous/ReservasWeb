@@ -1,6 +1,7 @@
 "use server";
 
 import { MARCA_CAMBIO, contrasenaTemporal } from "@/lib/contrasena";
+import { enviarMail, mailsActivos } from "@/lib/mail";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { crearClienteSesion, obtenerSesion } from "@/lib/supabase/sesion";
 
@@ -173,4 +174,34 @@ export async function cambiarActivo(id: string, activo: boolean): Promise<{ ok: 
     .select("id")
     .maybeSingle();
   return { ok: Boolean(data) };
+}
+
+export type ResultadoMailPrueba = { ok: boolean; mensaje: string };
+
+// Manda un mail de prueba a la casilla del propio operador, para comprobar que Resend quedó bien configurado.
+export async function enviarMailPrueba(): Promise<ResultadoMailPrueba> {
+  const sesion = await obtenerSesion();
+  if (sesion?.perfil?.rol !== "admin_plataforma") {
+    return { ok: false, mensaje: "Tu sesión venció. Volvé a entrar." };
+  }
+  if (!mailsActivos()) {
+    return {
+      ok: false,
+      mensaje:
+        "Todavía no hay una clave de Resend cargada, así que no sale ningún mail. Seguí los pasos de docs/mails-resend.md.",
+    };
+  }
+  const enviado = await enviarMail({
+    para: sesion.email,
+    asunto: "Prueba de mails de ReservasWeb",
+    texto: "Si te llegó este mail, los mails de ReservasWeb están funcionando.",
+    html: '<p style="font-family:sans-serif;font-size:16px;">Si te llegó este mail, los mails de <b>ReservasWeb</b> están funcionando.</p>',
+  });
+  return enviado
+    ? { ok: true, mensaje: `Listo: mandamos un mail de prueba a ${sesion.email}. Revisá también spam.` }
+    : {
+        ok: false,
+        mensaje:
+          "Resend rechazó el envío. Revisá que la clave sea correcta y que el remitente (MAIL_FROM) sea de un dominio verificado. Sin dominio propio, solo entrega a la casilla dueña de la cuenta de Resend.",
+      };
 }
