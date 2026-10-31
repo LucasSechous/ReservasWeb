@@ -19,8 +19,11 @@ declare
   r       record;
   v_out   text[] := '{}';
 begin
-  select id into uid_x from auth.users order by created_at limit 1;
-  select id into uid_y from auth.users order by created_at limit 1 offset 1;
+  -- Si el operador real ya existe, la prueba usa su cuenta como operador (ya no hay "primer ingreso").
+  select coalesce(
+    (select auth_user_id from public.usuarios where rol = 'admin_plataforma' and auth_user_id is not null limit 1),
+    (select id from auth.users order by created_at limit 1)) into uid_x;
+  select id into uid_y from auth.users where id <> uid_x order by created_at limit 1;
   if uid_x is null or uid_y is null then
     raise exception 'Hacen falta 2 cuentas en auth.users para esta prueba';
   end if;
