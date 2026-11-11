@@ -6,6 +6,7 @@ import { Logo } from "@/components/logo";
 import { Marquee } from "@/components/marquee";
 import { PhoneDemo } from "@/components/phone-demo";
 import { Reveal } from "@/components/reveal";
+import { VitrinaPaleta } from "@/components/vitrina-paleta";
 import {
   EMAIL,
   TELEFONO_MOSTRADO,
@@ -15,7 +16,7 @@ import {
 
 const boton =
   "group inline-flex min-h-13 items-center justify-center gap-2 rounded-full px-7 text-base font-bold transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent";
-const botonPrimario = `${boton} bg-accent text-accent-ink hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-8px_rgba(61,220,151,0.6)]`;
+const botonPrimario = `${boton} bg-accent text-accent-ink hover:-translate-y-0.5 hover:shadow-[0_10px_40px_-8px_color-mix(in_srgb,var(--color-accent)_60%,transparent)]`;
 const botonSecundario = `${boton} border border-white/25 text-white hover:border-white/60 hover:bg-white/5`;
 
 function Flecha() {
@@ -111,13 +112,13 @@ const demos = [
     tipo: "Landing con reservas",
     detalle: "Servicios, equipo y turnos online las 24 horas.",
     // Barbería: oscura, con filo rojo y una franja de poste de barbero.
-    card: "rounded-3xl border border-red-500/40 bg-gradient-to-b from-red-500/25 to-ink-3 group-hover:-translate-y-1.5 group-hover:border-red-400/70 group-hover:shadow-[0_20px_60px_-20px_rgba(239,68,68,0.45)]",
+    card: "[--color-white:#fff] [--color-ink-3:#1a1012] bg-[#140c0d] text-white rounded-3xl border border-red-500/40 bg-gradient-to-b from-red-500/25 to-ink-3 group-hover:-translate-y-1.5 group-hover:border-red-400/70 group-hover:shadow-[0_20px_60px_-20px_rgba(239,68,68,0.45)]",
     panel: "rounded-2xl border border-white/10 bg-white/[0.04] group-hover:bg-white/[0.08]",
     etiqueta: "rounded-full bg-red-500 text-white",
     titulo: "font-display text-2xl font-bold",
     estiloTxt: "text-sm font-semibold text-white/90",
     detalleTxt: "text-sm text-white/65",
-    cta: "text-sm font-semibold text-red-400",
+    cta: "rounded-full bg-red-500 font-bold text-white group-hover:bg-red-400",
     adorno: (
       <span
         aria-hidden
@@ -140,7 +141,7 @@ const demos = [
     titulo: "editorial-titulo text-3xl font-medium text-[#2b2420]",
     estiloTxt: "editorial-texto text-sm italic text-[#a4506a]",
     detalleTxt: "editorial-texto text-sm text-[#2b2420]/70",
-    cta: "editorial-texto text-sm font-medium text-[#a4506a]",
+    cta: "editorial-texto rounded-full border border-[#a4506a] font-medium text-[#a4506a] group-hover:bg-[#a4506a] group-hover:text-[#fff]",
     adorno: null,
     href: "/estetica-demo",
     logo: "/negocios/estetica-demo/logo.svg",
@@ -158,7 +159,7 @@ const demos = [
     titulo: "retro-titulo text-3xl text-[#c4412a]",
     estiloTxt: "retro-mono text-sm font-bold text-[#3a2213]",
     detalleTxt: "retro-mono text-sm text-[#3a2213]/75",
-    cta: "retro-mono text-sm font-bold text-[#2f6e61]",
+    cta: "retro-mono rounded-sm border-2 border-[#3a2213] bg-[#2f6e61] font-bold text-[#fff4da] group-hover:bg-[#245a4f]",
     adorno: null,
     href: "/cafe-demo",
     logo: "/negocios/cafe-demo/logo.svg",
@@ -186,7 +187,7 @@ const rubros = [
 
 export default function Home() {
   return (
-    <>
+    <VitrinaPaleta selector={process.env.VERCEL_ENV !== "production"}>
       <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
         <Logo />
         <a
@@ -250,7 +251,7 @@ export default function Home() {
                     <li
                       key={rubro}
                       style={{
-                        color,
+                        color: `color-mix(in srgb, ${color}, var(--foreground) var(--chip-tinta))`,
                         borderColor: `color-mix(in srgb, ${color} 45%, transparent)`,
                         backgroundColor: `color-mix(in srgb, ${color} 14%, transparent)`,
                       }}
@@ -263,6 +264,17 @@ export default function Home() {
               </Reveal>
               <Reveal delay={1.05} className="mt-7">
                 <BotonesContacto />
+                <a
+                  href="#demos"
+                  className="group mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white/75 transition-colors hover:text-accent"
+                >
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent" />
+                    <span className="relative inline-flex size-2 rounded-full bg-accent" />
+                  </span>
+                  O probá una demo como si fueras tu cliente
+                  <span aria-hidden className="transition-transform group-hover:translate-y-0.5">↓</span>
+                </a>
               </Reveal>
             </div>
             <Reveal delay={0.4} y={40}>
@@ -282,7 +294,7 @@ export default function Home() {
           <Marquee
             items={[...rubros].reverse()}
             reverse
-            className="mt-3 font-display text-2xl font-extrabold tracking-tight text-transparent [-webkit-text-stroke:1px_rgba(255,255,255,0.35)] sm:text-4xl"
+            className="mt-3 font-display text-2xl font-extrabold tracking-tight text-transparent [-webkit-text-stroke:1px_color-mix(in_srgb,var(--color-white)_35%,transparent)] sm:text-4xl"
           />
         </section>
 
@@ -347,7 +359,7 @@ export default function Home() {
                 <article
                   className={`flex h-full flex-col rounded-3xl border p-8 transition-all duration-300 hover:-translate-y-1.5 ${
                     plan.destacado
-                      ? "border-accent/60 bg-gradient-to-br from-accent/12 via-ink-2 to-ink-2 hover:shadow-[0_20px_60px_-20px_rgba(61,220,151,0.35)]"
+                      ? "border-accent/60 bg-gradient-to-br from-accent/12 via-ink-2 to-ink-2 hover:shadow-[0_20px_60px_-20px_color-mix(in_srgb,var(--color-accent)_35%,transparent)]"
                       : "border-white/10 bg-ink-2 hover:border-white/30"
                   }`}
                 >
@@ -408,68 +420,109 @@ export default function Home() {
           </Reveal>
         </section>
 
-        <section className="bg-ink-2 py-24">
-          <div className="mx-auto max-w-6xl px-5">
+        {/* Las demos son lo único de la página que se puede usar: la sección se ve distinta a propósito. */}
+        <section
+          id="demos"
+          aria-labelledby="demos-titulo"
+          className="relative scroll-mt-4 overflow-hidden border-y border-accent/25 bg-ink-2 py-24"
+        >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 [background-image:radial-gradient(color-mix(in_srgb,var(--color-accent)_30%,transparent)_1px,transparent_1.5px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_70%)]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-40 left-1/2 size-[36rem] -translate-x-1/2 rounded-full bg-accent/15 blur-[120px]"
+          />
+          <div className="relative mx-auto max-w-6xl px-5">
             <Reveal>
-              <h2 className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl">
-                Así se ve
+              <p className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-accent-ink">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent-ink/70" />
+                  <span className="relative inline-flex size-2 rounded-full bg-accent-ink" />
+                </span>
+                Demos interactivas
+              </p>
+              <h2
+                id="demos-titulo"
+                className="mt-5 font-display text-4xl font-extrabold tracking-tight sm:text-6xl"
+              >
+                Probalo <span className="text-accent">vos mismo</span>
               </h2>
-              <p className="mt-4 max-w-2xl font-display text-2xl font-bold text-white sm:text-3xl">
-                Hacemos tu web a tu gusto: <span className="text-accent">se adapta a tu estilo</span>,
-                no al revés.
+              <p className="mt-4 max-w-2xl text-lg text-white/70">
+                Entrá a una demo y reservá un turno como lo haría tu cliente, desde el celular.
+                Es todo de prueba: no se cobra nada y no le llega nada a nadie.
               </p>
-              <p className="mt-4 max-w-2xl text-lg text-white/65">
-                Tres demos, cada una con un estilo distinto: moderno y oscuro,
-                minimalista y elegante, retro. Dos con reservas, para probar un
-                turno como lo haría tu cliente, y una landing simple, para
-                negocios que no necesitan turnos. Son demos, las reservas son de
-                prueba.
-              </p>
+              <ol className="mt-8 flex flex-col gap-3 text-sm font-semibold sm:flex-row sm:gap-6">
+                {["Tocá una demo", "Apretá «Reservar»", "Elegí servicio, día y hora"].map(
+                  (texto, i) => (
+                    <li key={texto} className="flex items-center gap-3">
+                      <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-accent/50 bg-accent/10 text-xs font-bold text-accent">
+                        {i + 1}
+                      </span>
+                      {texto}
+                    </li>
+                  ),
+                )}
+              </ol>
             </Reveal>
             <div className="mt-12 grid gap-6 sm:grid-cols-3">
-              {demos.map((demo, i) => {
-                const tarjeta = (
-                  <div
-                    className={`relative flex aspect-[3/4] flex-col justify-end overflow-hidden p-6 transition duration-300 ${demo.card}`}
+              {demos.map((demo, i) => (
+                <Reveal key={demo.rubro} delay={i * 0.12}>
+                  <Link
+                    href={demo.href}
+                    aria-label={`Abrir la demo de ${demo.rubro.toLowerCase()}`}
+                    className="group block rounded-3xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                   >
-                    {demo.adorno}
                     <div
-                      aria-hidden
-                      className={`absolute inset-x-8 top-8 flex h-[42%] items-center justify-center transition duration-300 ${demo.panel}`}
+                      className={`relative flex min-h-[31rem] flex-col justify-end overflow-hidden p-6 transition duration-300 ${demo.card}`}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={demo.logo}
-                        alt={`Logo de la demo de ${demo.rubro.toLowerCase()}`}
-                        className="size-28 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3"
-                      />
+                      {demo.adorno}
+                      <span className="absolute top-4 right-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#fff] backdrop-blur">
+                        <span className="relative flex size-1.5">
+                          <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-[#4ade80]" />
+                          <span className="relative inline-flex size-1.5 rounded-full bg-[#4ade80]" />
+                        </span>
+                        En vivo
+                      </span>
+                      <div
+                        aria-hidden
+                        className={`absolute inset-x-8 top-12 flex h-[36%] items-center justify-center transition duration-300 ${demo.panel}`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={demo.logo}
+                          alt=""
+                          className="size-24 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3"
+                        />
+                      </div>
+                      <span
+                        className={`mb-3 w-fit px-3 py-1 text-xs font-bold uppercase tracking-wider ${demo.etiqueta}`}
+                      >
+                        {demo.tipo}
+                      </span>
+                      <p className={demo.titulo}>{demo.rubro}</p>
+                      <p className={`mt-1 ${demo.estiloTxt}`}>{demo.estilo}</p>
+                      <p className={`mt-1 ${demo.detalleTxt}`}>{demo.detalle}</p>
+                      <span
+                        className={`mt-5 inline-flex min-h-11 items-center justify-center gap-2 px-5 text-sm transition duration-300 ${demo.cta}`}
+                      >
+                        {demo.conReservas ? "Probar reservando" : "Ver la demo"}
+                        <span
+                          aria-hidden
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                        >
+                          →
+                        </span>
+                      </span>
                     </div>
-                    <span
-                      className={`mb-3 w-fit px-3 py-1 text-xs font-bold uppercase tracking-wider ${demo.etiqueta}`}
-                    >
-                      {demo.tipo}
-                    </span>
-                    <p className={demo.titulo}>{demo.rubro}</p>
-                    <p className={`mt-1 ${demo.estiloTxt}`}>{demo.estilo}</p>
-                    <p className={`mt-1 ${demo.detalleTxt}`}>{demo.detalle}</p>
-                    <p className={`mt-3 ${demo.cta}`}>
-                      Probar la demo <span aria-hidden>→</span>
-                    </p>
-                  </div>
-                );
-                return (
-                  <Reveal key={demo.rubro} delay={i * 0.12}>
-                    {demo.href ? (
-                      <Link href={demo.href} className="group block">
-                        {tarjeta}
-                      </Link>
-                    ) : (
-                      tarjeta
-                    )}
-                  </Reveal>
-                );
-              })}
+                  </Link>
+                </Reveal>
+              ))}
             </div>
+            <p className="mt-8 text-center text-sm text-white/55">
+              Cada demo tiene un estilo distinto: tu web se adapta a tu marca, no al revés.
+            </p>
           </div>
         </section>
 
@@ -508,7 +561,7 @@ export default function Home() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Escribinos por WhatsApp"
-        className="fixed bottom-5 right-4 z-50 flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-ink shadow-[0_10px_40px_-8px_rgba(61,220,151,0.6)] transition-transform hover:scale-105"
+        className="fixed bottom-5 right-4 z-50 flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-ink shadow-[0_10px_40px_-8px_color-mix(in_srgb,var(--color-accent)_60%,transparent)] transition-transform hover:scale-105"
       >
         <span className="relative flex size-2.5">
           <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent-ink/60" />
@@ -516,6 +569,6 @@ export default function Home() {
         </span>
         WhatsApp
       </a>
-    </>
+    </VitrinaPaleta>
   );
 }
