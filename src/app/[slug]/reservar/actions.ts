@@ -92,12 +92,14 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
   const { data, error } = await createPublicClient().rpc("reservar", {
     p_negocio_id: datos.negocioId,
     p_servicio_id: datos.servicioId,
-    // Sin valor por defecto en la base: si no se eligió profesional va null, nunca se omite.
+    // reservar() no tiene valores por defecto: si falta un parámetro, Supabase no la encuentra (PGRST202).
+    // Los opcionales van en null, nunca se omiten.
     p_profesional_id: datos.profesionalId,
     p_inicio: datos.inicio,
     p_cliente_nombre: datos.nombre,
     p_cliente_telefono: datos.telefono,
-    p_cliente_email: datos.email || undefined,
+    p_cliente_email: datos.email || null,
+    p_notas: null,
     p_token_gestion_hash: hashToken(token),
   });
 
