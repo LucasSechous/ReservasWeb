@@ -118,7 +118,7 @@ function Contenido({ paso }: { paso: number }) {
           cy="26"
           r="24"
           fill="none"
-          stroke="#3ddc97"
+          stroke="var(--color-accent)"
           strokeWidth="2.5"
           variants={{
             hidden: { pathLength: 0, opacity: 0 },
@@ -129,7 +129,7 @@ function Contenido({ paso }: { paso: number }) {
         <motion.path
           d="M15 27 L23 35 L38 18"
           fill="none"
-          stroke="#3ddc97"
+          stroke="var(--color-accent)"
           strokeWidth="3.5"
           strokeLinecap="round"
           strokeLinejoin="round"

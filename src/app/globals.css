@@ -121,6 +121,66 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+/*
+ * Paletas de prueba de la vitrina (components/vitrina-paleta.tsx). Cada una redefine las variables solo
+ * dentro de la vitrina. En las claras, «white» pasa a ser el color del texto: la página usa text-white/65,
+ * border-white/10, etc. para «texto suave» y «línea suave», y así siguen funcionando sobre fondo claro.
+ * --chip-tinta oscurece los chips de rubros (pastel) para que se lean sobre fondo claro.
+ */
+[data-paleta] {
+  background: var(--background);
+  color: var(--foreground);
+  --chip-tinta: 0%;
+}
+[data-paleta="oceano"] {
+  --background: #0b1324;
+  --foreground: #e9f0fb;
+  --color-accent: #5b9dff;
+  --color-accent-ink: #03132f;
+  --color-violeta: #2dd4bf;
+  --color-ink-2: #111c31;
+  --color-ink-3: #18273f;
+}
+[data-paleta="laguna"] {
+  --background: #0a1a1c;
+  --foreground: #e6f4f1;
+  --color-accent: #2dd4bf;
+  --color-accent-ink: #03201c;
+  --color-violeta: #3b82f6;
+  --color-ink-2: #0f2427;
+  --color-ink-3: #163236;
+}
+[data-paleta="nube"],
+[data-paleta="salvia"],
+[data-paleta="brisa"] {
+  color-scheme: light;
+  --color-white: var(--foreground);
+  --color-accent-ink: #ffffff;
+  --color-ink-2: #ffffff;
+  --chip-tinta: 55%;
+}
+[data-paleta="nube"] {
+  --background: #f6f8fc;
+  --foreground: #0f1b2d;
+  --color-accent: #2563eb;
+  --color-violeta: #93c5fd;
+  --color-ink-3: #edf2fa;
+}
+[data-paleta="salvia"] {
+  --background: #f4f7f2;
+  --foreground: #14261c;
+  --color-accent: #16794a;
+  --color-violeta: #a7e8c0;
+  --color-ink-3: #e9f0e5;
+}
+[data-paleta="brisa"] {
+  --background: #f3f8f8;
+  --foreground: #0d2a30;
+  --color-accent: #0e7c86;
+  --color-violeta: #a5dcf5;
+  --color-ink-3: #e5f0f1;
+}
+
 ::selection {
   background: var(--color-accent);
   color: var(--color-accent-ink);
