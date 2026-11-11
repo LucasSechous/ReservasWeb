@@ -6,7 +6,6 @@ import { Logo } from "@/components/logo";
 import { Marquee } from "@/components/marquee";
 import { PhoneDemo } from "@/components/phone-demo";
 import { Reveal } from "@/components/reveal";
-import { VitrinaPaleta } from "@/components/vitrina-paleta";
 import {
   EMAIL,
   TELEFONO_MOSTRADO,
@@ -108,21 +107,21 @@ const dominios = [
 const demos = [
   {
     rubro: "Barbería",
-    estilo: "Estilo moderno y oscuro",
+    estilo: "Estilo clásico de barbería",
     tipo: "Landing con reservas",
     detalle: "Servicios, equipo y turnos online las 24 horas.",
-    // Barbería: oscura, con filo rojo y una franja de poste de barbero.
-    card: "[--color-white:#fff] [--color-ink-3:#1a1012] bg-[#140c0d] text-white rounded-3xl border border-red-500/40 bg-gradient-to-b from-red-500/25 to-ink-3 group-hover:-translate-y-1.5 group-hover:border-red-400/70 group-hover:shadow-[0_20px_60px_-20px_rgba(239,68,68,0.45)]",
-    panel: "rounded-2xl border border-white/10 bg-white/[0.04] group-hover:bg-white/[0.08]",
-    etiqueta: "rounded-full bg-red-500 text-white",
-    titulo: "font-display text-2xl font-bold",
-    estiloTxt: "text-sm font-semibold text-white/90",
-    detalleTxt: "text-sm text-white/65",
-    cta: "rounded-full bg-red-500 font-bold text-white group-hover:bg-red-400",
+    // Barbería: crema, azul marino y rojo, con franjas de poste de barbero arriba.
+    card: "rounded-2xl border-2 border-[#13233f] bg-[#f4efe4] group-hover:-translate-y-1.5 group-hover:shadow-[0_20px_50px_-20px_rgba(195,32,47,0.55)]",
+    panel: "rounded-lg border-4 border-double border-[#13233f] bg-[#e9e1cf]",
+    etiqueta: "rounded-md bg-[#c3202f] text-[#fff]",
+    titulo: "clasica-titulo text-3xl font-black text-[#13233f]",
+    estiloTxt: "clasica-titulo text-base font-bold italic text-[#c3202f]",
+    detalleTxt: "text-sm text-[#13233f]/70",
+    cta: "clasica-rotulo rounded-md bg-[#13233f] text-xs font-semibold text-[#f4efe4] group-hover:bg-[#c3202f]",
     adorno: (
       <span
         aria-hidden
-        className="absolute inset-x-0 bottom-0 h-1.5 bg-[repeating-linear-gradient(135deg,#ef4444_0_10px,#f5f5f5_10px_20px,#3b82f6_20px_30px)] opacity-70"
+        className="absolute inset-x-0 top-0 h-3 bg-[repeating-linear-gradient(45deg,#c3202f_0_10px,#fbf8f1_10px_20px,#1d4e9e_20px_30px,#fbf8f1_30px_40px)]"
       />
     ),
     href: "/barberia-demo",
@@ -187,7 +186,7 @@ const rubros = [
 
 export default function Home() {
   return (
-    <VitrinaPaleta selector={process.env.VERCEL_ENV !== "production"}>
+    <div className="flex min-h-screen flex-col">
       <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
         <Logo />
         <a
@@ -251,7 +250,7 @@ export default function Home() {
                     <li
                       key={rubro}
                       style={{
-                        color: `color-mix(in srgb, ${color}, var(--foreground) var(--chip-tinta))`,
+                        color,
                         borderColor: `color-mix(in srgb, ${color} 45%, transparent)`,
                         backgroundColor: `color-mix(in srgb, ${color} 14%, transparent)`,
                       }}
@@ -569,6 +568,6 @@ export default function Home() {
         </span>
         WhatsApp
       </a>
-    </VitrinaPaleta>
+    </div>
   );
 }

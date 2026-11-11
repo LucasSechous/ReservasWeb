@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <!-- Ícono de Tu Turno: el calendario con tilde de components/logo.tsx, en menta sobre azul noche. -->
-  <rect width="64" height="64" rx="14" fill="#0c1626"/>
-  <g transform="translate(8 7) scale(2)" fill="none" stroke="#3ddc97" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="64" height="64" rx="14" fill="#0b1324"/>
+  <g transform="translate(8 7) scale(2)" fill="none" stroke="#5b9dff" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3.5" y="4.5" width="17" height="16.5" rx="3.5"/>
     <path d="M8 2.75v3.5M16 2.75v3.5M9 14.25l2.25 2.25 4.5-4.5"/>
   </g>
