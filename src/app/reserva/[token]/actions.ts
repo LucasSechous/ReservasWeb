@@ -1,6 +1,7 @@
 "use server";
 
 import { after } from "next/server";
+import { avisarOperador } from "@/lib/alertas";
 import { MAX_REPROGRAMACIONES, type ReservaGestion, hashToken, tokenValido } from "@/lib/gestion";
 import { notificarCancelacion } from "@/lib/notificaciones";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -21,6 +22,13 @@ function codigoDe(mensaje: string | undefined): string {
   return mensaje && /^[A-Z_]+$/.test(mensaje) ? mensaje : "ERROR";
 }
 
+// Los códigos en mayúsculas son respuestas esperables (FUERA_DE_PLAZO, etc.); cualquier otro error se avisa.
+function fallo(donde: string, error: { code?: string; message: string }): { ok: false; codigo: string } {
+  const codigo = codigoDe(error.message);
+  if (codigo === "ERROR") after(() => avisarOperador(`${donde} (link de gestión)`, error));
+  return { ok: false, codigo };
+}
+
 export async function cancelarReserva(token: string): Promise<ResultadoGestion> {
   if (!tokenValido(token)) return { ok: false, codigo: "NO_EXISTE" };
 
@@ -37,7 +45,7 @@ export async function cancelarReserva(token: string): Promise<ResultadoGestion> 
   const { data, error } = await admin.rpc("gestion_cancelar_reserva", {
     p_token_hash: hash,
   });
-  if (error) return { ok: false, codigo: codigoDe(error.message) };
+  if (error) return fallo("gestion_cancelar_reserva", error);
 
   const reserva = (data as ReservaGestion[] | null)?.[0];
   if (!reserva) return { ok: false, codigo: "ERROR" };
@@ -107,7 +115,7 @@ export async function reprogramarReserva(token: string, inicio: string): Promise
     p_inicio: inicio,
     p_max_reprogramaciones: MAX_REPROGRAMACIONES,
   });
-  if (error) return { ok: false, codigo: codigoDe(error.message) };
+  if (error) return fallo("gestion_reprogramar_reserva", error);
 
   const reserva = (data as ReservaGestion[] | null)?.[0];
   return reserva ? { ok: true, reserva } : { ok: false, codigo: "ERROR" };
