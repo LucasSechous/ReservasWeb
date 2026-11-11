@@ -1,6 +1,7 @@
 "use server";
 
 import { after } from "next/server";
+import { avisarOperador } from "@/lib/alertas";
 import { verificarCaptcha } from "@/lib/captcha";
 import { buildGestionUrl, generarToken, hashToken } from "@/lib/gestion";
 import { avisarSiSueleFaltar, notificarReserva } from "@/lib/notificaciones";
@@ -34,7 +35,10 @@ export async function obtenerHorarios(
     p_fecha: fecha,
     p_profesional_id: profesionalId ?? undefined,
   });
-  if (error) return { ok: false };
+  if (error) {
+    after(() => avisarOperador("horarios_libres (reserva pública)", error));
+    return { ok: false };
+  }
 
   return {
     ok: true,
@@ -105,14 +109,17 @@ export async function crearReserva(datos: DatosReserva): Promise<ResultadoReserv
 
   if (error) {
     // Los errores de reservar() llegan como mensaje en mayúsculas (HORARIO_NO_DISPONIBLE, etc.).
-    return {
-      ok: false,
-      codigo: /^[A-Z_]+$/.test(error.message) ? error.message : "ERROR",
-    };
+    // Esos son esperables (alguien ganó el horario); cualquier otro es una falla y se avisa.
+    if (/^[A-Z_]+$/.test(error.message)) return { ok: false, codigo: error.message };
+    after(() => avisarOperador("reservar (reserva pública)", error));
+    return { ok: false, codigo: "ERROR" };
   }
 
   const fila = Array.isArray(data) ? data[0] : data;
-  if (!fila) return { ok: false, codigo: "ERROR" };
+  if (!fila) {
+    after(() => avisarOperador("reservar (reserva pública)", "La base no devolvió la reserva creada."));
+    return { ok: false, codigo: "ERROR" };
+  }
 
   // Los mails salen después de responderle al cliente; si fallan, la reserva igual queda hecha.
   const gestionUrl = buildGestionUrl(token, await urlBase());
