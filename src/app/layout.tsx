@@ -10,6 +10,7 @@ import {
   Shrikhand,
 } from "next/font/google";
 import { MotionProvider } from "@/components/motion-provider";
+import { urlSitio } from "@/lib/sitio";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -68,6 +69,8 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
+  // Base de los links absolutos de og:image y og:url. Se cambia con NEXT_PUBLIC_SITE_URL (ver lib/sitio.ts).
+  metadataBase: urlSitio(),
   title: {
     default: "Tu Turno · Webs con reservas online",
     template: "%s · Tu Turno",
@@ -78,8 +81,13 @@ export const metadata: Metadata = {
     title: "Tu Turno · Webs con reservas online",
     description:
       "Tu negocio con su propia web, y turnos que se reservan solos.",
+    url: "/",
+    siteName: "Tu Turno",
     locale: "es_UY",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 
