@@ -50,6 +50,32 @@ export async function obtenerHorarios(
   };
 }
 
+/** Más días que esto por llamada no se piden (la ventana más larga de un negocio entra en dos tandas). */
+const MAX_DIAS = 31;
+
+/**
+ * Horarios libres de varios días de una vez, para marcar qué días tienen lugar antes de que el cliente
+ * elija uno. Un día que falló al consultar queda afuera (no se sabe), en vez de figurar como lleno.
+ */
+export async function obtenerDisponibilidad(
+  negocioId: string,
+  servicioId: string,
+  fechas: string[],
+  profesionalId: string | null,
+): Promise<{ ok: true; porDia: Record<string, Turno[]> } | { ok: false }> {
+  if (!Array.isArray(fechas) || fechas.length === 0 || fechas.length > MAX_DIAS) {
+    return { ok: false };
+  }
+  const resultados = await Promise.all(
+    fechas.map((f) => obtenerHorarios(negocioId, servicioId, f, profesionalId)),
+  );
+  const porDia: Record<string, Turno[]> = {};
+  resultados.forEach((r, i) => {
+    if (r.ok) porDia[fechas[i]] = r.turnos;
+  });
+  return Object.keys(porDia).length > 0 ? { ok: true, porDia } : { ok: false };
+}
+
 export type DatosReserva = {
   negocioId: string;
   servicioId: string;

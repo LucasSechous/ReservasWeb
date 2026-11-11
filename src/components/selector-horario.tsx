@@ -12,48 +12,77 @@ export type TurnoElegible = {
   fin: string;
 };
 
+/** Cuántos días se muestran antes de «Ver más fechas». */
+export const DIAS_INICIALES = 14;
+
 export function SelectorDia({
   timezone,
   ventanaDias,
   fecha,
   onElegir,
+  libres,
+  onVerMas,
 }: {
   timezone: string;
   ventanaDias: number;
   fecha: string | null;
   onElegir: (fecha: string) => void;
+  /** Horarios libres por día. Un día con 0 se muestra sin lugar y no se puede elegir; uno que no está, todavía no se sabe. */
+  libres?: Record<string, number>;
+  onVerMas?: () => void;
 }) {
   const [verMas, setVerMas] = useState(false);
   const dias = useMemo(
-    () => listarDias(timezone, verMas ? ventanaDias + 1 : Math.min(14, ventanaDias + 1)),
+    () =>
+      listarDias(timezone, verMas ? ventanaDias + 1 : Math.min(DIAS_INICIALES, ventanaDias + 1)),
     [timezone, ventanaDias, verMas],
   );
 
   return (
     <>
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-7">
-        {dias.map((d) => (
-          <button
-            key={d.fecha}
-            type="button"
-            onClick={() => onElegir(d.fecha)}
-            aria-pressed={fecha === d.fecha}
-            className={`flex flex-col items-center rounded-2xl border py-3 transition ${
-              fecha === d.fecha
-                ? "border-(--n-acento) bg-(--n-acento) text-(--n-acento-tinta)"
-                : "border-(--n-texto)/10 bg-(--n-tarjeta) hover:border-(--n-texto)/30"
-            }`}
-          >
-            <span className="text-[11px] uppercase opacity-70">{d.diaSemana}</span>
-            <span className="text-lg font-extrabold">{d.numero}</span>
-            <span className="text-[11px] uppercase opacity-70">{d.mes}</span>
-          </button>
-        ))}
+        {dias.map((d) => {
+          const cantidad = libres?.[d.fecha];
+          const sinLugar = cantidad === 0;
+          const elegido = fecha === d.fecha;
+          return (
+            <button
+              key={d.fecha}
+              type="button"
+              onClick={() => onElegir(d.fecha)}
+              disabled={sinLugar}
+              aria-pressed={elegido}
+              aria-label={`${d.diaSemana} ${d.numero} de ${d.mes}${sinLugar ? ", sin lugar" : ""}`}
+              className={`relative flex flex-col items-center rounded-2xl border py-3 transition ${
+                elegido
+                  ? "border-(--n-acento) bg-(--n-acento) text-(--n-acento-tinta)"
+                  : sinLugar
+                    ? "cursor-not-allowed border-transparent bg-(--n-texto)/[0.03] text-(--n-texto)/30"
+                    : "border-(--n-texto)/10 bg-(--n-tarjeta) hover:-translate-y-0.5 hover:border-(--n-acento)/60"
+              }`}
+            >
+              <span className="text-[11px] uppercase opacity-70">{d.diaSemana}</span>
+              <span className={`text-lg font-extrabold ${sinLugar ? "line-through" : ""}`}>
+                {d.numero}
+              </span>
+              <span className="text-[11px] uppercase opacity-70">{sinLugar ? "sin lugar" : d.mes}</span>
+              {cantidad !== undefined && cantidad > 0 && !elegido && (
+                <span
+                  aria-hidden="true"
+                  className="absolute top-2 right-2 size-1.5 rounded-full bg-(--n-acento)"
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
-      {!verMas && ventanaDias + 1 > 14 && (
+      {!verMas && ventanaDias + 1 > DIAS_INICIALES && (
         <button
           type="button"
-          onClick={() => setVerMas(true)}
+          onClick={() => {
+            setVerMas(true);
+            onVerMas?.();
+          }}
           className="mt-4 text-sm font-semibold text-(--n-acento) underline"
         >
           Ver más fechas
@@ -93,7 +122,18 @@ export function SelectorHora({
     ].filter((f) => f.turnos.length > 0);
   }, [turnos, timezone]);
 
-  if (cargando) return <p className="mt-8 text-(--n-texto)/60">Buscando horarios libres…</p>;
+  if (cargando) {
+    return (
+      <div className="mt-6" aria-busy="true">
+        <p className="sr-only">Buscando horarios libres…</p>
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+          {Array.from({ length: 10 }, (_, i) => (
+            <span key={i} className="h-12 animate-pulse rounded-xl bg-(--n-texto)/[0.06]" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (franjas.length === 0) {
     return (
