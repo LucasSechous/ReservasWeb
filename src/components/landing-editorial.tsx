@@ -91,7 +91,6 @@ export function LandingEditorial({
       style={temaStyle(tema)}
       className="editorial-texto min-h-screen overflow-x-clip bg-(--n-fondo) pb-28 text-lg text-(--n-texto) selection:bg-(--n-acento) selection:text-(--n-acento-tinta) sm:pb-0"
     >
-      <title>{conReservas ? `${negocio.nombre} · Reservá tu turno` : negocio.nombre}</title>
       {tema.demo && <BannerDemo />}
 
       <header className="border-b border-(--n-texto)/12">
@@ -99,7 +98,7 @@ export function LandingEditorial({
           <span className="flex items-center gap-3 editorial-titulo text-2xl font-medium tracking-tight">
             {tema.logo && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={tema.logo} alt="" className="size-9" />
+              <img src={tema.logo} alt={`Logo de ${negocio.nombre}`} className="size-9" />
             )}
             {negocio.nombre}
           </span>
@@ -166,7 +165,7 @@ export function LandingEditorial({
               <div className="relative aspect-[3/4] w-full overflow-hidden rounded-t-[999px] bg-(--n-tarjeta)">
                 <Image
                   src={tema.portada}
-                  alt=""
+                  alt={tema.portadaAlt ?? ""}
                   fill
                   priority
                   sizes="(min-width: 1024px) 24rem, 80vw"
@@ -303,7 +302,7 @@ export function LandingEditorial({
                 <div className="relative aspect-[4/3] w-full lg:aspect-auto lg:min-h-[34rem]">
                   <Image
                     src={tema.fondoEquipo}
-                    alt=""
+                    alt={tema.fondoEquipoAlt ?? ""}
                     fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     className="object-cover"
