@@ -9,11 +9,11 @@ export type Seccion = "hoy" | "agenda" | "clientes" | "resumen" | "nuevo";
 // Los colores del panel salen de las mismas variables --n-* que usa el flujo de reserva, así los
 // selectores de día y hora funcionan igual acá.
 const VARIABLES = {
-  "--n-fondo": "#0c1626",
-  "--n-texto": "#eef3fb",
-  "--n-tarjeta": "#132338",
-  "--n-acento": "#3ddc97",
-  "--n-acento-tinta": "#04150d",
+  "--n-fondo": "#0b1324",
+  "--n-texto": "#e9f0fb",
+  "--n-tarjeta": "#111c31",
+  "--n-acento": "#5b9dff",
+  "--n-acento-tinta": "#03132f",
   "--n-detalle": "#7aa7ff",
   "--n-error": "#fecaca",
 } as React.CSSProperties;
@@ -151,7 +151,7 @@ export function PanelShell({
       {activa !== "nuevo" && (
         <Link
           href={enlace("/panel/nuevo")}
-          className="fixed bottom-24 right-4 z-30 inline-flex items-center gap-2 rounded-full bg-(--n-acento) px-5 py-3.5 text-sm font-bold text-(--n-acento-tinta) shadow-[0_10px_40px_-8px_rgba(61,220,151,0.6)] md:hidden"
+          className="fixed bottom-24 right-4 z-30 inline-flex items-center gap-2 rounded-full bg-(--n-acento) px-5 py-3.5 text-sm font-bold text-(--n-acento-tinta) shadow-[0_10px_40px_-8px_rgba(91,157,255,0.6)] md:hidden"
         >
           <Icono nombre="nuevo" /> Agendar
         </Link>

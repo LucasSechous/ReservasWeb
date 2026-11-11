@@ -7,6 +7,7 @@ import { BannerDemo } from "@/components/banner-demo";
 import { FondoMovil } from "@/components/fondo-movil";
 import { Galeria } from "@/components/galeria";
 import { HeroTitle } from "@/components/hero-title";
+import { LandingClasica } from "@/components/landing-clasica";
 import { LandingEditorial } from "@/components/landing-editorial";
 import { LandingRetro } from "@/components/landing-retro";
 import { Marquee } from "@/components/marquee";
@@ -141,6 +142,20 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
   if (tema.estilo === "retro") {
     return (
       <LandingRetro
+        negocio={negocio}
+        servicios={servicios}
+        profesionales={profesionales}
+        tema={tema}
+        cta={cta}
+        whatsapp={whatsapp}
+        mapa={mapa}
+        reservarHref={reservarHref}
+      />
+    );
+  }
+  if (tema.estilo === "clasica") {
+    return (
+      <LandingClasica
         negocio={negocio}
         servicios={servicios}
         profesionales={profesionales}

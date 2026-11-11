@@ -44,8 +44,9 @@ export type Tema = {
    * Estilo de la landing. Sin valor: la landing oscura con destellos (app/[slug]/page.tsx).
    * "retro": papel crema y letras de cartel (components/landing-retro.tsx).
    * "editorial": fondo claro, serif fina y mucho aire (components/landing-editorial.tsx).
+   * "clasica": barbería de siempre, crema, azul y rojo con poste de barbero (components/landing-clasica.tsx).
    */
-  estilo?: "retro" | "editorial";
+  estilo?: "retro" | "editorial" | "clasica";
   /** Tercer color de la paleta (el estilo retro lo usa para franjas y fondos de sección). Por defecto, el brillo. */
   detalle?: string;
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
@@ -68,15 +69,21 @@ const TEMA_BASE: Tema = {
 
 const TEMAS: Record<string, Tema> = {
   "barberia-demo": {
+    estilo: "clasica",
     rubro: "barberia",
-    fondo: "#0e0808",
-    texto: "#fbf1ee",
-    tarjeta: "#1b0f0f",
-    acento: "#ff4d4d",
-    acentoTinta: "#2a0505",
-    brillo: "#b91c1c",
-    lema: "Cortes con turno.",
-    intro: "Corte, barba y estilo. Elegí tu barbero, tu horario y listo: tu lugar queda reservado.",
+    fondo: "#f4efe4",
+    texto: "#13233f",
+    tarjeta: "#fffdf7",
+    acento: "#c3202f",
+    acentoTinta: "#ffffff",
+    brillo: "#1d4e9e",
+    detalle: "#13233f",
+    lema: "Corte clásico, con turno.",
+    intro:
+      "Corte a tijera, afeitado con navaja y toalla caliente. Elegí tu barbero y tu horario: el sillón te espera.",
+    etiqueta: "Barbería clásica · Desde 1985",
+    tituloServicios: "Lista de precios",
+    subtituloServicios: "Tocá el servicio y elegí tu horario.",
     logo: "/negocios/barberia-demo/logo.svg",
     portada: "/negocios/barberia-demo/corte.jpg",
     portadaAlt: "Un barbero cortando el pelo con peine y tijera",

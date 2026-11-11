@@ -7,10 +7,10 @@ export const alt = "Tu Turno: webs con reservas online para tu negocio";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const FONDO = "#0c1626";
-const TEXTO = "#eef3fb";
-const ACENTO = "#3ddc97";
-const VIOLETA = "#4678e6";
+const FONDO = "#0b1324";
+const TEXTO = "#e9f0fb";
+const ACENTO = "#5b9dff";
+const VIOLETA = "#2dd4bf";
 
 const MARCA = "tuturno";
 const LINEA_1 = "Tu negocio, tu web,";

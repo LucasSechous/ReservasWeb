@@ -7,6 +7,8 @@ import {
   Geist,
   Geist_Mono,
   Jost,
+  Oswald,
+  Playfair_Display,
   Shrikhand,
 } from "next/font/google";
 import { MotionProvider } from "@/components/motion-provider";
@@ -68,6 +70,22 @@ const jost = Jost({
   preload: false,
 });
 
+// Tipografías del estilo clásico de barbería (components/landing-clasica.tsx), también sin precarga.
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  style: ["normal", "italic"],
+  preload: false,
+});
+
+const oswald = Oswald({
+  variable: "--font-oswald",
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   // Base de los links absolutos de og:image y og:url. Se cambia con NEXT_PUBLIC_SITE_URL (ver lib/sitio.ts).
   metadataBase: urlSitio(),
@@ -95,7 +113,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${shrikhand.variable} ${courierPrime.variable} ${alegreyaSans.variable} ${cormorant.variable} ${jost.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${shrikhand.variable} ${courierPrime.variable} ${alegreyaSans.variable} ${cormorant.variable} ${jost.variable} ${playfair.variable} ${oswald.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <MotionProvider>{children}</MotionProvider>
