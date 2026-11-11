@@ -28,12 +28,18 @@ export type Tema = {
   video?: string;
   /** Foto de portada opcional, guardada en public/negocios/<slug>/ (por ejemplo /negocios/mi-slug/portada.jpg). */
   portada?: string;
+  /** Qué muestra la foto de portada, para lectores de pantalla. */
+  portadaAlt?: string;
   /** Foto de fondo para la sección del equipo (se muestra oscurecida). */
   fondoEquipo?: string;
+  /** Qué muestra la foto del equipo. En la landing editorial se ve como foto, no solo como fondo. */
+  fondoEquipoAlt?: string;
   /** Qué parte de la foto de fondo del equipo queda a la vista (CSS object-position). Por defecto, el centro. */
   fondoEquipoPosicion?: string;
   /** Fotos de la galería, guardadas en public/negocios/<slug>/. Con `alt` describiendo cada una. */
   galeria?: { src: string; alt: string }[];
+  /** Horarios de atención, para una landing simple (sin reservas no hay agenda de dónde sacarlos). */
+  horarios?: { dias: string; horas: string }[];
   /**
    * Estilo de la landing. Sin valor: la landing oscura con destellos (app/[slug]/page.tsx).
    * "retro": papel crema y letras de cartel (components/landing-retro.tsx).
@@ -73,6 +79,7 @@ const TEMAS: Record<string, Tema> = {
     intro: "Corte, barba y estilo. Elegí tu barbero, tu horario y listo: tu lugar queda reservado.",
     logo: "/negocios/barberia-demo/logo.svg",
     portada: "/negocios/barberia-demo/corte.jpg",
+    portadaAlt: "Un barbero cortando el pelo con peine y tijera",
     fondoEquipo: "/negocios/barberia-demo/barberia2.jpg",
     galeria: [
       { src: "/negocios/barberia-demo/tijeras.jpg", alt: "Tijeras y navaja sobre una mesa de madera" },
@@ -94,7 +101,9 @@ const TEMAS: Record<string, Tema> = {
     intro: "Faciales, depilación, masajes y más. Reservá tu momento de cuidado en un par de toques.",
     logo: "/negocios/estetica-demo/logo.svg",
     portada: "/negocios/estetica-demo/portada.jpg",
+    portadaAlt: "Velas encendidas, toallas blancas y flores en una mesa de spa",
     fondoEquipo: "/negocios/estetica-demo/equipo.jpg",
+    fondoEquipoAlt: "Toallas enrolladas con flores e incienso, listas para un masaje",
     fondoEquipoPosicion: "center 72%",
     galeria: [
       { src: "/negocios/estetica-demo/galeria-1.jpg", alt: "Pétalos rosados flotando en un cuenco de agua" },
@@ -139,10 +148,15 @@ const TEMAS: Record<string, Tema> = {
     reservas: false,
     logo: "/negocios/cafe-demo/logo.svg",
     portada: "/negocios/cafe-demo/portada.jpg",
+    portadaAlt: "Barra del café con la máquina de espresso y estantes de tazas",
     galeria: [
       { src: "/negocios/cafe-demo/galeria-1.jpg", alt: "Manos sirviendo leche para hacer latte art" },
       { src: "/negocios/cafe-demo/galeria-2.jpg", alt: "Mesa de brunch con tostadas, jugos y frutos rojos" },
       { src: "/negocios/cafe-demo/galeria-3.jpg", alt: "Tostada de masa madre con palta y huevos pochados" },
+    ],
+    horarios: [
+      { dias: "Lunes a viernes", horas: "8:00 a 20:00" },
+      { dias: "Sábados y domingos", horas: "9:00 a 21:00" },
     ],
     demo: true,
   },

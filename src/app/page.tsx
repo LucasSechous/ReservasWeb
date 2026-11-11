@@ -441,7 +441,7 @@ export default function Home() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={demo.logo}
-                        alt=""
+                        alt={`Logo de la demo de ${demo.rubro.toLowerCase()}`}
                         className="size-28 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3"
                       />
                     </div>

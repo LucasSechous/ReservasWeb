@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ícono provisorio de Tu Turno: una «t» en el acento menta sobre azul noche. -->
+  <rect width="64" height="64" rx="14" fill="#0c1626"/>
+  <path d="M27 14h8v10h10v8H35v12c0 3 1.5 4 4 4h6v8h-7c-7.5 0-11-3.5-11-11V32h-6v-8h6z" fill="#3ddc97"/>
+</svg>

@@ -75,7 +75,8 @@ export function LandingRetro({
 }: Props) {
   const conReservas = tema.reservas !== false;
   const cinta = servicios.map((s) => s.nombre.toUpperCase());
-  const hayContacto = negocio.direccion || negocio.telefono || negocio.email;
+  const hayContacto =
+    negocio.direccion || negocio.telefono || negocio.email || (tema.horarios?.length ?? 0) > 0;
   const giros = ["-rotate-2", "rotate-1", "-rotate-1"];
 
   return (
@@ -83,7 +84,6 @@ export function LandingRetro({
       style={temaStyle(tema)}
       className="relative min-h-screen overflow-x-clip bg-(--n-fondo) pb-28 retro-texto text-lg text-(--n-texto) selection:bg-(--n-acento) selection:text-(--n-acento-tinta) sm:pb-0"
     >
-      <title>{conReservas ? `${negocio.nombre} · Reservá tu turno` : negocio.nombre}</title>
       <div
         aria-hidden
         className="pointer-events-none fixed inset-0 z-30 opacity-[0.09] mix-blend-multiply"
@@ -96,7 +96,7 @@ export function LandingRetro({
         <span className="flex items-center gap-3 retro-titulo text-2xl">
           {tema.logo && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={tema.logo} alt="" className="size-11" />
+            <img src={tema.logo} alt={`Logo de ${negocio.nombre}`} className="size-11" />
           )}
           {negocio.nombre}
         </span>
@@ -151,7 +151,7 @@ export function LandingRetro({
                   <div className="relative aspect-[4/5] overflow-hidden border-2 border-(--n-texto)/30">
                     <Image
                       src={tema.portada}
-                      alt=""
+                      alt={tema.portadaAlt ?? ""}
                       fill
                       priority
                       sizes="(min-width: 1024px) 28rem, 90vw"
@@ -350,6 +350,21 @@ export function LandingRetro({
                         negocio.telefono
                       )}
                     </p>
+                  </li>
+                )}
+                {tema.horarios && tema.horarios.length > 0 && (
+                  <li className="border-2 border-dashed border-(--n-texto) bg-(--n-tarjeta) p-6">
+                    <p className="retro-mono text-xs font-bold uppercase tracking-[0.2em] text-(--n-texto)/60">
+                      Horarios
+                    </p>
+                    <dl className="mt-3 space-y-2">
+                      {tema.horarios.map((h) => (
+                        <div key={h.dias}>
+                          <dt className="text-lg">{h.dias}</dt>
+                          <dd className="text-2xl font-bold leading-snug">{h.horas}</dd>
+                        </div>
+                      ))}
+                    </dl>
                   </li>
                 )}
                 {negocio.email && (

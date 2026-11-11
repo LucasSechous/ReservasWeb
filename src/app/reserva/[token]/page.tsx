@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function Reserva({ params }: PageProps<"/reserva/[token]">) {
   return (
     <Suspense
-      fallback={<div className="grid min-h-screen place-items-center text-(--n-texto)/50">Cargando…</div>}
+      fallback={<div aria-busy="true" className="min-h-screen" />}
     >
       <Contenido params={params} />
     </Suspense>

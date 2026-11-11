@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -29,14 +30,42 @@ const pasos = [
   { titulo: "Listo, tenés turno", texto: "Tu lugar queda reservado al instante." },
 ];
 
+// Título y vista previa al compartir el link (WhatsApp, Instagram). La imagen sale de opengraph-image.tsx.
+// A los bots de vista previa Next les entrega esta metadata en el <head>, sin streaming.
+export async function generateMetadata({ params }: PageProps<"/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  const negocio = await getNegocio(slug);
+  if (!negocio) return {};
+
+  const tema = getTema(negocio.slug);
+  const titulo = `${negocio.nombre} · Tu Turno`;
+  const descripcion = tema.intro;
+  return {
+    title: negocio.nombre,
+    description: descripcion,
+    openGraph: {
+      title: titulo,
+      description: descripcion,
+      url: `/${negocio.slug}`,
+      siteName: "Tu Turno",
+      locale: "es_UY",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: titulo,
+      description: descripcion,
+    },
+  };
+}
+
 // Landing de cada negocio. Se pasa la promesa de params hacia abajo para que la estructura
 // de la página quede en el shell estático y solo los datos del negocio lleguen en streaming.
 export default function LandingNegocio({ params }: PageProps<"/[slug]">) {
   return (
     <Suspense
-      fallback={
-        <div className="grid min-h-screen place-items-center text-white/50">Cargando…</div>
-      }
+      // Sin texto: los datos llegan enseguida y un «Cargando…» solo parpadea (o queda en las vistas previas).
+      fallback={<div aria-busy="true" className="min-h-screen" />}
     >
       <Contenido params={params} />
     </Suspense>
@@ -145,14 +174,13 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
       style={temaStyle(tema)}
       className="min-h-screen overflow-x-clip bg-(--n-fondo) pb-28 text-(--n-texto) selection:bg-(--n-acento) selection:text-(--n-acento-tinta) sm:pb-0"
     >
-      <title>{conReservas ? `${negocio.nombre} · Reservá tu turno` : negocio.nombre}</title>
       {tema.demo && <BannerDemo />}
 
       <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
         <span className="flex items-center gap-3 font-display text-xl font-extrabold tracking-tight">
           {tema.logo && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={tema.logo} alt="" className="size-10" />
+            <img src={tema.logo} alt={`Logo de ${negocio.nombre}`} className="size-10" />
           )}
           {negocio.nombre}
         </span>
