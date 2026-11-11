@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AntesDespues } from "@/components/antes-despues";
 import { FondoMovil } from "@/components/fondo-movil";
 import { HeroTitle } from "@/components/hero-title";
+import { Logo } from "@/components/logo";
 import { Marquee } from "@/components/marquee";
 import { PhoneDemo } from "@/components/phone-demo";
 import { Reveal } from "@/components/reveal";
@@ -187,9 +188,7 @@ export default function Home() {
   return (
     <>
       <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5">
-        <span className="font-display text-xl font-extrabold tracking-tight">
-          tu<span className="text-accent">turno</span>
-        </span>
+        <Logo />
         <a
           href={whatsappUrl}
           target="_blank"

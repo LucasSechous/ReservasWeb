@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { TRAZO_CALENDARIO } from "@/components/logo";
 import { TEXTO as LETRA_TEXTO, cargarFuente } from "@/lib/og";
 
 // Vista previa de la vitrina al compartir el link. Mismos colores que la página (globals.css).
@@ -39,8 +40,25 @@ export default async function Image() {
           fontFamily: deTexto.length > 0 ? LETRA_TEXTO : undefined,
         }}
       >
-        <div style={{ display: "flex", fontFamily: titulo, fontSize: 44, fontWeight: 800 }}>
-          tu<span style={{ color: ACENTO }}>turno</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, fontFamily: titulo, fontSize: 44, fontWeight: 800 }}>
+          <svg
+            width="58"
+            height="58"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={ACENTO}
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="3.5" y="4.5" width="17" height="16.5" rx="3.5" />
+            {TRAZO_CALENDARIO.map((d) => (
+              <path key={d} d={d} />
+            ))}
+          </svg>
+          <span style={{ display: "flex" }}>
+            tu<span style={{ color: ACENTO }}>turno</span>
+          </span>
         </div>
         <div
           style={{

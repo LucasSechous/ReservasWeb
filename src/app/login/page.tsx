@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Logo } from "@/components/logo";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
@@ -10,8 +11,8 @@ export const metadata: Metadata = {
 export default function Login() {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-12">
-      <Link href="/" className="font-display text-xl font-extrabold tracking-tight">
-        tu<span className="text-accent">turno</span>
+      <Link href="/" aria-label="Tu Turno, ir al inicio">
+        <Logo />
       </Link>
       <h1 className="mt-8 font-display text-3xl font-extrabold">Entrar a tu panel</h1>
       <p className="mt-2 text-white/65">Con tu mail y tu contraseña.</p>
