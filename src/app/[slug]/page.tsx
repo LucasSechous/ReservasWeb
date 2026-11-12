@@ -350,6 +350,21 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
           </section>
         )}
 
+        {tema.frase && (
+          <section aria-label="La frase de la casa" className="mx-auto max-w-5xl px-5 pb-24">
+            <Reveal>
+              <p className="font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                <span aria-hidden className="mr-2 text-accent">“</span>
+                {tema.frase}
+                <span aria-hidden className="ml-1 text-accent">”</span>
+              </p>
+              <p className="mt-6 text-sm font-semibold uppercase tracking-widest text-white/50">
+                {negocio.nombre}
+              </p>
+            </Reveal>
+          </section>
+        )}
+
         {profesionales.length > 0 && (
           <section aria-labelledby="equipo" className="relative isolate overflow-hidden bg-ink-2 py-24">
             {tema.fondoEquipo && (

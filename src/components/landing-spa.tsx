@@ -79,7 +79,9 @@ function Sello({ texto, logo }: { texto: string; logo?: string }) {
           <path id="sello-circulo" d="M50 50m-38 0a38 38 0 1 1 76 0a38 38 0 1 1-76 0" />
         </defs>
         <text className="fill-(--n-texto) text-[8.4px] uppercase tracking-[0.32em]">
-          <textPath href="#sello-circulo">{texto}</textPath>
+          <textPath href="#sello-circulo" textLength="236" lengthAdjust="spacing">
+            {texto}
+          </textPath>
         </text>
       </svg>
       {logo && (
@@ -316,21 +318,22 @@ export function LandingSpa({
           </section>
         )}
 
-        <section aria-label="Nuestra filosofía" className="relative isolate overflow-hidden bg-(--n-tarjeta) py-28">
-          <div aria-hidden className="absolute left-1/2 top-1/2 -z-10 size-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-(--n-acento)/15" />
-          <div aria-hidden className="absolute left-1/2 top-1/2 -z-10 size-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-(--n-acento)/20" />
-          <Reveal className="mx-auto max-w-3xl px-5 text-center">
-            {tema.logo && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={tema.logo} alt="" className="mx-auto size-14" />
-            )}
-            <p className="editorial-titulo mt-8 text-4xl font-light italic leading-snug sm:text-5xl">
-              Cuidarte no es un lujo: es un rato para vos, en un lugar pensado para que{" "}
-              <span className="text-(--n-acento)">te desconectes</span>.
-            </p>
-            <p className="mt-8 text-xs font-medium uppercase tracking-[0.3em] text-(--n-texto)/55">{negocio.nombre}</p>
-          </Reveal>
-        </section>
+        {tema.frase && (
+          <section aria-label="Nuestra filosofía" className="relative isolate overflow-hidden bg-(--n-tarjeta) py-28">
+            <div aria-hidden className="absolute left-1/2 top-1/2 -z-10 size-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-(--n-acento)/15" />
+            <div aria-hidden className="absolute left-1/2 top-1/2 -z-10 size-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-(--n-acento)/20" />
+            <Reveal className="mx-auto max-w-3xl px-5 text-center">
+              {tema.logo && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={tema.logo} alt="" className="mx-auto size-14" />
+              )}
+              <p className="editorial-titulo mt-8 text-4xl font-light italic leading-snug sm:text-5xl">
+                “{tema.frase}”
+              </p>
+              <p className="mt-8 text-xs font-medium uppercase tracking-[0.3em] text-(--n-acento)">{negocio.nombre}</p>
+            </Reveal>
+          </section>
+        )}
 
         {galeria.length > 0 && (
           <section aria-labelledby="galeria" className="mx-auto max-w-6xl px-5 py-28">

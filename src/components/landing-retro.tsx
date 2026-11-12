@@ -43,6 +43,28 @@ const boton =
 const botonClaro =
   "inline-flex min-h-13 items-center justify-center gap-2 rounded-sm border-2 border-(--n-texto) bg-(--n-fondo) px-8 retro-mono text-base font-bold uppercase tracking-wider text-(--n-texto) shadow-[5px_5px_0_var(--n-texto)] transition hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--n-texto)] active:translate-x-1 active:translate-y-1 active:shadow-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--n-texto)";
 
+/** Sello redondo de imprenta: texto que gira alrededor de una estrella. */
+function Sello({ texto }: { texto: string }) {
+  return (
+    <div
+      aria-hidden
+      className="relative flex size-28 items-center justify-center rounded-full border-[3px] border-(--n-texto) bg-(--color-violeta) shadow-[4px_4px_0_var(--n-texto)] sm:size-32"
+    >
+      <svg viewBox="0 0 100 100" className="absolute inset-0 size-full animate-[spin_24s_linear_infinite]">
+        <defs>
+          <path id="sello-retro" d="M50 50m-37 0a37 37 0 1 1 74 0a37 37 0 1 1-74 0" />
+        </defs>
+        <text className="fill-(--n-texto) retro-mono text-[9.5px] font-bold uppercase tracking-[0.18em]">
+          <textPath href="#sello-retro" textLength="230" lengthAdjust="spacing">
+            {texto}
+          </textPath>
+        </text>
+      </svg>
+      <span className="retro-titulo text-3xl text-(--n-acento)">★</span>
+    </div>
+  );
+}
+
 function Titulo({
   id,
   children,
@@ -170,6 +192,9 @@ export function LandingRetro({
                     className="absolute -left-5 -top-9 size-28 -rotate-12 drop-shadow-[4px_4px_0_var(--n-texto)] sm:-left-9 sm:size-32"
                   />
                 )}
+                <div className="absolute -bottom-10 -right-4 sm:-right-10">
+                  <Sello texto={`${negocio.nombre} ★ ${conReservas ? "Reservá online" : "Te esperamos"} ★ `} />
+                </div>
               </Reveal>
             )}
           </div>
@@ -231,6 +256,23 @@ export function LandingRetro({
                     </li>
                   ))}
                 </ul>
+              </div>
+            </Reveal>
+          </section>
+        )}
+
+        {tema.frase && (
+          <section aria-label="La frase de la casa" className="px-5 pb-24">
+            <Reveal>
+              {/* Pizarra: verde oscuro con marco de madera y letras de tiza. */}
+              <div className="mx-auto max-w-4xl -rotate-1 rounded-md border-[10px] border-[#7a5230] bg-[#24372f] px-8 py-14 text-center shadow-[10px_10px_0_var(--n-texto)] sm:px-16 sm:py-20">
+                <p className="retro-mono text-sm font-bold uppercase tracking-[0.3em] text-[#f5ecd6]/60">
+                  ★ La casa dice ★
+                </p>
+                <p className="mt-6 retro-titulo text-4xl leading-tight text-[#f5ecd6] sm:text-6xl [text-shadow:0_0_1px_#f5ecd6,0_0_14px_rgba(245,236,214,0.25)]">
+                  {tema.frase}
+                </p>
+                <p className="mt-8 retro-mono text-base text-(--color-violeta)">— {negocio.nombre}</p>
               </div>
             </Reveal>
           </section>
@@ -329,6 +371,11 @@ export function LandingRetro({
                         negocio.direccion
                       )}
                     </p>
+                    {mapa && (
+                      <a href={mapa} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-sm border-2 border-(--n-texto) bg-(--n-fondo) px-3 py-1.5 retro-mono text-xs font-bold uppercase tracking-wider shadow-[3px_3px_0_var(--n-texto)] transition hover:-translate-y-0.5 hover:bg-(--n-acento) hover:text-(--n-acento-tinta)">
+                        Cómo llegar <span aria-hidden>→</span>
+                      </a>
+                    )}
                   </li>
                 )}
                 {negocio.telefono && (
@@ -350,6 +397,11 @@ export function LandingRetro({
                         negocio.telefono
                       )}
                     </p>
+                    {whatsapp && (
+                      <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-sm border-2 border-(--n-texto) bg-(--n-fondo) px-3 py-1.5 retro-mono text-xs font-bold uppercase tracking-wider shadow-[3px_3px_0_var(--n-texto)] transition hover:-translate-y-0.5 hover:bg-(--n-acento) hover:text-(--n-acento-tinta)">
+                        Escribinos <span aria-hidden>→</span>
+                      </a>
+                    )}
                   </li>
                 )}
                 {tema.horarios && tema.horarios.length > 0 && (
@@ -390,7 +442,7 @@ export function LandingRetro({
         <section className="px-5 pb-24">
           <Reveal>
             <div className="mx-auto max-w-4xl border-4 border-(--n-texto) bg-(--n-acento) p-10 text-center text-(--n-acento-tinta) shadow-[10px_10px_0_var(--n-texto)] sm:p-16">
-              <h2 className="retro-titulo text-5xl leading-tight sm:text-7xl">
+              <h2 className="retro-titulo text-4xl leading-tight sm:text-7xl">
                 {conReservas ? "¿Te reservamos un turno?" : "¿Te esperamos?"}
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-xl">
