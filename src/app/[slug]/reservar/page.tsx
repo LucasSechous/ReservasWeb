@@ -48,6 +48,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
   return (
     <div
       style={temaStyle(tema)}
+      data-estilo={tema.estilo}
       className="min-h-screen bg-(--n-fondo) text-(--n-texto) selection:bg-(--n-acento) selection:text-(--n-acento-tinta)"
     >
       {tema.demo && <BannerDemo />}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { BannerDemo } from "@/components/banner-demo";
 import { MAX_REPROGRAMACIONES, type ReservaGestion, hashToken, tokenValido } from "@/lib/gestion";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createPublicClient } from "@/lib/supabase/server";
@@ -36,19 +37,23 @@ async function Contenido({ params }: { params: Promise<{ token: string }> }) {
   });
   const reserva = (data as ReservaGestion[] | null)?.[0];
   if (!reserva) notFound();
+  const tema = getTema(reserva.negocio_slug);
 
   return (
     <div
-      style={temaStyle(getTema(reserva.negocio_slug))}
+      style={temaStyle(tema)}
+      data-estilo={tema.estilo}
       className="min-h-screen bg-(--n-fondo) text-(--n-texto) selection:bg-(--n-acento) selection:text-(--n-acento-tinta)"
     >
-      <div className="mx-auto max-w-lg px-5 py-10 sm:py-12">
+      {tema.demo && <BannerDemo />}
+      <div className="mx-auto max-w-lg px-5 pb-32 pt-8 sm:pb-12 sm:pt-10">
         <GestionReserva
           token={token}
           inicial={reserva}
           ventanaDias={await ventanaDiasDe(reserva.negocio_id)}
           maxReprogramaciones={MAX_REPROGRAMACIONES}
-          etiquetaServicio={capitalizar(vocabularioDe(getTema(reserva.negocio_slug).rubro).servicio)}
+          etiquetaServicio={capitalizar(vocabularioDe(tema.rubro).servicio)}
+          logo={tema.logo ?? null}
         />
       </div>
     </div>

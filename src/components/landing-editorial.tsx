@@ -174,6 +174,45 @@ export function LandingEditorial({
               </div>
             </Reveal>
           )}
+
+          {/* Sin foto de portada: un arco con el logo y dos tarjetitas que muestran cómo se reserva. */}
+          {!tema.portada && (
+            <Reveal delay={0.2} y={30} className="relative mx-auto w-full max-w-sm">
+              <div aria-hidden className="relative">
+                <div className="absolute -right-4 top-5 aspect-[3/4] w-full rounded-t-[999px] border border-(--n-acento)/50" />
+                <div className="relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-t-[999px] bg-gradient-to-b from-(--color-violeta) to-(--n-tarjeta)">
+                  <div className="absolute inset-x-10 top-10 aspect-square rounded-full border border-(--n-acento)/20" />
+                  <div className="absolute inset-x-20 top-20 aspect-square rounded-full border border-(--n-acento)/25" />
+                  {tema.logo && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={tema.logo} alt="" className="relative size-36 animate-float-slow" />
+                  )}
+                </div>
+                {servicios[0] && (
+                  <div className="absolute -left-6 top-[18%] w-52 rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-4 shadow-[0_20px_40px_-24px_rgba(0,0,0,0.35)] sm:-left-14">
+                    <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-(--n-texto)/50">
+                      {conReservas ? formatoDuracion(servicios[0].duracion_minutos) : "Destacado"}
+                    </p>
+                    <p className="editorial-titulo mt-1 text-xl font-medium leading-tight">{servicios[0].nombre}</p>
+                    <p className="mt-1 text-sm text-(--n-acento)">{formatoPrecio(servicios[0].precio)}</p>
+                  </div>
+                )}
+                {conReservas && (
+                  <div className="absolute -right-4 bottom-[12%] flex items-center gap-3 rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) px-4 py-3 shadow-[0_20px_40px_-24px_rgba(0,0,0,0.35)] sm:-right-10">
+                    <span className="flex size-9 items-center justify-center rounded-full bg-(--n-acento) text-(--n-acento-tinta)">
+                      <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m5 12.5 4.5 4.5L19 7.5" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block text-sm font-medium">Turno confirmado</span>
+                      <span className="block text-xs text-(--n-texto)/55">Al instante, sin llamar</span>
+                    </span>
+                  </div>
+                )}
+              </div>
+            </Reveal>
+          )}
         </section>
 
         {datos.length > 0 && (

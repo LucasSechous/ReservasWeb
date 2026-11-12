@@ -166,6 +166,50 @@ const demos = [
   },
 ];
 
+// Solo lo que el sistema hace hoy: si cambia algo (plazos, límites), se actualiza acá.
+const preguntas = [
+  {
+    pregunta: "¿Mis clientes tienen que bajar una app o crearse una cuenta?",
+    respuesta:
+      "No. Entran a tu web desde el celular o la compu, eligen el servicio, el día y la hora, y dejan sus datos. Nada de apps ni contraseñas.",
+  },
+  {
+    pregunta: "¿Qué pasa si dos personas quieren el mismo horario?",
+    respuesta:
+      "No se pueden superponer: el primero que confirma se queda con el turno, y al otro se le muestran los horarios que siguen libres.",
+  },
+  {
+    pregunta: "¿Cómo me entero cuando alguien reserva?",
+    respuesta:
+      "Te llega un aviso por mail con cada reserva, y además tenés tu agenda en un panel que podés abrir desde el celular.",
+  },
+  {
+    pregunta: "¿Puedo anotar los turnos que me piden por WhatsApp o por teléfono?",
+    respuesta:
+      "Sí. Desde tu panel agendás un turno a mano y ese horario deja de aparecer libre en la web, así no se pisa con las reservas online.",
+  },
+  {
+    pregunta: "¿Mis clientes pueden cancelar o cambiar el turno?",
+    respuesta:
+      "Sí. En el mail de confirmación reciben un link para cancelarlo o pasarlo a otro horario libre, hasta unas horas antes. El lugar que liberan vuelve a quedar disponible para otra persona.",
+  },
+  {
+    pregunta: "¿Puedo ver cómo quedaría antes de decidir?",
+    respuesta:
+      "Sí. Te armamos una demo con tus colores, tu estilo y tus servicios para que la pruebes en tu celular. Y podés probar ya mismo las demos de esta página.",
+  },
+  {
+    pregunta: "¿Cuánto cuesta?",
+    respuesta:
+      "Depende de tu negocio. La landing simple es un pago único; la landing con reservas tiene un costo de armado y una mensualidad. El dominio va aparte. Escribinos y te pasamos una propuesta a medida.",
+  },
+  {
+    pregunta: "¿Sirve para mi rubro?",
+    respuesta:
+      "Si trabajás con turnos, sí: barberías, peluquerías, estética, uñas, clínicas, consultorios, entrenadores y más. La web habla como tu negocio: barbero, especialista, consulta o clase, según corresponda.",
+  },
+];
+
 const rubros = [
   "BARBERÍAS",
   "PELUQUERÍAS",
@@ -523,6 +567,50 @@ export default function Home() {
               Cada demo tiene un estilo distinto: tu web se adapta a tu marca, no al revés.
             </p>
           </div>
+        </section>
+
+        <section aria-labelledby="preguntas" className="mx-auto max-w-4xl px-5 py-24">
+          <Reveal>
+            <h2
+              id="preguntas"
+              className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl"
+            >
+              Preguntas <span className="text-accent">frecuentes</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="mt-10 divide-y divide-white/10 border-y border-white/10">
+              {preguntas.map((p) => (
+                <details key={p.pregunta} className="group py-1">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 font-display text-lg font-bold transition-colors hover:text-accent sm:text-xl [&::-webkit-details-marker]:hidden">
+                    {p.pregunta}
+                    <span
+                      aria-hidden
+                      className="flex size-8 shrink-0 items-center justify-center rounded-full border border-white/20 text-accent transition-transform duration-300 group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="max-w-3xl pb-6 text-white/70">{p.respuesta}</p>
+                </details>
+              ))}
+            </div>
+          </Reveal>
+          <script
+            type="application/ld+json"
+            // Datos estructurados para que Google pueda mostrar las preguntas en los resultados.
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: preguntas.map((p) => ({
+                  "@type": "Question",
+                  name: p.pregunta,
+                  acceptedAnswer: { "@type": "Answer", text: p.respuesta },
+                })),
+              }).replace(/</g, "\\u003c"),
+            }}
+          />
         </section>
 
         <section className="relative overflow-hidden py-28">

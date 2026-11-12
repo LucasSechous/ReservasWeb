@@ -71,11 +71,26 @@ export async function cancelarReserva(token: string): Promise<ResultadoGestion> 
   return { ok: true, reserva };
 }
 
+/** Como mucho un mes por pedido, igual que la reserva nueva. */
+const MAX_DIAS = 31;
+
+/**
+ * Horarios libres para reprogramar, de varios días de una vez: marcan qué días tienen lugar antes de
+ * elegir uno. Un día que falló al consultar queda afuera (no se sabe), en vez de figurar como lleno.
+ */
 export async function horariosParaReprogramar(
   token: string,
-  fecha: string,
-): Promise<{ ok: true; turnos: Turno[] } | { ok: false }> {
-  if (!tokenValido(token) || !FECHA.test(fecha)) return { ok: false };
+  fechas: string[],
+): Promise<{ ok: true; porDia: Record<string, Turno[]> } | { ok: false }> {
+  if (
+    !tokenValido(token) ||
+    !Array.isArray(fechas) ||
+    fechas.length === 0 ||
+    fechas.length > MAX_DIAS ||
+    !fechas.every((f) => typeof f === "string" && FECHA.test(f))
+  ) {
+    return { ok: false };
+  }
 
   const admin = createAdminClient();
   const { data: filas } = await admin.rpc("gestion_obtener_reserva", {
@@ -84,24 +99,32 @@ export async function horariosParaReprogramar(
   });
   const reserva = (filas as ReservaGestion[] | null)?.[0];
   if (!reserva?.puede_reprogramar || !reserva.servicio_id) return { ok: false };
+  const servicioId = reserva.servicio_id;
 
   // Mismo motor de disponibilidad que la reserva nueva, para el mismo servicio y el mismo profesional.
-  const { data, error } = await admin.rpc("horarios_libres", {
-    p_negocio_id: reserva.negocio_id,
-    p_servicio_id: reserva.servicio_id,
-    p_fecha: fecha,
-    p_profesional_id: reserva.profesional_id,
-  });
-  if (error) return { ok: false };
+  const resultados = await Promise.all(
+    fechas.map((fecha) =>
+      admin.rpc("horarios_libres", {
+        p_negocio_id: reserva.negocio_id,
+        p_servicio_id: servicioId,
+        p_fecha: fecha,
+        p_profesional_id: reserva.profesional_id,
+      }),
+    ),
+  );
 
-  return {
-    ok: true,
-    turnos: (data ?? []).map((t: { profesional_id: string; inicio: string; fin: string }) => ({
-      profesionalId: t.profesional_id,
-      inicio: t.inicio,
-      fin: t.fin,
-    })),
-  };
+  const porDia: Record<string, Turno[]> = {};
+  resultados.forEach(({ data, error }, i) => {
+    if (error) return;
+    porDia[fechas[i]] = (data ?? []).map(
+      (t: { profesional_id: string; inicio: string; fin: string }) => ({
+        profesionalId: t.profesional_id,
+        inicio: t.inicio,
+        fin: t.fin,
+      }),
+    );
+  });
+  return Object.keys(porDia).length > 0 ? { ok: true, porDia } : { ok: false };
 }
 
 export async function reprogramarReserva(token: string, inicio: string): Promise<ResultadoGestion> {
