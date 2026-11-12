@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BannerDemo } from "@/components/banner-demo";
 import { BotonCta, type Cta } from "@/components/boton-cta";
-import { Reveal } from "@/components/reveal";
+import { Entrada, Reveal } from "@/components/reveal";
 import {
   type Negocio,
   type Profesional,
@@ -130,34 +130,34 @@ export function LandingEditorial({
       <main>
         <section className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:pb-28 lg:pt-20">
           <div>
-            <Reveal y={10}>
+            <Entrada y={10}>
               <p className={etiqueta}>
                 {tema.etiqueta ?? "Reservas online"}
                 {negocio.direccion ? ` — ${negocio.direccion}` : ""}
               </p>
-            </Reveal>
-            <Reveal delay={0.1} y={18}>
+            </Entrada>
+            <Entrada delay={0.1} y={18}>
               <h1 className="editorial-titulo mt-7 text-[3.4rem] font-light leading-[0.95] tracking-tight sm:text-7xl lg:text-[6.4rem]">
                 {negocio.nombre}
                 <span className="mt-3 block text-[0.62em] font-normal italic leading-[1.05] text-(--n-acento)">
                   {tema.lema}
                 </span>
               </h1>
-            </Reveal>
-            <Reveal delay={0.25} className="mt-9 max-w-md">
+            </Entrada>
+            <Entrada delay={0.25} className="mt-9 max-w-md">
               <p className="text-xl leading-relaxed text-(--n-texto)/75">{tema.intro}</p>
-            </Reveal>
+            </Entrada>
             {cta && (
-              <Reveal delay={0.35} className="mt-10">
+              <Entrada delay={0.35} className="mt-10">
                 <BotonCta cta={cta} className={botonPrimario}>
                   {cta.texto} <Flecha />
                 </BotonCta>
-              </Reveal>
+              </Entrada>
             )}
           </div>
 
           {tema.portada && (
-            <Reveal delay={0.2} y={30} className="relative mx-auto w-full max-w-sm">
+            <Entrada delay={0.2} y={30} className="relative mx-auto w-full max-w-sm">
               <div
                 aria-hidden
                 className="absolute -right-4 top-5 aspect-[3/4] w-full rounded-t-[999px] border border-(--n-acento)/60"
@@ -167,17 +167,18 @@ export function LandingEditorial({
                   src={tema.portada}
                   alt={tema.portadaAlt ?? ""}
                   fill
-                  priority
+                  preload
+                  fetchPriority="high"
                   sizes="(min-width: 1024px) 24rem, 80vw"
                   className="object-cover"
                 />
               </div>
-            </Reveal>
+            </Entrada>
           )}
 
           {/* Sin foto de portada: un arco con el logo y dos tarjetitas que muestran cómo se reserva. */}
           {!tema.portada && (
-            <Reveal delay={0.2} y={30} className="relative mx-auto w-full max-w-sm">
+            <Entrada delay={0.2} y={30} className="relative mx-auto w-full max-w-sm">
               <div aria-hidden className="relative">
                 <div className="absolute -right-4 top-5 aspect-[3/4] w-full rounded-t-[999px] border border-(--n-acento)/50" />
                 <div className="relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-t-[999px] bg-gradient-to-b from-(--color-violeta) to-(--n-tarjeta)">
@@ -211,7 +212,7 @@ export function LandingEditorial({
                   </div>
                 )}
               </div>
-            </Reveal>
+            </Entrada>
           )}
         </section>
 

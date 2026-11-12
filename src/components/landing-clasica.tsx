@@ -5,7 +5,7 @@ import { BotonCta, type Cta } from "@/components/boton-cta";
 import { Galeria } from "@/components/galeria";
 import { Marquee } from "@/components/marquee";
 import { Giro, Palabras, Parallax, Trazo } from "@/components/movimiento";
-import { Reveal } from "@/components/reveal";
+import { Entrada, Reveal } from "@/components/reveal";
 import {
   type Negocio,
   type Profesional,
@@ -136,12 +136,12 @@ export function LandingClasica({
           />
           <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-8 lg:grid-cols-[1.15fr_0.85fr] lg:pb-24 lg:pt-14">
             <div>
-              <Reveal y={12}>
+              <Entrada y={12}>
                 <p className="flex flex-wrap items-center gap-x-3 gap-y-1 clasica-rotulo text-xs font-semibold text-(--n-acento)">
                   <span aria-hidden className="h-px w-10 bg-current" />
                   {tema.etiqueta ?? "Reservas online"}
                 </p>
-              </Reveal>
+              </Entrada>
               <h1 className="mt-6 clasica-titulo text-[3.3rem] font-black leading-[0.95] tracking-tight sm:text-7xl lg:text-[5.4rem]">
                 <Palabras texto={negocio.nombre} delay={0.1} />
               </h1>
@@ -149,13 +149,13 @@ export function LandingClasica({
                 <Palabras texto={tema.lema} delay={0.35} paso={0.06} />
                 <Trazo alCargar delay={0.9} className="mt-1 h-[3px] w-full bg-current" />
               </p>
-              <Reveal delay={0.2}>
+              <Entrada delay={0.2}>
                 <Filete className="mt-7" />
-              </Reveal>
-              <Reveal delay={0.25} className="mt-6 max-w-xl">
+              </Entrada>
+              <Entrada delay={0.25} className="mt-6 max-w-xl">
                 <p className="text-lg leading-relaxed text-(--n-texto)/75">{tema.intro}</p>
-              </Reveal>
-              <Reveal delay={0.35} className="mt-9">
+              </Entrada>
+              <Entrada delay={0.35} className="mt-9">
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
                   {cta && (
                     <BotonCta cta={cta} className={boton}>
@@ -172,11 +172,11 @@ export function LandingClasica({
                     </ul>
                   )}
                 </div>
-              </Reveal>
+              </Entrada>
             </div>
 
             {tema.portada && (
-              <Reveal delay={0.2} y={30} className="relative mx-auto flex h-[30rem] w-full max-w-md gap-5 sm:h-[34rem]">
+              <Entrada delay={0.2} y={30} className="relative mx-auto flex h-[30rem] w-full max-w-md gap-5 sm:h-[34rem]">
                 <Poste className="hidden h-[85%] self-center sm:flex" />
                 <div className="relative flex-1 rounded-t-full border-[3px] border-(--n-texto) bg-(--n-tarjeta) p-2.5 shadow-[10px_10px_0_var(--n-acento)]">
                   <div className="relative h-full overflow-hidden rounded-t-full">
@@ -185,7 +185,8 @@ export function LandingClasica({
                         src={tema.portada}
                         alt={tema.portadaAlt ?? ""}
                         fill
-                        priority
+                        preload
+                        fetchPriority="high"
                         sizes="(min-width: 1024px) 24rem, 80vw"
                         className="object-cover [filter:saturate(0.85)_contrast(1.05)]"
                       />
@@ -198,7 +199,7 @@ export function LandingClasica({
                     </Giro>
                   )}
                 </div>
-              </Reveal>
+              </Entrada>
             )}
           </div>
         </section>
