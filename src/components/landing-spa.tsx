@@ -192,7 +192,7 @@ export function LandingSpa({
                 {servicios.length > 0 && (
                   <a
                     href="#servicios"
-                    className="text-xs font-medium uppercase tracking-[0.22em] text-(--n-texto)/70 underline decoration-(--n-acento)/50 underline-offset-8 transition-colors hover:text-(--n-acento)"
+                    className="text-xs font-medium uppercase tracking-[0.22em] text-(--n-texto)/85 underline decoration-(--n-acento)/50 underline-offset-8 transition-colors hover:text-(--n-acento)"
                   >
                     Ver la carta
                   </a>
@@ -200,7 +200,7 @@ export function LandingSpa({
               </Entrada>
               {datos.length > 0 && (
                 <Entrada delay={0.45}>
-                  <ul className="mt-12 flex flex-wrap gap-2 text-[11px] font-medium uppercase tracking-[0.2em] text-(--n-texto)/65">
+                  <ul className="mt-12 flex flex-wrap gap-2 text-[11px] font-medium uppercase tracking-[0.2em] text-(--n-texto)/80">
                     {datos.map((d) => (
                       <li key={d} className="rounded-full border border-(--n-texto)/15 bg-(--n-tarjeta)/60 px-4 py-1.5">
                         {d}
