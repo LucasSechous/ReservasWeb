@@ -4,7 +4,7 @@ import { BannerDemo } from "@/components/banner-demo";
 import { BotonCta, type Cta } from "@/components/boton-cta";
 import { Marquee } from "@/components/marquee";
 import { Cortina, Estampa, Giro } from "@/components/movimiento";
-import { Reveal } from "@/components/reveal";
+import { Entrada, Reveal } from "@/components/reveal";
 import { type Negocio, type Profesional, type Servicio, formatoPrecio } from "@/lib/negocios";
 import { type Tema, temaStyle } from "@/lib/tema";
 
@@ -138,13 +138,13 @@ export function LandingRetro({
           <div aria-hidden className="absolute inset-0 -z-10" style={{ background: RAYOS }} />
           <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-10 lg:grid-cols-[1.1fr_0.9fr] lg:pb-24 lg:pt-16">
             <div>
-              <Reveal y={12}>
+              <Entrada y={12}>
                 <p className="inline-flex max-w-full items-center gap-2 border-2 border-(--n-texto) bg-(--color-violeta) px-3 py-1 retro-mono text-xs font-bold uppercase tracking-[0.18em] text-(--n-texto)">
                   <span aria-hidden>★</span>
                   {tema.etiqueta ?? "Reservas online"}
                   {negocio.direccion ? ` · ${negocio.direccion}` : ""}
                 </p>
-              </Reveal>
+              </Entrada>
               <Estampa alCargar delay={0.15} className="origin-left">
                 <h1
                   className="mt-7 retro-titulo text-[3.3rem] leading-[1.02] sm:text-7xl lg:text-8xl"
@@ -156,27 +156,28 @@ export function LandingRetro({
               <Estampa alCargar delay={0.45} giro={-2} className="mt-4 inline-block origin-left">
                 <p className="retro-titulo text-3xl text-(--n-acento) sm:text-5xl">{tema.lema}</p>
               </Estampa>
-              <Reveal delay={0.25} className="mt-8 max-w-xl">
+              <Entrada delay={0.25} className="mt-8 max-w-xl">
                 <p className="text-xl leading-relaxed text-(--n-texto)/80">{tema.intro}</p>
-              </Reveal>
+              </Entrada>
               {cta && (
-                <Reveal delay={0.35} className="mt-10">
+                <Entrada delay={0.35} className="mt-10">
                   <BotonCta cta={cta} className={boton}>
                     {cta.texto} <span aria-hidden>→</span>
                   </BotonCta>
-                </Reveal>
+                </Entrada>
               )}
             </div>
 
             {tema.portada && (
-              <Reveal delay={0.2} y={30} className="relative mx-auto w-full max-w-md">
+              <Entrada delay={0.2} y={30} className="relative mx-auto w-full max-w-md">
                 <Estampa alCargar delay={0.3} giro={2} className="relative border-4 border-(--n-texto) bg-(--n-tarjeta) p-3 pb-12 shadow-[10px_10px_0_var(--n-texto)]">
                   <div className="relative aspect-[4/5] overflow-hidden border-2 border-(--n-texto)/30">
                     <Image
                       src={tema.portada}
                       alt={tema.portadaAlt ?? ""}
                       fill
-                      priority
+                      preload
+                      fetchPriority="high"
                       sizes="(min-width: 1024px) 28rem, 90vw"
                       className={`object-cover ${FOTO_VIEJA}`}
                     />
@@ -194,7 +195,7 @@ export function LandingRetro({
                 <Giro delay={1} className="absolute -bottom-10 -right-4 sm:-right-10">
                   <Sello texto={`${negocio.nombre} ★ ${conReservas ? "Reservá online" : "Te esperamos"} ★ `} />
                 </Giro>
-              </Reveal>
+              </Entrada>
             )}
           </div>
         </section>
@@ -302,9 +303,10 @@ export function LandingRetro({
                         className={`border-2 border-(--n-texto) bg-(--n-tarjeta) p-3 pb-4 shadow-[7px_7px_0_var(--n-texto)] transition duration-300 hover:-translate-y-1.5 hover:rotate-0 hover:shadow-[11px_11px_0_var(--n-texto)] ${giros[i % giros.length]}`}
                       >
                         <div className="relative aspect-square overflow-hidden border-2 border-(--n-texto)/25">
+                          {/* La descripción ya está en el epígrafe: la foto no la repite. */}
                           <Image
                             src={foto.src}
-                            alt={foto.alt}
+                            alt=""
                             fill
                             sizes="(min-width: 640px) 30vw, 90vw"
                             className={`object-cover ${FOTO_VIEJA}`}

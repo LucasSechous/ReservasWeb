@@ -12,7 +12,7 @@ import { LandingEditorial } from "@/components/landing-editorial";
 import { LandingRetro } from "@/components/landing-retro";
 import { LandingSpa } from "@/components/landing-spa";
 import { Marquee } from "@/components/marquee";
-import { Reveal } from "@/components/reveal";
+import { Entrada, Reveal } from "@/components/reveal";
 import {
   formatoDuracion,
   formatoPrecio,
@@ -228,13 +228,13 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
         <section className="relative isolate overflow-hidden">
           <FondoMovil video={tema.video} imagen={tema.portada} />
           {tema.logo && (
-            <Reveal delay={0.5} y={30} className="pointer-events-none absolute right-8 top-16 hidden lg:block xl:right-20">
+            <Entrada delay={0.5} y={30} className="pointer-events-none absolute right-8 top-16 hidden lg:block xl:right-20">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={tema.logo} alt="" className="size-72 animate-float drop-shadow-[0_20px_60px_rgba(0,0,0,0.5)] xl:size-80" />
-            </Reveal>
+            </Entrada>
           )}
           <div className={`mx-auto max-w-6xl px-5 pb-20 pt-8 lg:pt-16 ${tema.logo ? "lg:pr-80" : ""}`}>
-            <Reveal y={12}>
+            <Entrada y={12}>
               <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/75">
                 <span className="relative flex size-2">
                   <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent" />
@@ -243,12 +243,12 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                 {tema.etiqueta ?? "Reservas online"}
                 {negocio.direccion ? ` · ${negocio.direccion}` : ""}
               </p>
-            </Reveal>
+            </Entrada>
             <HeroTitle lineas={[{ texto: negocio.nombre }, { texto: tema.lema, acento: true }]} />
-            <Reveal delay={0.9} className="mt-8 max-w-xl">
+            <Entrada delay={0.9} className="mt-8 max-w-xl">
               <p className="text-lg text-white/70">{tema.intro}</p>
-            </Reveal>
-            <Reveal delay={1.05} className="mt-9">
+            </Entrada>
+            <Entrada delay={1.05} className="mt-9">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 {cta && (
                   <BotonCta cta={cta} className={boton}>
@@ -271,7 +271,7 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
                   )}
                 </ul>
               </div>
-            </Reveal>
+            </Entrada>
           </div>
         </section>
 

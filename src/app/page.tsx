@@ -5,7 +5,7 @@ import { HeroTitle } from "@/components/hero-title";
 import { Logo } from "@/components/logo";
 import { Marquee } from "@/components/marquee";
 import { PhoneDemo } from "@/components/phone-demo";
-import { Reveal } from "@/components/reveal";
+import { Entrada, Reveal } from "@/components/reveal";
 import {
   EMAIL,
   TELEFONO_MOSTRADO,
@@ -248,7 +248,7 @@ export default function Home() {
           <FondoMovil />
           <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-8 lg:grid-cols-[1.25fr_1fr] lg:pt-16">
             <div>
-              <Reveal y={12}>
+              <Entrada y={12}>
                 <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/75">
                   <span className="relative flex size-2">
                     <span className="absolute inline-flex size-full animate-ping-soft rounded-full bg-accent" />
@@ -256,7 +256,7 @@ export default function Home() {
                   </span>
                   Webs con reservas online · Maldonado · Punta del Este · Piriápolis
                 </p>
-              </Reveal>
+              </Entrada>
               <HeroTitle
                 lineas={[
                   { texto: "Tu negocio," },
@@ -264,7 +264,7 @@ export default function Home() {
                   { texto: "turnos que se reservan solos.", acento: true },
                 ]}
               />
-              <Reveal delay={0.9} className="mt-8 max-w-xl">
+              <Entrada delay={0.9} className="mt-8 max-w-xl">
                 <p className="text-lg text-white/70">
                   Hacemos la página de tu barbería, peluquería, centro de estética,
                   clínica o consultorio, y la ajustamos a tus gustos, a tus
@@ -272,8 +272,8 @@ export default function Home() {
                   reservan desde el celular a cualquier hora, y vos dejás de
                   coordinar turnos por mensaje.
                 </p>
-              </Reveal>
-              <Reveal delay={1} className="mt-6">
+              </Entrada>
+              <Entrada delay={1} className="mt-6">
                 <ul className="flex flex-wrap gap-2" aria-label="Rubros">
                   {[
                     ["Barbería", "#ffd166"],
@@ -304,8 +304,8 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </Reveal>
-              <Reveal delay={1.05} className="mt-7">
+              </Entrada>
+              <Entrada delay={1.05} className="mt-7">
                 <BotonesContacto />
                 <a
                   href="#demos"
@@ -318,11 +318,11 @@ export default function Home() {
                   O probá una demo como si fueras tu cliente
                   <span aria-hidden className="transition-transform group-hover:translate-y-0.5">↓</span>
                 </a>
-              </Reveal>
+              </Entrada>
             </div>
-            <Reveal delay={0.4} y={40}>
+            <Entrada delay={0.4} y={40}>
               <PhoneDemo />
-            </Reveal>
+            </Entrada>
           </div>
         </section>
 
@@ -352,7 +352,7 @@ export default function Home() {
             <AntesDespues />
           </div>
           <Reveal delay={0.1}>
-            <p className="mt-5 text-center text-xs text-white/35">
+            <p className="mt-5 text-center text-xs text-white/60">
               Ejemplo ilustrativo.
             </p>
           </Reveal>
@@ -425,7 +425,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-8 text-sm font-semibold uppercase tracking-wider text-white/45">
+                  <p className="mt-8 text-sm font-semibold uppercase tracking-wider text-white/60">
                     {plan.pago}
                   </p>
                 </article>
@@ -455,7 +455,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-6 text-sm text-white/50">
+              <p className="mt-6 text-sm text-white/60">
                 El dominio es un costo aparte del armado de tu web y se renueva
                 una vez por año. Te pasamos el precio exacto en la propuesta.
               </p>
@@ -634,7 +634,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="mx-auto w-full max-w-6xl px-5 pb-24 pt-8 text-sm text-white/45">
+      <footer className="mx-auto w-full max-w-6xl px-5 pb-24 pt-8 text-sm text-white/60">
         <p>
           Tu Turno · Maldonado, Uruguay · {TELEFONO_MOSTRADO} ·{" "}
           <a href={mailUrl} className="underline hover:text-white">

@@ -26,3 +26,28 @@ export function Reveal({
     </motion.div>
   );
 }
+
+/**
+ * Igual que Reveal, pero para lo que se ve apenas abre la página: se anima con CSS desde el primer
+ * pintado, sin esperar al JavaScript (si esperara, el texto principal tardaría en aparecer).
+ */
+export function Entrada({
+  children,
+  delay = 0,
+  y = 28,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  y?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`entrada ${className}`}
+      style={{ "--retraso": `${delay}s`, "--y": `${y}px` } as React.CSSProperties}
+    >
+      {children}
+    </div>
+  );
+}

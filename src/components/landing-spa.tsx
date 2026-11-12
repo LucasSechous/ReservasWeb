@@ -4,7 +4,7 @@ import { BannerDemo } from "@/components/banner-demo";
 import { BotonCta, type Cta } from "@/components/boton-cta";
 import { Marquee } from "@/components/marquee";
 import { Acercamiento, Cortina, Palabras, Parallax, Trazo } from "@/components/movimiento";
-import { Reveal } from "@/components/reveal";
+import { Entrada, Reveal } from "@/components/reveal";
 import {
   type Negocio,
   type Profesional,
@@ -168,22 +168,22 @@ export function LandingSpa({
         <section className="relative">
           <div className="mx-auto grid max-w-6xl items-center gap-16 px-5 pb-24 pt-6 lg:grid-cols-[1.08fr_0.92fr] lg:pb-32 lg:pt-12">
             <div>
-              <Reveal y={10}>
+              <Entrada y={10}>
                 <Etiqueta>
                   {tema.etiqueta ?? "Reservas online"}
                   {negocio.direccion ? ` · ${negocio.direccion}` : ""}
                 </Etiqueta>
-              </Reveal>
+              </Entrada>
               <h1 className="editorial-titulo mt-7 text-[3.6rem] font-light leading-[0.92] tracking-tight sm:text-8xl lg:text-[6.6rem]">
                 <Palabras texto={negocio.nombre} modo="desenfoque" delay={0.1} paso={0.12} />
               </h1>
               <p className="editorial-titulo mt-4 text-4xl italic text-(--n-acento) sm:text-5xl">
                 <Palabras texto={tema.lema} modo="desenfoque" delay={0.45} paso={0.09} />
               </p>
-              <Reveal delay={0.25} className="mt-8 max-w-md">
+              <Entrada delay={0.25} className="mt-8 max-w-md">
                 <p className="text-xl leading-relaxed text-(--n-texto)/75">{tema.intro}</p>
-              </Reveal>
-              <Reveal delay={0.35} className="mt-10 flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+              </Entrada>
+              <Entrada delay={0.35} className="mt-10 flex flex-col items-start gap-6 sm:flex-row sm:items-center">
                 {cta && (
                   <BotonCta cta={cta} className={botonPrimario}>
                     {cta.texto} <Flecha />
@@ -197,9 +197,9 @@ export function LandingSpa({
                     Ver la carta
                   </a>
                 )}
-              </Reveal>
+              </Entrada>
               {datos.length > 0 && (
-                <Reveal delay={0.45}>
+                <Entrada delay={0.45}>
                   <ul className="mt-12 flex flex-wrap gap-2 text-[11px] font-medium uppercase tracking-[0.2em] text-(--n-texto)/65">
                     {datos.map((d) => (
                       <li key={d} className="rounded-full border border-(--n-texto)/15 bg-(--n-tarjeta)/60 px-4 py-1.5">
@@ -207,12 +207,12 @@ export function LandingSpa({
                       </li>
                     ))}
                   </ul>
-                </Reveal>
+                </Entrada>
               )}
             </div>
 
             {tema.portada && (
-              <Reveal delay={0.2} y={30} className="relative mx-auto w-full max-w-[22rem] sm:max-w-sm">
+              <Entrada delay={0.2} y={30} className="relative mx-auto w-full max-w-[22rem] sm:max-w-sm">
                 <div
                   aria-hidden
                   className="absolute -right-5 top-6 aspect-[3/4] w-full rounded-t-full border border-(--n-acento)/50"
@@ -224,7 +224,8 @@ export function LandingSpa({
                         src={tema.portada}
                         alt={tema.portadaAlt ?? ""}
                         fill
-                        priority
+                        preload
+                        fetchPriority="high"
                         sizes="(min-width: 1024px) 24rem, 80vw"
                         className="object-cover"
                       />
@@ -239,7 +240,7 @@ export function LandingSpa({
                 <div className="absolute -right-4 -top-8 sm:-right-12">
                   <Sello texto={`${conReservas ? "Reservá online" : "Te esperamos"} ✦ ${negocio.nombre} ✦ `} logo={tema.logo} />
                 </div>
-              </Reveal>
+              </Entrada>
             )}
           </div>
         </section>
@@ -359,9 +360,10 @@ export function LandingSpa({
                       <figure>
                         <Cortina delay={0.1 + i * 0.15}>
                           <div className={`group relative overflow-hidden bg-(--n-tarjeta) ${forma}`}>
+                            {/* La descripción ya está en el epígrafe: la foto no la repite. */}
                             <Image
                               src={foto.src}
-                              alt={foto.alt}
+                              alt=""
                               fill
                               sizes="(min-width: 768px) 30vw, 90vw"
                               className="object-cover transition-transform duration-700 group-hover:scale-105"

@@ -190,6 +190,83 @@ body {
   color: var(--color-accent-ink);
 }
 
+/* Entradas al cargar la página, hechas con CSS y no con JavaScript: arrancan con el primer pintado,
+   sin esperar a que cargue el código. Si esperaran, en un celular común el título tardaría segundos
+   en aparecer y Google contaría la página como lenta. El retraso de cada pieza va en --retraso. */
+.entrada {
+  animation: entrada 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--retraso, 0s) both;
+}
+@keyframes entrada {
+  from {
+    opacity: 0;
+    transform: translateY(var(--y, 24px));
+  }
+}
+
+.palabra-subir {
+  display: inline-block;
+  animation: palabra-subir 0.8s cubic-bezier(0.22, 1, 0.36, 1) var(--retraso, 0s) both;
+}
+@keyframes palabra-subir {
+  from {
+    transform: translateY(110%) rotate(var(--giro-inicial, 0deg));
+  }
+}
+
+.palabra-desenfoque {
+  display: inline-block;
+  animation: palabra-desenfoque 1s cubic-bezier(0.22, 1, 0.36, 1) var(--retraso, 0s) both;
+}
+@keyframes palabra-desenfoque {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(8px);
+  }
+}
+
+/* Cae como un sello y rebota un poco. Sin animación queda en su giro final. */
+.estampa {
+  transform: rotate(var(--giro, 0deg));
+  animation: estampa 0.75s var(--retraso, 0s) both;
+}
+@keyframes estampa {
+  0% {
+    opacity: 0;
+    transform: scale(1.25) rotate(calc(var(--giro, 0deg) - 9deg));
+    animation-timing-function: cubic-bezier(0.3, 0, 0.6, 1);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(0.97) rotate(calc(var(--giro, 0deg) + 1deg));
+    animation-timing-function: ease-out;
+  }
+  80% {
+    transform: scale(1.01) rotate(calc(var(--giro, 0deg) - 0.3deg));
+  }
+  100% {
+    transform: scale(1) rotate(var(--giro, 0deg));
+  }
+}
+
+.trazo-carga {
+  animation: trazo 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--retraso, 0s) both;
+}
+@keyframes trazo {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.acercamiento {
+  animation: acercamiento 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes acercamiento {
+  from {
+    transform: scale(1.12);
+  }
+}
+
 /* Quien tiene el movimiento reducido en su sistema no ve animaciones de CSS. */
 @media (prefers-reduced-motion: reduce) {
   *,

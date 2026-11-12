@@ -5,10 +5,20 @@ import { useRef } from "react";
 
 // Piezas de movimiento para las landings de los negocios. Cada estilo usa las que van con su carácter:
 // la clásica sube palabras y traza filetes, el spa desenfoca y descubre fotos, el retro estampa y rebota.
-// MotionProvider ya apaga los desplazamientos con «reducir movimiento»; lo que no es desplazamiento
-// (parallax con scroll, recortes) se apaga acá a mano.
+// Lo que se anima al cargar la página usa las clases de CSS de globals.css (.palabra-subir, .estampa…):
+// así arranca con el primer pintado, sin esperar al JavaScript. Lo que se anima al entrar en pantalla
+// usa motion. MotionProvider ya apaga los desplazamientos con «reducir movimiento»; lo que no es
+// desplazamiento (parallax con scroll, recortes) se apaga acá a mano, y el CSS con su media query.
 
 const SUAVE = [0.22, 1, 0.36, 1] as const;
+
+/** Variables de CSS para las animaciones de carga (retraso en segundos, giro en grados). */
+function variables(v: { retraso?: number; giro?: number }): React.CSSProperties {
+  return {
+    ...(v.retraso ? { "--retraso": `${v.retraso}s` } : {}),
+    ...(v.giro ? { "--giro": `${v.giro}deg` } : {}),
+  } as React.CSSProperties;
+}
 
 /**
  * Texto que entra palabra por palabra al cargar.
@@ -33,32 +43,21 @@ export function Palabras({
       {/* Los lectores de pantalla leen la frase entera, no palabra por palabra. */}
       <span className="sr-only">{texto}</span>
       <span aria-hidden>
-        {palabras.map((palabra, i) =>
-          modo === "subir" ? (
+        {palabras.map((palabra, i) => {
+          const contenido = `${palabra}${i < palabras.length - 1 ? " " : ""}`;
+          const estilo = variables({ retraso: delay + i * paso });
+          return modo === "subir" ? (
             <span key={`${palabra}-${i}`} className="inline-block overflow-hidden pb-[0.1em] align-bottom">
-              <motion.span
-                className="inline-block"
-                initial={{ y: "110%" }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.8, delay: delay + i * paso, ease: SUAVE }}
-              >
-                {palabra}
-                {i < palabras.length - 1 ? " " : ""}
-              </motion.span>
+              <span className="palabra-subir whitespace-pre" style={estilo}>
+                {contenido}
+              </span>
             </span>
           ) : (
-            <motion.span
-              key={`${palabra}-${i}`}
-              className="inline-block"
-              initial={{ opacity: 0, filter: "blur(10px)", y: 8 }}
-              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-              transition={{ duration: 1, delay: delay + i * paso, ease: SUAVE }}
-            >
-              {palabra}
-              {i < palabras.length - 1 ? " " : ""}
-            </motion.span>
-          ),
-        )}
+            <span key={`${palabra}-${i}`} className="palabra-desenfoque whitespace-pre" style={estilo}>
+              {contenido}
+            </span>
+          );
+        })}
       </span>
     </span>
   );
@@ -99,14 +98,24 @@ export function Trazo({
   /** true = se dibuja al cargar la página; si no, al entrar en pantalla. */
   alCargar?: boolean;
 }) {
-  const final = { scaleX: 1 };
+  const originX = origen === "left" ? 0 : origen === "right" ? 1 : 0.5;
+  if (alCargar) {
+    return (
+      <span
+        aria-hidden
+        className={`trazo-carga block ${className}`}
+        style={{ transformOrigin: `${originX * 100}% 50%`, ...variables({ retraso: delay }) }}
+      />
+    );
+  }
   return (
     <motion.span
       aria-hidden
       className={`block ${className}`}
-      style={{ originX: origen === "left" ? 0 : origen === "right" ? 1 : 0.5 }}
+      style={{ originX }}
       initial={{ scaleX: 0 }}
-      {...(alCargar ? { animate: final } : { whileInView: final, viewport: { once: true, margin: "-60px" } })}
+      whileInView={{ scaleX: 1 }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.9, delay, ease: SUAVE }}
     />
   );
@@ -155,12 +164,19 @@ export function Estampa({
   giro?: number;
   alCargar?: boolean;
 }) {
-  const final = { opacity: 1, scale: 1, rotate: giro };
+  if (alCargar) {
+    return (
+      <div className={`estampa ${className}`} style={variables({ retraso: delay, giro })}>
+        {children}
+      </div>
+    );
+  }
   return (
     <motion.div
       className={className}
       initial={{ opacity: 0, scale: 1.25, rotate: giro - 9 }}
-      {...(alCargar ? { animate: final } : { whileInView: final, viewport: { once: true, margin: "-60px" } })}
+      whileInView={{ opacity: 1, scale: 1, rotate: giro }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{ type: "spring", stiffness: 260, damping: 16, delay }}
     >
       {children}
@@ -199,14 +215,5 @@ export function Acercamiento({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ scale: 1.12 }}
-      animate={{ scale: 1 }}
-      transition={{ duration: 2.4, ease: SUAVE }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={`acercamiento ${className}`}>{children}</div>;
 }
