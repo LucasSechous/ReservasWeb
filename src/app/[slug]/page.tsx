@@ -10,6 +10,7 @@ import { HeroTitle } from "@/components/hero-title";
 import { LandingClasica } from "@/components/landing-clasica";
 import { LandingEditorial } from "@/components/landing-editorial";
 import { LandingRetro } from "@/components/landing-retro";
+import { LandingSpa } from "@/components/landing-spa";
 import { Marquee } from "@/components/marquee";
 import { Reveal } from "@/components/reveal";
 import {
@@ -142,6 +143,20 @@ async function Contenido({ params }: { params: Promise<{ slug: string }> }) {
   if (tema.estilo === "retro") {
     return (
       <LandingRetro
+        negocio={negocio}
+        servicios={servicios}
+        profesionales={profesionales}
+        tema={tema}
+        cta={cta}
+        whatsapp={whatsapp}
+        mapa={mapa}
+        reservarHref={reservarHref}
+      />
+    );
+  }
+  if (tema.estilo === "spa") {
+    return (
+      <LandingSpa
         negocio={negocio}
         servicios={servicios}
         profesionales={profesionales}

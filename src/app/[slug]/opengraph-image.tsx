@@ -16,6 +16,7 @@ const LETRA: Record<NonNullable<Tema["estilo"]> | "base", { familia: string; pes
   editorial: { familia: "Cormorant Garamond", peso: 500 },
   retro: { familia: "Shrikhand", peso: 400 },
   clasica: { familia: "Playfair Display", peso: 800 },
+  spa: { familia: "Cormorant Garamond", peso: 500 },
 };
 
 // El logo vive en public/ (next.config.ts lo suma al paquete de esta ruta). Si falta, la imagen sale sin logo.
