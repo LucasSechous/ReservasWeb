@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { ahoraMs, formatoFechaLarga, hoyEn, instanteLocal, sumarDias } from "@/lib/fechas";
+import { EsqueletoPanel } from "@/components/esqueleto-panel";
+import {
+  ahoraMs,
+  formatoFechaLarga,
+  formatoHora,
+  hoyEn,
+  instanteLocal,
+  sumarDias,
+} from "@/lib/fechas";
 import { BloquearForm } from "../bloquear-form";
 import { cargarContexto, texto } from "../contexto";
-import { ReservaItem } from "../reserva-item";
+import { Deslizar } from "../deslizar";
+import { ListaDelDia } from "../lista-dia";
 import { PanelShell, SinAcceso } from "../shell";
+import { TiraSemana } from "./tira-semana";
 import {
   aItem,
   COLUMNAS_TURNO,
@@ -21,7 +31,7 @@ export const metadata: Metadata = {
 
 export default function Agenda({ searchParams }: PageProps<"/panel/agenda">) {
   return (
-    <Suspense fallback={<p className="p-8 text-white/50">Cargando tu agenda…</p>}>
+    <Suspense fallback={<EsqueletoPanel />}>
       <Contenido searchParams={searchParams} />
     </Suspense>
   );
@@ -51,8 +61,9 @@ async function Contenido({
   const fecha = fechaPedida && /^\d{4}-\d{2}-\d{2}$/.test(fechaPedida) ? fechaPedida : hoy;
   const vista = texto(params.vista) === "semana" ? "semana" : "dia";
 
-  const desde = vista === "semana" ? lunesDe(fecha) : fecha;
-  const hasta = vista === "semana" ? sumarDias(desde, 6) : fecha;
+  // Siempre se trae la semana entera: en la vista de día alimenta la tira con los turnos de cada día.
+  const desde = lunesDe(fecha);
+  const hasta = sumarDias(desde, 6);
   const salto = vista === "semana" ? 7 : 1;
 
   const ir = (cambios: { fecha?: string; vista?: string }) =>
@@ -91,8 +102,10 @@ async function Contenido({
 
   const dias: string[] = [];
   for (let d = desde; d <= hasta; d = sumarDias(d, 1)) dias.push(d);
-  const visibles = vista === "semana" ? dias.filter((d) => porDia.has(d)) : dias;
-  const total = [...porDia.values()].reduce((n, l) => n + l.filter(cuentanComoTurno).length, 0);
+  const visibles = vista === "semana" ? dias.filter((d) => porDia.has(d)) : [fecha];
+  const cuantos = (dia: string) => (porDia.get(dia) ?? []).filter(cuentanComoTurno).length;
+  const total = visibles.reduce((n, d) => n + cuantos(d), 0);
+  const horaAhora = formatoHora(new Date(ahora).toISOString(), tz);
 
   const pestana = (activa: boolean) =>
     `rounded-full px-4 py-2 text-sm font-semibold ${
@@ -132,6 +145,12 @@ async function Contenido({
         </Link>
       </nav>
 
+      <TiraSemana
+        dias={dias.map((dia) => ({ fecha: dia, turnos: cuantos(dia), href: ir({ vista: "dia", fecha: dia }) }))}
+        elegido={vista === "dia" ? fecha : undefined}
+        hoy={hoy}
+      />
+
       <p className="mt-5 capitalize text-(--n-texto)/70">
         {vista === "semana"
           ? `Semana del ${formatoFechaLarga(desde)} al ${formatoFechaLarga(hasta)}`
@@ -150,7 +169,11 @@ async function Contenido({
         />
       </div>
 
-      <div className="mt-8 space-y-8">
+      <Deslizar
+        anterior={ir({ fecha: sumarDias(fecha, -salto) })}
+        siguiente={ir({ fecha: sumarDias(fecha, salto) })}
+      >
+      <div className="mt-8 min-h-[50vh] space-y-8">
         {visibles.length === 0 && (
           <p className="rounded-2xl border border-(--n-texto)/10 bg-(--n-tarjeta) p-6 text-(--n-texto)/65">
             No hay turnos en esta semana.
@@ -170,16 +193,16 @@ async function Contenido({
                   Sin turnos este día.
                 </p>
               ) : (
-                <ul className="space-y-3">
-                  {items.map((item) => (
-                    <ReservaItem key={item.id} item={item} />
-                  ))}
-                </ul>
+                <ListaDelDia items={items} horaAhora={dia === hoy ? horaAhora : undefined} />
               )}
             </section>
           );
         })}
       </div>
+      </Deslizar>
+      <p className="mt-6 text-center text-xs text-(--n-texto)/40 md:hidden">
+        Deslizá a los costados para cambiar de {vista === "semana" ? "semana" : "día"}.
+      </p>
     </PanelShell>
   );
 }

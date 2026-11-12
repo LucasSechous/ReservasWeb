@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { EsqueletoPanel } from "@/components/esqueleto-panel";
+import { MarcoAcceso } from "@/components/marco-acceso";
 import { obtenerSesion } from "@/lib/supabase/sesion";
 import { CambiarForm } from "./cambiar-form";
 
@@ -11,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function CambiarContrasena() {
   return (
-    <Suspense fallback={<p className="p-8 text-white/50">Cargando…</p>}>
+    <Suspense fallback={<EsqueletoPanel />}>
       <Contenido />
     </Suspense>
   );
@@ -23,18 +25,15 @@ async function Contenido() {
 
   const primera = sesion.debeCambiarContrasena;
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-12">
-      <h1 className="font-display text-3xl font-extrabold">
-        {primera ? "Bienvenido. Elegí tu contraseña" : "Cambiar contraseña"}
-      </h1>
-      <p className="mt-2 text-white/65">
-        {primera
+    <MarcoAcceso
+      titulo={primera ? "Te damos la bienvenida" : "Cambiar contraseña"}
+      bajada={
+        primera
           ? "La contraseña con la que entraste es provisoria. Elegí una que solo sepas vos, con al menos 8 caracteres."
-          : "Elegí una contraseña nueva, con al menos 8 caracteres."}
-      </p>
-      <div className="mt-8">
-        <CambiarForm obligatorio={primera} />
-      </div>
-    </main>
+          : "Elegí una contraseña nueva, con al menos 8 caracteres."
+      }
+    >
+      <CambiarForm obligatorio={primera} />
+    </MarcoAcceso>
   );
 }

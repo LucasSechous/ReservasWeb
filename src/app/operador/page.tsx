@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { EsqueletoPanel } from "@/components/esqueleto-panel";
 import { mailsActivos } from "@/lib/mail";
 import { crearClienteSesion, obtenerSesion } from "@/lib/supabase/sesion";
 import { MailPrueba } from "./mail-prueba";
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function Operador({ searchParams }: PageProps<"/operador">) {
   return (
-    <Suspense fallback={<p className="p-8 text-white/50">Cargando…</p>}>
+    <Suspense fallback={<EsqueletoPanel />}>
       <Contenido searchParams={searchParams} />
     </Suspense>
   );

@@ -80,9 +80,21 @@ export function ReservaItem({ item }: { item: ItemAgenda }) {
       ? "bg-amber-400/15 text-amber-300"
       : "bg-(--n-texto)/10 text-(--n-texto)/70";
 
+  const [horaInicio, horaFin] = item.horario.split(" – ");
+  // Franja de la izquierda: de un vistazo se ve qué turnos están resueltos y cuáles piden atención.
+  const franja = cancelada
+    ? "bg-(--n-texto)/15"
+    : vino
+      ? "bg-(--n-acento)"
+      : faltó || pendienteDeMarcar
+        ? "bg-amber-300"
+        : item.esBloqueo
+          ? "bg-[repeating-linear-gradient(180deg,currentColor_0_4px,transparent_4px_8px)] text-(--n-texto)/30"
+          : "bg-(--n-acento)/45";
+
   return (
     <li
-      className={`rounded-3xl border p-4 sm:p-5 ${
+      className={`relative overflow-hidden rounded-3xl border py-4 pl-5 pr-4 sm:py-5 sm:pr-5 ${
         cancelada
           ? "border-(--n-texto)/5 bg-(--n-texto)/[0.02] opacity-60"
           : item.esBloqueo
@@ -92,33 +104,52 @@ export function ReservaItem({ item }: { item: ItemAgenda }) {
               : "border-(--n-texto)/10 bg-(--n-tarjeta)"
       }`}
     >
+      <span aria-hidden className={`absolute inset-y-0 left-0 w-1.5 ${franja}`} />
       {item.fecha && (
-        <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-(--n-texto)/50">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-(--n-texto)/50">
           {item.fecha}
         </p>
       )}
-      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-        <div className="min-w-0">
-          <p className={`font-display text-xl font-extrabold ${cancelada ? "line-through" : ""}`}>
-            {item.horario}
-          </p>
-          <p className="mt-0.5 text-lg font-semibold">
-            {item.esBloqueo ? (item.notas ?? "Horario bloqueado") : item.cliente}
-          </p>
-          <p className="text-sm text-(--n-texto)/60">
+      <div className="flex items-start gap-4">
+        <p className={`w-14 shrink-0 pt-0.5 ${cancelada ? "line-through" : ""}`}>
+          <span className="sr-only">{item.horario}</span>
+          <span aria-hidden className="block font-display text-xl font-extrabold tabular-nums">
+            {horaInicio}
+          </span>
+          {horaFin && (
+            <span aria-hidden className="block text-xs font-semibold tabular-nums text-(--n-texto)/45">
+              a {horaFin}
+            </span>
+          )}
+        </p>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+            <p className="flex min-w-0 items-center gap-2.5 text-lg font-semibold leading-tight">
+              {!item.esBloqueo && item.cliente && (
+                <span
+                  aria-hidden
+                  className="grid size-8 shrink-0 place-items-center rounded-full bg-(--n-acento)/15 text-sm font-bold uppercase text-(--n-acento)"
+                >
+                  {item.cliente.trim().charAt(0)}
+                </span>
+              )}
+              <span className="min-w-0 break-words">
+                {item.esBloqueo ? (item.notas ?? "Horario bloqueado") : item.cliente}
+              </span>
+            </p>
+            {etiqueta && (
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${colorEtiqueta}`}
+              >
+                {vino ? "✓ " : faltó ? "✗ " : ""}
+                {etiqueta}
+              </span>
+            )}
+          </div>
+          <p className="mt-1 text-sm text-(--n-texto)/60">
             {item.esBloqueo ? "" : `${item.servicio} · `}con {item.profesional}
             {item.origen === "manual" ? " · cargado a mano" : ""}
           </p>
-        </div>
-        {etiqueta && (
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${colorEtiqueta}`}
-          >
-            {vino ? "✓ " : faltó ? "✗ " : ""}
-            {etiqueta}
-          </span>
-        )}
-      </div>
 
       {!item.esBloqueo && (item.telefono || item.email) && (
         <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
@@ -223,6 +254,8 @@ export function ReservaItem({ item }: { item: ItemAgenda }) {
           {error}
         </p>
       )}
+        </div>
+      </div>
     </li>
   );
 }

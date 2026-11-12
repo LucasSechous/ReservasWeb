@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { EsqueletoPanel } from "@/components/esqueleto-panel";
 import { cargarContexto } from "../contexto";
 import { PanelShell, SinAcceso } from "../shell";
 import { NuevoTurno } from "./nuevo-turno";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function Nuevo({ searchParams }: PageProps<"/panel/nuevo">) {
   return (
-    <Suspense fallback={<p className="p-8 text-white/50">Cargando…</p>}>
+    <Suspense fallback={<EsqueletoPanel />}>
       <Contenido searchParams={searchParams} />
     </Suspense>
   );

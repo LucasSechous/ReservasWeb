@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { EsqueletoPanel } from "@/components/esqueleto-panel";
 import { ahoraMs, formatoHora, hoyEn, instanteLocal, parseRango } from "@/lib/fechas";
 import { getVocabulario } from "@/lib/tema";
 import { cargarContexto, texto, uno } from "../contexto";
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function Resumen({ searchParams }: PageProps<"/panel/resumen">) {
   return (
-    <Suspense fallback={<p className="p-8 text-white/50">Cargando el resumen…</p>}>
+    <Suspense fallback={<EsqueletoPanel />}>
       <Contenido searchParams={searchParams} />
     </Suspense>
   );

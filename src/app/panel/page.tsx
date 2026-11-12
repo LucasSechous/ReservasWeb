@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { EsqueletoPanel } from "@/components/esqueleto-panel";
 import {
   ahoraMs,
   formatoFechaLarga,
+  formatoHora,
   hoyEn,
   instanteLocal,
   parseRango,
   sumarDias,
 } from "@/lib/fechas";
 import { cargarContexto } from "./contexto";
+import { ListaDelDia } from "./lista-dia";
 import { ReservaItem } from "./reserva-item";
 import { PanelShell, SinAcceso } from "./shell";
 import { aItem, COLUMNAS_TURNO, cuentanComoTurno, type FilaTurno } from "./turnos";
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function Hoy({ searchParams }: PageProps<"/panel">) {
   return (
-    <Suspense fallback={<p className="p-8 text-white/50">Cargando tu agenda…</p>}>
+    <Suspense fallback={<EsqueletoPanel />}>
       <Contenido searchParams={searchParams} />
     </Suspense>
   );
@@ -148,6 +151,31 @@ async function Contenido({
         <Dato valor={vinieron} etiqueta="Vinieron" marca="text-(--n-acento)" />
       </div>
 
+      {turnos.length > 0 && (
+        <div className="mt-4">
+          <div
+            role="progressbar"
+            aria-label="Cómo va el día"
+            aria-valuemin={0}
+            aria-valuemax={turnos.length}
+            aria-valuenow={turnos.length - faltan}
+            className="flex h-2 overflow-hidden rounded-full bg-(--n-texto)/10"
+          >
+            {/* Celeste: vinieron. Ámbar: no vinieron o falta marcarlos. Vacío: lo que todavía no empezó. */}
+            <span className="bg-(--n-acento)" style={{ width: `${(vinieron / turnos.length) * 100}%` }} />
+            <span
+              className="bg-amber-300/80"
+              style={{ width: `${((turnos.length - faltan - vinieron) / turnos.length) * 100}%` }}
+            />
+          </div>
+          <p className="mt-2 text-xs text-(--n-texto)/55">
+            {faltan === 0
+              ? "Ya pasaron todos los turnos de hoy."
+              : `Llevás ${turnos.length - faltan} de ${turnos.length} turnos.`}
+          </p>
+        </div>
+      )}
+
       {sinMarcar.length > 0 && (
         <section className="mt-8" aria-label="Turnos sin marcar">
           <h2 className="font-display text-xl font-bold text-amber-300">
@@ -171,11 +199,9 @@ async function Contenido({
             Sin turnos este día.
           </p>
         ) : (
-          <ul className="mt-3 space-y-3">
-            {items.map((item) => (
-              <ReservaItem key={item.id} item={item} />
-            ))}
-          </ul>
+          <div className="mt-3">
+            <ListaDelDia items={items} horaAhora={formatoHora(new Date(ahora).toISOString(), tz)} />
+          </div>
         )}
       </section>
     </PanelShell>

@@ -51,7 +51,7 @@ export function LoginForm() {
           autoComplete="email"
           required
           placeholder="tu@mail.com"
-          className="mt-1 w-full rounded-xl border border-white/15 bg-ink-2 px-4 py-3 outline-none focus:border-accent"
+          className="mt-1 w-full rounded-xl border border-white/15 bg-ink-3 px-4 py-3 outline-none focus:border-accent"
         />
       </label>
       <label className="block">
@@ -63,7 +63,7 @@ export function LoginForm() {
             type={ver ? "text" : "password"}
             autoComplete="current-password"
             required
-            className="w-full rounded-xl border border-white/15 bg-ink-2 py-3 pl-4 pr-20 outline-none focus:border-accent"
+            className="w-full rounded-xl border border-white/15 bg-ink-3 py-3 pl-4 pr-20 outline-none focus:border-accent"
           />
           <button
             type="button"
