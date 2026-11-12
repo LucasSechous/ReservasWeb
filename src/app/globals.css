@@ -146,6 +146,39 @@
   }
 }
 
+/*
+ * Letras de cada estilo en las pantallas compartidas (reservar y gestionar un turno). Esas pantallas
+ * son las mismas para todos los negocios; el contenedor lleva data-estilo y estas reglas les ponen
+ * las letras de su landing. Pisan el peso de font-extrabold porque estas familias tienen otros pesos.
+ */
+[data-estilo="clasica"] :is(h1, h2) {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-weight: 900;
+}
+[data-estilo="editorial"],
+[data-estilo="spa"] {
+  font-family: var(--font-jost), "Helvetica Neue", Arial, sans-serif;
+}
+[data-estilo="editorial"] :is(h1, h2),
+[data-estilo="spa"] :is(h1, h2) {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+/* La serif fina se ve más chica que la de palo seco: los títulos de pantalla suben un poco. */
+[data-estilo="editorial"] h1,
+[data-estilo="spa"] h1 {
+  font-size: clamp(2rem, 1.6rem + 1.4vw, 2.6rem);
+  line-height: 1.1;
+}
+[data-estilo="retro"] {
+  font-family: var(--font-alegreya), Georgia, serif;
+}
+[data-estilo="retro"] :is(h1, h2) {
+  font-family: var(--font-shrikhand), Georgia, serif;
+  font-weight: 400;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
