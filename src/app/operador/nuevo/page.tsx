@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { EsqueletoPanel } from "@/components/esqueleto-panel";
 import { obtenerSesion } from "@/lib/supabase/sesion";
 import { NuevoForm } from "./nuevo-form";
 
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function Nuevo() {
   return (
-    <Suspense fallback={<p className="p-8 text-white/50">Cargando…</p>}>
+    <Suspense fallback={<EsqueletoPanel />}>
       <Contenido />
     </Suspense>
   );

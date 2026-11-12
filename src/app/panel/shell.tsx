@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { MarcoAcceso } from "@/components/marco-acceso";
 import type { ContextoPanel } from "./contexto";
 
 // Marco común de todas las pantallas del panel: encabezado, navegación (abajo en el celular,
@@ -185,22 +186,27 @@ export function PanelShell({
 
 export function SinAcceso({ email }: { email: string }) {
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-12">
-      <h1 className="font-display text-3xl font-extrabold">Tu cuenta no tiene un panel</h1>
-      <p className="mt-3 text-white/70">
-        Entraste como {email}, pero ese mail no está asociado a ningún negocio. Si sos dueño o parte
-        del equipo de un negocio, pedile a quien armó tu web que te dé de alta con este mail.
+    <MarcoAcceso
+      titulo="Tu cuenta no tiene un panel"
+      bajada={
+        <>
+          Entraste como <strong className="text-white">{email}</strong>, pero ese mail no está
+          asociado a ningún negocio.
+        </>
+      }
+    >
+      <p className="text-white/75">
+        Si sos dueño o parte del equipo de un negocio, pedile a quien armó tu web que te dé de alta
+        con este mail. Mientras tanto, podés salir y entrar con otra cuenta.
       </p>
-      <div className="mt-6">
-        <form action="/auth/salir" method="post">
-          <button
-            type="submit"
-            className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold hover:border-white/50"
-          >
-            Cerrar sesión
-          </button>
-        </form>
-      </div>
-    </main>
+      <form action="/auth/salir" method="post" className="mt-5">
+        <button
+          type="submit"
+          className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-accent px-6 font-bold text-accent-ink transition hover:brightness-110"
+        >
+          Cerrar sesión
+        </button>
+      </form>
+    </MarcoAcceso>
   );
 }

@@ -5,7 +5,24 @@ import { useState } from "react";
 import { cambiarContrasena } from "./actions";
 
 const campo =
-  "mt-1 w-full rounded-xl border border-white/15 bg-ink-2 px-4 py-3 outline-none focus:border-accent";
+  "mt-1 w-full rounded-xl border border-white/15 bg-ink-3 px-4 py-3 outline-none focus:border-accent";
+
+function Requisito({ cumplido, children }: { cumplido: boolean; children: React.ReactNode }) {
+  return (
+    <li className={`flex items-center gap-2 transition ${cumplido ? "text-accent" : "text-white/50"}`}>
+      <span
+        aria-hidden
+        className={`grid size-4 place-items-center rounded-full text-[10px] font-bold ${
+          cumplido ? "bg-accent text-accent-ink" : "border border-white/30"
+        }`}
+      >
+        {cumplido ? "✓" : ""}
+      </span>
+      {children}
+      <span className="sr-only">{cumplido ? "(listo)" : "(falta)"}</span>
+    </li>
+  );
+}
 
 export function CambiarForm({ obligatorio }: { obligatorio: boolean }) {
   const router = useRouter();
@@ -69,6 +86,10 @@ export function CambiarForm({ obligatorio }: { obligatorio: boolean }) {
           className={campo}
         />
       </label>
+      <ul className="space-y-1 text-sm" aria-live="polite">
+        <Requisito cumplido={nueva.length >= 8}>Al menos 8 caracteres</Requisito>
+        <Requisito cumplido={repetida !== "" && repetida === nueva}>Las dos coinciden</Requisito>
+      </ul>
       <label className="flex items-center gap-2 text-sm text-white/70">
         <input type="checkbox" checked={ver} onChange={(e) => setVer(e.target.checked)} />
         Mostrar lo que escribo

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { EsqueletoPanel } from "@/components/esqueleto-panel";
 import { claveCliente, UMBRAL_AUSENCIAS } from "@/lib/clientes";
 import { fechaLocalDe, formatoFechaLarga, formatoHora, parseRango } from "@/lib/fechas";
 import { cargarContexto, uno } from "../contexto";
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function Clientes({ searchParams }: PageProps<"/panel/clientes">) {
   return (
-    <Suspense fallback={<p className="p-8 text-white/50">Cargando clientes…</p>}>
+    <Suspense fallback={<EsqueletoPanel />}>
       <Contenido searchParams={searchParams} />
     </Suspense>
   );
