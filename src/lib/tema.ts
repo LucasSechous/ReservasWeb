@@ -50,6 +50,8 @@ export type Tema = {
   estilo?: "retro" | "editorial" | "clasica" | "spa";
   /** Tercer color de la paleta (el estilo retro lo usa para franjas y fondos de sección). Por defecto, el brillo. */
   detalle?: string;
+  /** Frase de la casa, destacada en su propia sección de la landing. */
+  frase?: string;
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
   demo?: boolean;
   /** Rubro del negocio: define las palabras (especialista, consulta, clase…). Sin valor, las genéricas. */
@@ -80,6 +82,7 @@ const TEMAS: Record<string, Tema> = {
     brillo: "#1d4e9e",
     detalle: "#13233f",
     lema: "Corte clásico, con turno.",
+    frase: "Un buen corte no se apura: se conversa, se hace con tijera y se termina con toalla caliente.",
     intro:
       "Corte a tijera, afeitado con navaja y toalla caliente. Elegí tu barbero y tu horario: el sillón te espera.",
     etiqueta: "Barbería clásica · Desde 1985",
@@ -106,6 +109,7 @@ const TEMAS: Record<string, Tema> = {
     brillo: "#ead3d6",
     detalle: "#8b7a6b",
     lema: "Tu momento, con turno.",
+    frase: "Cuidarte no es un lujo: es un rato para vos, en un lugar pensado para que te desconectes.",
     intro: "Faciales, depilación, masajes y más. Reservá tu momento de cuidado en un par de toques.",
     logo: "/negocios/estetica-demo/logo.svg",
     portada: "/negocios/estetica-demo/portada.jpg",
@@ -149,6 +153,7 @@ const TEMAS: Record<string, Tema> = {
     brillo: "#e8a73a",
     detalle: "#2f6e61",
     lema: "De barrio, con cariño.",
+    frase: "El mejor café es el que te tomás sin apuro.",
     intro: "Café de especialidad, tostadas y algo dulce para acompañar. Pasá, te esperamos todos los días.",
     etiqueta: "Café de especialidad",
     tituloServicios: "La carta",

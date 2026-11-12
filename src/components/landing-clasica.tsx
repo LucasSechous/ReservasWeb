@@ -286,6 +286,18 @@ export function LandingClasica({
           </section>
         )}
 
+        {tema.frase && (
+          <section aria-label="La frase de la casa" className="px-5 pb-24">
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <Filete className="justify-center" />
+              <p className="mt-8 clasica-titulo text-3xl font-bold italic leading-snug sm:text-5xl">
+                “{tema.frase}”
+              </p>
+              <p className="mt-8 clasica-rotulo text-xs font-semibold text-(--n-acento)">{negocio.nombre}</p>
+            </Reveal>
+          </section>
+        )}
+
         {profesionales.length > 0 && (
           <section aria-labelledby="equipo" className="relative isolate overflow-hidden bg-(--n-texto) py-24 text-(--n-fondo)">
             {tema.fondoEquipo && (

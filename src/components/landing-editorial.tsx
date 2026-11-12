@@ -295,6 +295,15 @@ export function LandingEditorial({
           </section>
         )}
 
+        {tema.frase && (
+          <section aria-label="La frase de la casa" className="border-y border-(--n-texto)/12 bg-(--n-tarjeta) py-24">
+            <Reveal className="mx-auto max-w-3xl px-5 text-center">
+              <p className="editorial-titulo text-4xl font-light italic leading-snug sm:text-5xl">“{tema.frase}”</p>
+              <p className={`${etiqueta} mt-8`}>{negocio.nombre}</p>
+            </Reveal>
+          </section>
+        )}
+
         {tema.galeria && tema.galeria.length > 0 && (
           <section aria-labelledby="galeria" className="mx-auto max-w-6xl px-5 pb-28">
             <Reveal>
