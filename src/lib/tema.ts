@@ -45,8 +45,9 @@ export type Tema = {
    * "retro": papel crema y letras de cartel (components/landing-retro.tsx).
    * "editorial": fondo claro, serif fina y mucho aire (components/landing-editorial.tsx).
    * "clasica": barbería de siempre, crema, azul y rojo con poste de barbero (components/landing-clasica.tsx).
+   * "spa": crema y rosa empolvado, arcos, círculos y manchas de color suaves (components/landing-spa.tsx).
    */
-  estilo?: "retro" | "editorial" | "clasica";
+  estilo?: "retro" | "editorial" | "clasica" | "spa";
   /** Tercer color de la paleta (el estilo retro lo usa para franjas y fondos de sección). Por defecto, el brillo. */
   detalle?: string;
   /** Marca la página como demostración: muestra un cartel de "esto es una demo". */
@@ -96,7 +97,7 @@ const TEMAS: Record<string, Tema> = {
     demo: true,
   },
   "estetica-demo": {
-    estilo: "editorial",
+    estilo: "spa",
     fondo: "#f6f1ea",
     texto: "#2b2420",
     tarjeta: "#fffdf9",

@@ -130,7 +130,7 @@ const demos = [
   },
   {
     rubro: "Centro de estética",
-    estilo: "Estilo minimalista y elegante",
+    estilo: "Estilo spa, suave y elegante",
     tipo: "Landing con reservas",
     detalle: "Lo mismo, con los colores y los servicios de tu centro.",
     // Estética: piedra clara, serif fina, logo en arco y líneas delgadas.
