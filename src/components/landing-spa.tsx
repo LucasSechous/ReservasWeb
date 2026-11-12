@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BannerDemo } from "@/components/banner-demo";
 import { BotonCta, type Cta } from "@/components/boton-cta";
 import { Marquee } from "@/components/marquee";
+import { Acercamiento, Cortina, Palabras, Parallax, Trazo } from "@/components/movimiento";
 import { Reveal } from "@/components/reveal";
 import {
   type Negocio,
@@ -173,12 +174,12 @@ export function LandingSpa({
                   {negocio.direccion ? ` · ${negocio.direccion}` : ""}
                 </Etiqueta>
               </Reveal>
-              <Reveal delay={0.1} y={18}>
-                <h1 className="editorial-titulo mt-7 text-[3.6rem] font-light leading-[0.92] tracking-tight sm:text-8xl lg:text-[6.6rem]">
-                  {negocio.nombre}
-                </h1>
-                <p className="editorial-titulo mt-4 text-4xl italic text-(--n-acento) sm:text-5xl">{tema.lema}</p>
-              </Reveal>
+              <h1 className="editorial-titulo mt-7 text-[3.6rem] font-light leading-[0.92] tracking-tight sm:text-8xl lg:text-[6.6rem]">
+                <Palabras texto={negocio.nombre} modo="desenfoque" delay={0.1} paso={0.12} />
+              </h1>
+              <p className="editorial-titulo mt-4 text-4xl italic text-(--n-acento) sm:text-5xl">
+                <Palabras texto={tema.lema} modo="desenfoque" delay={0.45} paso={0.09} />
+              </p>
               <Reveal delay={0.25} className="mt-8 max-w-md">
                 <p className="text-xl leading-relaxed text-(--n-texto)/75">{tema.intro}</p>
               </Reveal>
@@ -217,17 +218,21 @@ export function LandingSpa({
                   className="absolute -right-5 top-6 aspect-[3/4] w-full rounded-t-full border border-(--n-acento)/50"
                 />
                 <div className="relative aspect-[3/4] w-full overflow-hidden rounded-t-full bg-(--n-tarjeta) shadow-[0_40px_80px_-40px_rgba(0,0,0,0.45)]">
-                  <Image
-                    src={tema.portada}
-                    alt={tema.portadaAlt ?? ""}
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 24rem, 80vw"
-                    className="object-cover"
-                  />
+                  <Parallax distancia={60} className="absolute inset-x-0 -top-[6%] h-[112%]">
+                    <Acercamiento className="absolute inset-0">
+                      <Image
+                        src={tema.portada}
+                        alt={tema.portadaAlt ?? ""}
+                        fill
+                        priority
+                        sizes="(min-width: 1024px) 24rem, 80vw"
+                        className="object-cover"
+                      />
+                    </Acercamiento>
+                  </Parallax>
                 </div>
                 {fotoChica && (
-                  <div className="absolute -bottom-8 -left-6 size-32 overflow-hidden rounded-full border-[6px] border-(--n-fondo) shadow-lg sm:-left-14 sm:size-40">
+                  <div className="absolute -bottom-8 -left-6 size-32 animate-float-slow overflow-hidden rounded-full border-[6px] border-(--n-fondo) shadow-lg sm:-left-14 sm:size-40">
                     <Image src={fotoChica.src} alt="" fill sizes="10rem" className="object-cover" />
                   </div>
                 )}
@@ -260,11 +265,11 @@ export function LandingSpa({
                   </p>
                 </Reveal>
                 {fotoServicios && (
-                  <Reveal delay={0.15} className="mt-12 hidden lg:block">
+                  <Cortina delay={0.15} className="mt-12 hidden lg:block">
                     <div className="relative aspect-[4/5] w-full max-w-xs overflow-hidden rounded-t-full rounded-b-[2rem]">
                       <Image src={fotoServicios.src} alt={fotoServicios.alt} fill sizes="20rem" className="object-cover" />
                     </div>
-                  </Reveal>
+                  </Cortina>
                 )}
               </div>
 
@@ -350,17 +355,19 @@ export function LandingSpa({
                 ][i % 3];
                 return (
                   <li key={foto.src}>
-                    <Reveal delay={i * 0.1}>
+                    <Reveal delay={i * 0.1} y={16}>
                       <figure>
-                        <div className={`group relative overflow-hidden bg-(--n-tarjeta) ${forma}`}>
-                          <Image
-                            src={foto.src}
-                            alt={foto.alt}
-                            fill
-                            sizes="(min-width: 768px) 30vw, 90vw"
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                        </div>
+                        <Cortina delay={0.1 + i * 0.15}>
+                          <div className={`group relative overflow-hidden bg-(--n-tarjeta) ${forma}`}>
+                            <Image
+                              src={foto.src}
+                              alt={foto.alt}
+                              fill
+                              sizes="(min-width: 768px) 30vw, 90vw"
+                              className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                          </div>
+                        </Cortina>
                         <figcaption className="editorial-titulo mt-4 text-center text-lg italic text-(--n-texto)/60">
                           {foto.alt}
                         </figcaption>
@@ -379,14 +386,16 @@ export function LandingSpa({
               {tema.fondoEquipo && (
                 <Reveal y={30}>
                   <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-t-full rounded-b-[2rem] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.45)]">
-                    <Image
-                      src={tema.fondoEquipo}
-                      alt={tema.fondoEquipoAlt ?? ""}
-                      fill
-                      sizes="(min-width: 1024px) 28rem, 90vw"
-                      className="object-cover"
-                      style={{ objectPosition: tema.fondoEquipoPosicion }}
-                    />
+                    <Parallax distancia={60} className="absolute inset-x-0 -top-[6%] h-[112%]">
+                      <Image
+                        src={tema.fondoEquipo}
+                        alt={tema.fondoEquipoAlt ?? ""}
+                        fill
+                        sizes="(min-width: 1024px) 28rem, 90vw"
+                        className="object-cover"
+                        style={{ objectPosition: tema.fondoEquipoPosicion }}
+                      />
+                    </Parallax>
                   </div>
                 </Reveal>
               )}
@@ -427,7 +436,9 @@ export function LandingSpa({
               <Titulo id="como">Reservar es así de fácil</Titulo>
             </Reveal>
             <ol className="relative mt-16 grid gap-12 text-center md:grid-cols-3">
-              <span aria-hidden className="absolute inset-x-[17%] top-8 hidden h-px bg-(--n-acento)/30 md:block" />
+              <span aria-hidden className="absolute inset-x-[17%] top-8 hidden md:block">
+                <Trazo delay={0.2} className="h-px w-full bg-(--n-acento)/40" />
+              </span>
               {pasos.map((paso, i) => (
                 <li key={paso.titulo} className="relative">
                   <Reveal delay={i * 0.12}>

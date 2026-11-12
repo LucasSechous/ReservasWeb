@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BannerDemo } from "@/components/banner-demo";
 import { BotonCta, type Cta } from "@/components/boton-cta";
 import { Marquee } from "@/components/marquee";
+import { Cortina, Estampa, Giro } from "@/components/movimiento";
 import { Reveal } from "@/components/reveal";
 import { type Negocio, type Profesional, type Servicio, formatoPrecio } from "@/lib/negocios";
 import { type Tema, temaStyle } from "@/lib/tema";
@@ -144,17 +145,17 @@ export function LandingRetro({
                   {negocio.direccion ? ` · ${negocio.direccion}` : ""}
                 </p>
               </Reveal>
-              <Reveal delay={0.1} y={20}>
+              <Estampa alCargar delay={0.15} className="origin-left">
                 <h1
                   className="mt-7 retro-titulo text-[3.3rem] leading-[1.02] sm:text-7xl lg:text-8xl"
                   style={{ textShadow: "4px 4px 0 var(--color-violeta)" }}
                 >
                   {negocio.nombre}
                 </h1>
-                <p className="mt-4 inline-block -rotate-2 retro-titulo text-3xl text-(--n-acento) sm:text-5xl">
-                  {tema.lema}
-                </p>
-              </Reveal>
+              </Estampa>
+              <Estampa alCargar delay={0.45} giro={-2} className="mt-4 inline-block origin-left">
+                <p className="retro-titulo text-3xl text-(--n-acento) sm:text-5xl">{tema.lema}</p>
+              </Estampa>
               <Reveal delay={0.25} className="mt-8 max-w-xl">
                 <p className="text-xl leading-relaxed text-(--n-texto)/80">{tema.intro}</p>
               </Reveal>
@@ -169,7 +170,7 @@ export function LandingRetro({
 
             {tema.portada && (
               <Reveal delay={0.2} y={30} className="relative mx-auto w-full max-w-md">
-                <div className="relative rotate-2 border-4 border-(--n-texto) bg-(--n-tarjeta) p-3 pb-12 shadow-[10px_10px_0_var(--n-texto)]">
+                <Estampa alCargar delay={0.3} giro={2} className="relative border-4 border-(--n-texto) bg-(--n-tarjeta) p-3 pb-12 shadow-[10px_10px_0_var(--n-texto)]">
                   <div className="relative aspect-[4/5] overflow-hidden border-2 border-(--n-texto)/30">
                     <Image
                       src={tema.portada}
@@ -183,18 +184,16 @@ export function LandingRetro({
                   <p className="absolute inset-x-0 bottom-3 truncate px-4 text-center retro-mono text-sm font-bold uppercase tracking-wider">
                     {negocio.nombre}
                   </p>
-                </div>
+                </Estampa>
                 {tema.logo && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={tema.logo}
-                    alt=""
-                    className="absolute -left-5 -top-9 size-28 -rotate-12 drop-shadow-[4px_4px_0_var(--n-texto)] sm:-left-9 sm:size-32"
-                  />
+                  <Estampa alCargar delay={0.75} giro={-12} className="absolute -left-5 -top-9 sm:-left-9">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={tema.logo} alt="" className="size-28 drop-shadow-[4px_4px_0_var(--n-texto)] sm:size-32" />
+                  </Estampa>
                 )}
-                <div className="absolute -bottom-10 -right-4 sm:-right-10">
+                <Giro delay={1} className="absolute -bottom-10 -right-4 sm:-right-10">
                   <Sello texto={`${negocio.nombre} ★ ${conReservas ? "Reservá online" : "Te esperamos"} ★ `} />
-                </div>
+                </Giro>
               </Reveal>
             )}
           </div>
@@ -269,9 +268,11 @@ export function LandingRetro({
                 <p className="retro-mono text-sm font-bold uppercase tracking-[0.3em] text-[#f5ecd6]/60">
                   ★ La casa dice ★
                 </p>
-                <p className="mt-6 retro-titulo text-4xl leading-tight text-[#f5ecd6] sm:text-6xl [text-shadow:0_0_1px_#f5ecd6,0_0_14px_rgba(245,236,214,0.25)]">
-                  {tema.frase}
-                </p>
+                <Cortina direccion="derecha" delay={0.3}>
+                  <p className="mt-6 retro-titulo text-4xl leading-tight text-[#f5ecd6] sm:text-6xl [text-shadow:0_0_1px_#f5ecd6,0_0_14px_rgba(245,236,214,0.25)]">
+                    {tema.frase}
+                  </p>
+                </Cortina>
                 <p className="mt-8 retro-mono text-base text-(--color-violeta)">— {negocio.nombre}</p>
               </div>
             </Reveal>
@@ -298,7 +299,7 @@ export function LandingRetro({
                   <li key={foto.src}>
                     <Reveal delay={i * 0.1}>
                       <figure
-                        className={`border-2 border-(--n-texto) bg-(--n-tarjeta) p-3 pb-4 shadow-[7px_7px_0_var(--n-texto)] ${giros[i % giros.length]}`}
+                        className={`border-2 border-(--n-texto) bg-(--n-tarjeta) p-3 pb-4 shadow-[7px_7px_0_var(--n-texto)] transition duration-300 hover:-translate-y-1.5 hover:rotate-0 hover:shadow-[11px_11px_0_var(--n-texto)] ${giros[i % giros.length]}`}
                       >
                         <div className="relative aspect-square overflow-hidden border-2 border-(--n-texto)/25">
                           <Image

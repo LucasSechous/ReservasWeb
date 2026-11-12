@@ -4,6 +4,7 @@ import { BannerDemo } from "@/components/banner-demo";
 import { BotonCta, type Cta } from "@/components/boton-cta";
 import { Galeria } from "@/components/galeria";
 import { Marquee } from "@/components/marquee";
+import { Giro, Palabras, Parallax, Trazo } from "@/components/movimiento";
 import { Reveal } from "@/components/reveal";
 import {
   type Negocio,
@@ -50,11 +51,11 @@ function Franja({ className = "h-2.5" }: { className?: string }) {
 /** Filete con estrella: ── ★ ── */
 function Filete({ className = "" }: { className?: string }) {
   return (
-    <p aria-hidden className={`flex items-center gap-3 text-(--n-acento) ${className}`}>
-      <span className="h-px w-12 bg-current" />
+    <div aria-hidden className={`flex items-center gap-3 text-(--n-acento) ${className}`}>
+      <Trazo origen="right" className="h-px w-12 bg-current" />
       <span className="text-sm">★</span>
-      <span className="h-px w-12 bg-current" />
-    </p>
+      <Trazo origen="left" className="h-px w-12 bg-current" />
+    </div>
   );
 }
 
@@ -141,14 +142,13 @@ export function LandingClasica({
                   {tema.etiqueta ?? "Reservas online"}
                 </p>
               </Reveal>
-              <Reveal delay={0.1} y={20}>
-                <h1 className="mt-6 clasica-titulo text-[3.3rem] font-black leading-[0.95] tracking-tight sm:text-7xl lg:text-[5.4rem]">
-                  {negocio.nombre}
-                </h1>
-                <p className="mt-4 clasica-titulo text-3xl font-bold italic text-(--n-acento) sm:text-4xl">
-                  {tema.lema}
-                </p>
-              </Reveal>
+              <h1 className="mt-6 clasica-titulo text-[3.3rem] font-black leading-[0.95] tracking-tight sm:text-7xl lg:text-[5.4rem]">
+                <Palabras texto={negocio.nombre} delay={0.1} />
+              </h1>
+              <p className="mt-4 inline-block clasica-titulo text-3xl font-bold italic text-(--n-acento) sm:text-4xl">
+                <Palabras texto={tema.lema} delay={0.35} paso={0.06} />
+                <Trazo alCargar delay={0.9} className="mt-1 h-[3px] w-full bg-current" />
+              </p>
               <Reveal delay={0.2}>
                 <Filete className="mt-7" />
               </Reveal>
@@ -180,22 +180,22 @@ export function LandingClasica({
                 <Poste className="hidden h-[85%] self-center sm:flex" />
                 <div className="relative flex-1 rounded-t-full border-[3px] border-(--n-texto) bg-(--n-tarjeta) p-2.5 shadow-[10px_10px_0_var(--n-acento)]">
                   <div className="relative h-full overflow-hidden rounded-t-full">
-                    <Image
-                      src={tema.portada}
-                      alt={tema.portadaAlt ?? ""}
-                      fill
-                      priority
-                      sizes="(min-width: 1024px) 24rem, 80vw"
-                      className="object-cover [filter:saturate(0.85)_contrast(1.05)]"
-                    />
+                    <Parallax distancia={70} className="absolute inset-x-0 -top-[6%] h-[112%]">
+                      <Image
+                        src={tema.portada}
+                        alt={tema.portadaAlt ?? ""}
+                        fill
+                        priority
+                        sizes="(min-width: 1024px) 24rem, 80vw"
+                        className="object-cover [filter:saturate(0.85)_contrast(1.05)]"
+                      />
+                    </Parallax>
                   </div>
                   {tema.logo && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={tema.logo}
-                      alt=""
-                      className="absolute -bottom-8 -left-8 size-28 drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)] sm:-left-12"
-                    />
+                    <Giro delay={0.7} className="absolute -bottom-8 -left-8 sm:-left-12">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={tema.logo} alt="" className="size-28 drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]" />
+                    </Giro>
                   )}
                 </div>
               </Reveal>
@@ -235,7 +235,7 @@ export function LandingClasica({
                       <>
                         <div className="flex items-baseline gap-3">
                           <h3 className="min-w-0 clasica-titulo text-xl font-bold sm:text-2xl">{s.nombre}</h3>
-                          <span aria-hidden className="mb-1.5 flex-1 border-b-2 border-dotted border-(--n-fondo)/35" />
+                          <span aria-hidden className="mb-1.5 flex-1 border-b-2 border-dotted border-(--n-fondo)/35 transition-colors duration-300 group-hover:border-solid group-hover:border-(--n-fondo)/70" />
                           <span className="shrink-0 whitespace-nowrap clasica-rotulo text-lg font-semibold tracking-wider">
                             {formatoPrecio(s.precio)}
                           </span>
@@ -356,12 +356,14 @@ export function LandingClasica({
               {pasos.map((paso, i) => (
                 <li key={paso.titulo}>
                   <Reveal delay={i * 0.12}>
-                    <span
-                      aria-hidden
-                      className="mx-auto flex size-20 items-center justify-center rounded-full border-2 border-(--n-texto) clasica-titulo text-3xl font-black text-(--n-acento) shadow-[inset_0_0_0_5px_var(--n-fondo),inset_0_0_0_6px_var(--n-texto)]"
-                    >
-                      {ROMANOS[i]}
-                    </span>
+                    <Giro delay={0.15 + i * 0.12}>
+                      <span
+                        aria-hidden
+                        className="mx-auto flex size-20 items-center justify-center rounded-full border-2 border-(--n-texto) clasica-titulo text-3xl font-black text-(--n-acento) shadow-[inset_0_0_0_5px_var(--n-fondo),inset_0_0_0_6px_var(--n-texto)]"
+                      >
+                        {ROMANOS[i]}
+                      </span>
+                    </Giro>
                     <h3 className="mt-5 clasica-titulo text-2xl font-bold">{paso.titulo}</h3>
                     <p className="mx-auto mt-2 max-w-xs text-(--n-texto)/70">{paso.texto}</p>
                   </Reveal>
