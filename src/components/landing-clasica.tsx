@@ -476,7 +476,7 @@ export function LandingClasica({
       </main>
 
       <Franja className="h-2" />
-      <footer className="mx-auto w-full max-w-6xl px-5 pb-12 pt-8 text-sm text-(--n-texto)/60">
+      <footer className="mx-auto w-full max-w-6xl px-5 pb-12 pt-8 text-sm text-(--n-texto)/75">
         <p>
           {conReservas ? "Reservas con" : "Web hecha con"}{" "}
           <Link href="/" className="underline hover:text-(--n-acento)">

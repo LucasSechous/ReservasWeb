@@ -173,7 +173,7 @@ export function PhoneDemo() {
           <div className="mx-auto mt-2 h-1.5 w-16 rounded-full bg-white/15" />
           <div className="px-5 pb-3 pt-4">
             <p className="font-display text-base font-bold">Barbería Ejemplo</p>
-            <p className="text-[11px] text-white/45">Reservá tu turno</p>
+            <p className="text-[11px] text-white/60">Reservá tu turno</p>
           </div>
 
           <div
@@ -198,7 +198,7 @@ export function PhoneDemo() {
                 />
                 <span
                   className={`mt-1.5 block text-[10px] ${
-                    i === paso ? "text-white" : "text-white/35"
+                    i === paso ? "text-white" : "text-white/60"
                   }`}
                 >
                   {nombre}
